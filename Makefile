@@ -8,11 +8,11 @@ all: utilities sec
 
 utilities:
 	mkdir -p $(BUILD_DIR)/utilities
-	cd $(BUILD_DIR)/utilities && qmake ../../utilities/utilities.pro "INSTALL_PATH=$(BUILD_DIR)" && make && make install
+	cd $(BUILD_DIR)/utilities && qmake ../../utilities/utilities.pro "CONFIG-=debug" "INSTALL_PATH=$(BUILD_DIR)" && make && make install
 
 sec:
 	mkdir -p $(BUILD_DIR)/sec
-	cd $(BUILD_DIR)/sec && qmake ../../sec/sec.pro "INSTALL_PATH=$(BUILD_DIR)" && make && make install
+	cd $(BUILD_DIR)/sec && qmake ../../sec/sec.pro "CONFIG-=debug" "INSTALL_PATH=$(BUILD_DIR)" && make && make install
 
 install:
 	cp -r $(BUILD_DIR)/lib $(INSTALL_PATH)
