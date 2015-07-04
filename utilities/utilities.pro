@@ -21,10 +21,9 @@ HEADERS += \
 unix {
 
     isEmpty(INSTALL_PATH) {
-        warning("Installing to default path (~/usr).")
         INSTALL_PATH="~/usr"
     }
-
+    
     target.path = $$INSTALL_PATH/lib
     INSTALLS += target
 
