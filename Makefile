@@ -1,4 +1,4 @@
-.PHONY: clean utilities sec uninstall
+.PHONY: clean utilities sec uninstall test doc
 
 CURR_DIR=$(shell pwd)
 BUILD_DIR=$(CURR_DIR)/build
@@ -23,6 +23,16 @@ uninstall:
 	rm -rf $(INSTALL_PATH)/lib/libutilities*
 	rm -rf $(INSTALL_PATH)/include/sec
 	rm -rf $(INSTALL_PATH)/lib/libsec*
+
+test:
+	mkdir -p $(BUILD_DIR)/test/utilities
+	cd $(BUILD_DIR)/test/utilities && cmake -DROBOLIBS_PATH=$(BUILD_DIR) ../../../utilities/test && make && make test
+
+doc:
+	mkdir -p $(BUILD_DIR)/doc/utilities
+	cd utilities/doc && doxygen Doxyfile && mv html $(BUILD_DIR)/doc/utilities && mv latex $(BUILD_DIR)/doc/utilities
+	mkdir -p $(BUILD_DIR)/doc/sec
+	cd sec/doc && doxygen Doxyfile && mv html $(BUILD_DIR)/doc/sec && mv latex $(BUILD_DIR)/doc/sec
 
 clean:
 	rm -fr build

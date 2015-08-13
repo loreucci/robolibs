@@ -9,14 +9,14 @@ QT       -= core gui
 TARGET = utilities
 TEMPLATE = lib
 
-QMAKE_CXXFLAGS += -std=c++11 -gdwarf-3
+QMAKE_CXXFLAGS += -std=c++14 -gdwarf-3
 
 SOURCES += \
-    utilities.cpp
+    src/utilities.cpp
 
 HEADERS += \
-    utilities.h \
-    message.h
+    src/utilities.h \
+    src/message.h
 
 unix {
 

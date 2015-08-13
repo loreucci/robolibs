@@ -24,26 +24,26 @@ LIBS += -lutilities
 
 
 SOURCES += \
-    commonsources.cpp \
-    commoncontrollers.cpp \
-    synchronization.cpp \
-    sleeper.cpp \
-    experimentlogger.cpp
+    src/commonsources.cpp \
+    src/commoncontrollers.cpp \
+    src/synchronization.cpp \
+    src/sleeper.cpp \
+    src/experimentlogger.cpp
 
 HEADERS += \
-    commonsources.h \
-    source.h \
-    controller.h \
-    threadslink.h \
-    basiccontroller.h \
-    commoncontrollers.h \
-    synchronization.h \
-    sleeper.h \
-    controllersequence.h \
-    mainthread.h \
-    experimentlogger.h \
-    listener.h \
-    controllerfork.h
+    src/commonsources.h \
+    src/source.h \
+    src/controller.h \
+    src/threadslink.h \
+    src/basiccontroller.h \
+    src/commoncontrollers.h \
+    src/synchronization.h \
+    src/sleeper.h \
+    src/controllersequence.h \
+    src/mainthread.h \
+    src/experimentlogger.h \
+    src/listener.h \
+    src/controllerfork.h
 
 unix {
 
