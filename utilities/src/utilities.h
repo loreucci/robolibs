@@ -1,3 +1,8 @@
+//!  \file utilities.h
+/*!
+  This file contains the Utils namespace.
+*/
+
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -7,66 +12,164 @@
 
 #include "message.h"
 
+
+//!  Utils namespace.
+/*!
+  This namespace contains utility functions such as:
+  - numeric constants;
+  - random number generation;
+  - vector operations;
+  - file i/o;
+  - string operations.
+*/
 namespace Utils {
 
-// standard generation function
-std::function<std::vector<double>(void)> standardGenerator(unsigned int size, double a = 0.0, double b = 1.0);
-std::function<std::vector<double>(void)> standardGeneratorPitch(double a = 0.0, double b = 1.0);
+//! Greek pi.
+const double PI = 3.1415926535;
+
+//! Uniform random number generator.
+/*!
+  Returns an uniform random number generator function for vectors.
+  The elements of the vector are uniformily chosen in an interval.
+  \param size the size of the vectors that have to be generated.
+  \param a minimum value of the interval.
+  \param b maximum value of the interval.
+  \return the generator function.
+*/
+std::function<std::vector<double>(void)> uniformGenerator(unsigned int size, double a = 0.0, double b = 1.0);
 
 
 // operations on vectors
 
-// ||v||
+//! Vector norm.
+/*!
+  Euclidean norm of a vector.
+  \param v input vector.
+  \return norm.
+*/
 double norm(const std::vector<double>& v);
 
-// ||v||^2
+//! Squared vector norm.
+/*!
+  Squared euclidean norm of a vector.
+  \param v input vector.
+  \return squared norm.
+*/
 double squaredNorm(const std::vector<double>& v);
 
-// v/||v||
+//! Vector normalization.
+/*!
+  Computes the normalized vector.
+  \param v input vector.
+  \return normalized vector.
+*/
 std::vector<double> normalized(const std::vector<double>& v);
 
-// v1-v2
+//! Vector difference.
+/*!
+  Difference between two vectors.
+  The two vectors must be of the same size.
+  \param v1 first operand.
+  \param v2 second operand.
+  \return element-wise difference.
+*/
 std::vector<double> difference(const std::vector<double>& v1, const std::vector<double>& v2);
 
-// v1-v2/||v1-v2||
+//! Vector normalized difference.
+/*!
+  Normalized difference between two vectors.
+  The two vectors must be of the same size.
+  \param v1 first operand.
+  \param v2 second operand.
+  \return normalized element-wise difference.
+*/
 std::vector<double> normalizedDifference(const std::vector<double>& v1, const std::vector<double>& v2);
 
-// ||v1-v2||
+//! Euclidean distance.
+/*!
+  Euclidean distance between two vectors.
+  The two vectors must be of the same size.
+  \param v1 first vector.
+  \param v2 second vector.
+  \return distance.
+*/
 double distance(const std::vector<double>& v1, const std::vector<double>& v2);
 
-// ||v1-v2||^2
+//! Squared distance.
+/*!
+  Squared euclidean distance between two vectors.
+  The two vectors must be of the same size.
+  \param v1 first vector.
+  \param v2 second vector.
+  \return squared distance.
+*/
 double squaredDistance(const std::vector<double>& v1, const std::vector<double>& v2);
 
-const double PI = 3.1415926535;
+//! Prints a vector on screen.
+/*!
+  Prints a vector as a sequence of space separated values.
+  \param v vector.
+  \param pre string to be printented before the vector.
+  \param endline flag to indicate whether an end of line must be printed.
+*/
+void printVector(const std::vector<double> v, const std::string& pre = "", bool endline = true);
 
-// vector printing
-void printVector(const std::string& pre, const std::vector<double> v, bool endline = true);
 
-
-// read a dataset from file
+//! Loads a dataset from a file.
+/*!
+  Reads a dataset from a space separated file and store it in a vector of vectors.
+  \param filename the file path.
+  \return the dataset.
+*/
 std::vector<std::vector<double>> readDatasetFromFile(const std::string& filename);
 
-// print data to file
+//! Saves a dataset in a file.
+/*!
+  Writes a dataset stored as a vector of vectors in a space separated file.
+  \param filename the file path.
+  \param data the dataset
+*/
 void saveToFile(const std::string& filename, const std::vector<std::vector<double>>& data);
 
 
-// string makers
+//! Creates a string out of data.
+/*!
+  Creates a string out of a generic data.
+  Specific version for std::vector and Message are selected by SFINAE.
+  \param t the data.
+  \param sep separator to be appended at the end of the string.
+  \return the string.
+*/
 template <typename T>
-std::string make_string(T& t, const std::string& sep) {
+std::string make_string(T& t, const std::string& sep = "") {
     return std::to_string(t) + sep;
 }
 
+//! Creates a string out of a vector.
+/*!
+  Creates a string out of a vector.
+  \param v the vector.
+  \param sep separator to be appended after each element.
+  \return the string.
+*/
 template <typename T>
-std::string make_string(std::vector<T>& t, const std::string& sep) {
+std::string make_string(std::vector<T>& v, const std::string& sep = "") {
     std::string ret;
-    for (T& v : t) {
-        ret += Utils::make_string(v, sep);
+    for (T& e : v) {
+        ret += Utils::make_string(e, sep);
     }
     return ret;
 }
 
+//! Creates a string out of a Message.
+/*!
+  Creates a string out of a Message.
+  \param m the Message.
+  \param sep separator to be appended after each element.
+  \return the string.
+*/
 template <typename T, unsigned int S, unsigned int ID>
-std::string make_string(Message<T, S, ID>& m, const std::string& sep) {
+std::string make_string(Message<T, S, ID>& m, const std::string& sep = "") {
     std::string ret;
     for (unsigned int i = 0; i < m.size; i++) {
         ret += Utils::make_string(m[i], sep);
@@ -74,12 +177,23 @@ std::string make_string(Message<T, S, ID>& m, const std::string& sep) {
     return ret;
 }
 
-
-// replace substring with another in string
+//! Substring replacement.
+/*!
+  Replaces a substring with another, inside a string.
+  \param str input string.
+  \param target substring to be replaced.
+  \param repl replacing substring.
+  \return modified string.
+*/
 std::string replace(const std::string& str, const std::string& target, const std::string& repl);
 
-
-// apply masks to messages
+//! Message mask application.
+/*!
+  Applies a mask to a Message. The mask is another Message of the same type and size.
+  \param msg input message.
+  \param mask mask.
+  \return element-wise application of the mask to the Message.
+*/
 template <typename T, unsigned int S, unsigned int ID1, unsigned int ID2>
 Message<T, S, ID1> apply_mask(const Message<T, S, ID1>& msg, const Message<T, S, ID2>& mask) {
     Message<T, S, ID1> ret;

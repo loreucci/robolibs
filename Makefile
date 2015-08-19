@@ -29,8 +29,10 @@ test:
 	cd $(BUILD_DIR)/test/utilities && cmake -DROBOLIBS_PATH=$(BUILD_DIR) ../../../utilities/test && make && make test
 
 doc:
+	-rm -r $(BUILD_DIR)/doc/utilities
 	mkdir -p $(BUILD_DIR)/doc/utilities
 	cd utilities/doc && doxygen Doxyfile && mv html $(BUILD_DIR)/doc/utilities && mv latex $(BUILD_DIR)/doc/utilities
+	-rm -r $(BUILD_DIR)/doc/sec
 	mkdir -p $(BUILD_DIR)/doc/sec
 	cd sec/doc && doxygen Doxyfile && mv html $(BUILD_DIR)/doc/sec && mv latex $(BUILD_DIR)/doc/sec
 

@@ -1,16 +1,16 @@
 #include "utilities.h"
 
 #include <random>
-
 #include <iostream>
 #include <iterator>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 namespace Utils {
 
 // standard generation function
-std::function<std::vector<double>(void)> standardGenerator(unsigned int size, double a, double b) {
+std::function<std::vector<double>(void)> uniformGenerator(unsigned int size, double a, double b) {
     std::mt19937 engine = std::mt19937(static_cast<unsigned long>(time(nullptr)));;
     std::uniform_real_distribution<double> dist(a, b);
 
@@ -30,6 +30,11 @@ double norm(const std::vector<double>& v) {
     return std::sqrt(n);
 }
 
+double squaredNorm(const std::vector<double>& v) {
+    double n = norm(v);
+    return n*n;
+}
+
 std::vector<double> normalized(const std::vector<double>& v) {
     std::vector<double> v1 = v;
     double n = norm(v1);
@@ -39,6 +44,8 @@ std::vector<double> normalized(const std::vector<double>& v) {
 }
 
 std::vector<double> difference(const std::vector<double>& v1, const std::vector<double>& v2) {
+    if (v1.size() != v2.size())
+        throw std::invalid_argument("Utils::difference: vector sizes do not match.");
     std::vector<double> ret(v1.size());
     for (unsigned int i = 0; i < ret.size(); i++) {
         ret[i] = v1[i] - v2[i];
@@ -51,6 +58,8 @@ std::vector<double> normalizedDifference(const std::vector<double>& v1, const st
 }
 
 double distance(const std::vector<double>& v1, const std::vector<double>& v2) {
+    if (v1.size() != v2.size())
+        throw std::invalid_argument("Utils::distance: vector sizes do not match.");
     double ret = 0.0;
     for (unsigned int i = 0; i < v1.size(); i++) {
         ret += (v1[i]-v2[i])*(v1[i]-v2[i]);
@@ -60,32 +69,13 @@ double distance(const std::vector<double>& v1, const std::vector<double>& v2) {
 
 
 
-
-
-std::function<std::vector<double>(void)> standardGeneratorPitch(double a, double b) {
-    std::mt19937 engine = std::mt19937(static_cast<unsigned long>(time(nullptr)));;
-    std::uniform_real_distribution<double> dist(a, b);
-
-    return [engine, dist] () mutable {
-        std::vector<double> ret(6, 0);
-        ret[4] = dist(engine);
-        ret[5] = dist(engine);
-        return ret;
-    };
-}
-
-void printVector(const std::string& pre, const std::vector<double> v, bool endline) {
+void printVector(const std::vector<double> v, const std::string& pre, bool endline) {
 
     std::cout << pre;
     std::copy(v.begin(), v.end(), std::ostream_iterator<double>(std::cout, " "));
     if (endline)
         std::cout << std::endl;
 
-}
-
-double squaredNorm(const std::vector<double>& v) {
-    double n = norm(v);
-    return n*n;
 }
 
 double squaredDistance(const std::vector<double>& v1, const std::vector<double>& v2) {

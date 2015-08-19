@@ -11,9 +11,9 @@
 #include <vector>
 #include <initializer_list>
 
-//!  Message class
+//!  Message class.
 /*!
-  This class represent container for a message that can be exchanged.
+  This class represent a container for a message that can be exchanged.
   Each Message type has:
   - a type T of the data inside the container;
   - a statically determined size S;
@@ -111,16 +111,16 @@ public:
 
     //! Underlying data of the message.
     /*!
-      \return pointer to the underlaying data.
+      \return pointer to the underlying data.
     */
     const T* data() const {
         return _data.data();
     }
 
-    //! size of the Message
+    //! Size of the Message.
     static const unsigned int size = S;
 
-    //! ID of the message
+    //! ID of the message.
     static const unsigned int id = ID;
 
 protected:
@@ -165,11 +165,11 @@ Message<T, S, ID> operator-(const Message<T, S, ID>& m1, const Message<T, S, ID>
 
 }
 
-//! insertion operator
+//! Insertion operator.
 /*!
-  \param o output stream
-  \param m message to be inserted into the stream
-  \return output stream
+  \param o output stream.
+  \param m message to be inserted into the stream.
+  \return output stream.
 */
 template <typename T, unsigned int S, unsigned int ID>
 std::ostream& operator<<(std::ostream& o, const Message<T, S, ID>& m) {

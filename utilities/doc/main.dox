@@ -1,0 +1,5 @@
+/*! \mainpage utilities library
+ *
+ * The utilities library contains data types and functions that are used
+ * across all the robolibs libraries.
+ */
