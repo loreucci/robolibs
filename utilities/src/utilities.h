@@ -13,6 +13,10 @@
 #include "message.h"
 
 
+//!  Mark a paramaters as unused.
+#define UTILS_UNUSED(x) [&x]{}()
+
+
 //!  Utils namespace.
 /*!
   This namespace contains utility functions such as:
@@ -24,8 +28,10 @@
 */
 namespace Utils {
 
+
 //! Greek pi.
 const double PI = 3.1415926535;
+
 
 //! Uniform random number generator.
 /*!
@@ -137,27 +143,31 @@ void saveToFile(const std::string& filename, const std::vector<std::vector<doubl
   Creates a string out of a generic data.
   Specific version for std::vector and Message are selected by SFINAE.
   \param t the data.
-  \param sep separator to be appended at the end of the string.
+  \param sep unused.
   \return the string.
 */
 template <typename T>
-std::string make_string(T& t, const std::string& sep = "") {
-    return std::to_string(t) + sep;
+std::string make_string(const T& t, const std::string& sep = "") {
+    UTILS_UNUSED(sep);
+    return std::to_string(t);
 }
 
 //! Creates a string out of a vector.
 /*!
   Creates a string out of a vector.
   \param v the vector.
-  \param sep separator to be appended after each element.
+  \param sep separator to be appended after each element, except for last.
   \return the string.
 */
 template <typename T>
-std::string make_string(std::vector<T>& v, const std::string& sep = "") {
+std::string make_string(const std::vector<T>& v, const std::string& sep = "") {
+    if (v.empty())
+        return "";
     std::string ret;
-    for (T& e : v) {
-        ret += Utils::make_string(e, sep);
+    for (unsigned int i = 0; i < v.size()-1; i++) {
+        ret += Utils::make_string(v[i], sep);
     }
+    ret += Utils::make_string(v[v.size()-1]);
     return ret;
 }
 
@@ -165,15 +175,18 @@ std::string make_string(std::vector<T>& v, const std::string& sep = "") {
 /*!
   Creates a string out of a Message.
   \param m the Message.
-  \param sep separator to be appended after each element.
+  \param sep separator to be appended after each element, except for last.
   \return the string.
 */
 template <typename T, unsigned int S, unsigned int ID>
-std::string make_string(Message<T, S, ID>& m, const std::string& sep = "") {
+std::string make_string(const Message<T, S, ID>& m, const std::string& sep = "") {
+    if (m.size == 0)
+        return "";
     std::string ret;
-    for (unsigned int i = 0; i < m.size; i++) {
+    for (unsigned int i = 0; i < m.size-1; i++) {
         ret += Utils::make_string(m[i], sep);
     }
+    ret += Utils::make_string(m[m.size-1]);
     return ret;
 }
 
