@@ -9,15 +9,28 @@ QT       -= core gui
 TARGET = sec
 TEMPLATE = lib
 
-QMAKE_CXXFLAGS += -std=c++11 -gdwarf-3
+QMAKE_CXXFLAGS += -std=c++14 -gdwarf-3
 
+unix {
+    isEmpty(INSTALL_PATH) {
+        LIBS += -L$$system(echo ~/usr/lib)
+        INCLUDEPATH += $$system(echo ~/usr/include)
+    } else {
+        LIBS += -L$$INSTALL_PATH/lib
+        INCLUDEPATH += $$INSTALL_PATH/include
+    }
+}
 
-isEmpty(INSTALL_PATH) {
-    LIBS += -L$$system(echo ~/usr/lib)
-    INCLUDEPATH += $$system(echo ~/usr/include)
-} else {
-    LIBS += -L$$INSTALL_PATH/lib
-    INCLUDEPATH += $$INSTALL_PATH/include
+win32 {
+    isEmpty(INSTALL_PATH) {
+        LIBS += -L"$$(USERPROFILE)\usr\lib"
+        INCLUDEPATH += "$$(USERPROFILE)\usr\include"
+    } else {
+        LIBS += -L$$INSTALL_PATH/lib
+        INCLUDEPATH += $$INSTALL_PATH/include
+    }
+    message($$LIBS)
+    message($$INCLUDEPATH)
 }
 
 LIBS += -lutilities
@@ -45,6 +58,7 @@ HEADERS += \
     src/listener.h \
     src/controllerfork.h
 
+
 unix {
 
     isEmpty(INSTALL_PATH) {
@@ -62,3 +76,21 @@ unix {
 
     INSTALLS += headers_folder headers_files
 }
+
+
+win32 {
+
+    isEmpty(INSTALL_PATH) {
+        INSTALL_PATH="$$(USERPROFILE)\usr"
+    }
+
+    target.path = $$INSTALL_PATH\lib
+    INSTALLS += target
+
+    headers_files.path = $$INSTALL_PATH\include\sec
+    headers_files.files = $$HEADERS
+
+    INSTALLS += headers_files
+
+}
+
