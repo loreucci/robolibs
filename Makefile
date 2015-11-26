@@ -7,12 +7,12 @@ INSTALL_PATH=~/usr
 all: utilities sec
 
 utilities:
-	mkdir -p $(BUILD_DIR)/utilities
-	cd $(BUILD_DIR)/utilities && qmake ../../utilities/utilities.pro "CONFIG-=debug" "INSTALL_PATH=$(BUILD_DIR)" && make && make install
+	mkdir -p $(BUILD_DIR)/build-utilities
+	cd $(BUILD_DIR)/build-utilities && cmake ../../utilities -DCMAKE_INSTALL_PREFIX=$(BUILD_DIR) && make && make install
 
 sec:
-	mkdir -p $(BUILD_DIR)/sec
-	cd $(BUILD_DIR)/sec && qmake ../../sec/sec.pro "CONFIG-=debug" "INSTALL_PATH=$(BUILD_DIR)" && make && make install
+	mkdir -p $(BUILD_DIR)/build-sec
+	cd $(BUILD_DIR)/build-sec && cmake ../../sec -DCMAKE_INSTALL_PREFIX=$(BUILD_DIR) -DROBOLIBS_PATH=$(BUILD_DIR) && make && make install
 
 install:
 	cp -r $(BUILD_DIR)/lib $(INSTALL_PATH)
@@ -25,16 +25,15 @@ uninstall:
 	rm -rf $(INSTALL_PATH)/lib/libsec*
 
 test:
-	mkdir -p $(BUILD_DIR)/test/utilities
-	cd $(BUILD_DIR)/test/utilities && cmake -DROBOLIBS_PATH=$(BUILD_DIR) ../../../utilities/test && make && make test
+	cd $(BUILD_DIR)/build-utilities && make test
 
 doc:
 	-rm -r $(BUILD_DIR)/doc/utilities
 	mkdir -p $(BUILD_DIR)/doc/utilities
-	cd utilities/doc && doxygen Doxyfile && mv html $(BUILD_DIR)/doc/utilities && mv latex $(BUILD_DIR)/doc/utilities
+	cd $(BUILD_DIR)/build-utilities && make doc && cp -r doc/html $(BUILD_DIR)/doc/utilities && cp -r doc/latex $(BUILD_DIR)/doc/utilities
 	-rm -r $(BUILD_DIR)/doc/sec
 	mkdir -p $(BUILD_DIR)/doc/sec
-	cd sec/doc && doxygen Doxyfile && mv html $(BUILD_DIR)/doc/sec && mv latex $(BUILD_DIR)/doc/sec
+	cd $(BUILD_DIR)/build-sec && make doc && cp -r doc/html $(BUILD_DIR)/doc/sec && cp -r doc/latex $(BUILD_DIR)/doc/sec
 
 clean:
 	rm -fr build
