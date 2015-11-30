@@ -9,6 +9,9 @@
 
 #include "sleeper.h"
 
+
+namespace sec {
+
 class Semaphore {
 
 public:
@@ -94,6 +97,7 @@ public:
     void print(); //debug only
 
 protected:
+    bool started;
     SemaphoreQueue sq;
     std::mutex mtx;
     std::shared_ptr<Sleeper> sleeper;
@@ -102,5 +106,7 @@ protected:
 };
 
 extern Synchronizer synchronizer;
+
+}
 
 #endif // SYNCHRONIZATION_H

@@ -5,6 +5,8 @@
 #include <iostream> //debug only
 
 
+namespace sec {
+
 Semaphore::Semaphore()
     :mtx(new std::mutex()),
      cv(new std::condition_variable()),
@@ -78,6 +80,7 @@ Semaphore SemaphoreQueue::addItem(double time) {
 
 }
 
+
 SemaphoreQueueItem SemaphoreQueue::advance() {
 
     if (queue.empty()) {
@@ -141,6 +144,7 @@ Synchronizer::Synchronizer(Sleeper* sleeper)
         throw std::runtime_error("Sleeper can't be null.");
 
     stop_flag = false;
+    started = false;
 }
 
 void Synchronizer::setSleeper(Sleeper* sleeper) {
@@ -173,8 +177,13 @@ void Synchronizer::quitAll(){
 
 void Synchronizer::start() {
 
+    if (started)
+        return;
+
     std::thread t(&Synchronizer::run, this);
     t.detach();
+    started = true;
+
 
 }
 
@@ -197,3 +206,5 @@ void Synchronizer::print() {
 }
 
 Synchronizer synchronizer;
+
+}

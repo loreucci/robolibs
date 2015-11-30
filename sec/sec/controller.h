@@ -1,46 +1,60 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <stdexcept>
+#include <unordered_map>
+#include <forward_list>
+#include <thread>
+#include <functional>
+#include "synchronization.h"
 
-template <typename A, typename B>
+#include "node.h"
+
+namespace sec {
+
+struct ExecThread {
+
+    std::thread* t;
+    std::forward_list<Node*> nodes;
+    Semaphore sem;
+    std::forward_list<std::function<bool(void)>> endconditions;
+
+};
+
+
 class Controller {
 
 public:
+    Controller();
 
-    Controller(double freq = 0.0) { // freq == 0.0 means inherited
+    void addNode(Node* node);
+    void moveNode(Node* node, double old_freq);
+    void registerConnection(Node* source, Node* sink);
 
-        setFrequency(freq);
 
-    }
+    bool checkConnections() const;
+    void adjustFrequencies();
 
-    virtual void control(const A& ref) = 0;
+    void sortNodes();
 
-    virtual B getOutput() const = 0;
+    void executeThread(ExecThread* et);
+    void executeFreq(double freq);
 
-    virtual B controlAndGetOutput(const A& ref) {
-        control(ref);
-        return getOutput();
-    }
+    void run(double time = 0.0);
 
-    virtual void setFrequency(double freq) {
-
-        if (freq < 0) {
-            std::invalid_argument("Controller: frequence must be non-negative.");
-        }
-
-        this->freq = freq;
-    }
-
-    virtual double getFrequency() const final {
-        return freq;
-    }
-
-    virtual std::string parameters() const = 0;
+    // DEBUG ONLY
+    void printNodes() const;
+    void printAdj() const;
 
 protected:
-    double freq;
+    std::unordered_map<double, std::forward_list<Node*>> nodes;
+    std::unordered_map<Node*, std::forward_list<Node*>> adj;
+    double maxfreq;
 
 };
+
+// TODO: move all singletons on a separate file (sec.h)?
+extern Controller main_controller;
+
+}
 
 #endif // CONTROLLER_H

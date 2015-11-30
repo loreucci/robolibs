@@ -1,6 +1,8 @@
 #ifndef SLEEPER_H
 #define SLEEPER_H
 
+namespace sec {
+
 class Sleeper {
 
 public:
@@ -23,5 +25,7 @@ public:
     virtual void sleep(double) override;
 
 };
+
+}
 
 #endif // SLEEPER_H

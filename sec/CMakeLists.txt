@@ -29,6 +29,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # main lib
 add_subdirectory(sec)
 
+# plotting server
+add_subdirectory(plottingserver)
+
 # doc
 if(ENABLE_DOC)
 	add_subdirectory(doc)
