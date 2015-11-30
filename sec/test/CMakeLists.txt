@@ -1,6 +1,6 @@
 function(add_new_test target)
     add_executable(${target} ${ARGN})
-    target_link_libraries(${target} utilities)
+    target_link_libraries(${target} sec)
 
     add_test(${target} ${target})
 

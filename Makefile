@@ -8,11 +8,11 @@ all: utilities sec
 
 utilities:
 	mkdir -p $(BUILD_DIR)/build-utilities
-	cd $(BUILD_DIR)/build-utilities && cmake ../../utilities -DCMAKE_INSTALL_PREFIX=$(BUILD_DIR) && make && make install
+	cd $(BUILD_DIR)/build-utilities && cmake ../../utilities -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(BUILD_DIR) && make && make install
 
 sec:
 	mkdir -p $(BUILD_DIR)/build-sec
-	cd $(BUILD_DIR)/build-sec && cmake ../../sec -DCMAKE_INSTALL_PREFIX=$(BUILD_DIR) -DROBOLIBS_PATH=$(BUILD_DIR) && make && make install
+	cd $(BUILD_DIR)/build-sec && cmake ../../sec -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(BUILD_DIR) -DROBOLIBS_PATH=$(BUILD_DIR) && make && make install
 
 install:
 	cp -r $(BUILD_DIR)/lib $(INSTALL_PATH)

@@ -28,10 +28,10 @@ find_package(Qt5Network REQUIRED)
 set(SOURCES ${SOURCES} plottingclient.cpp)
 set(HEADERS ${HEADERS} plottingclient.h)
 
-add_library(utilities SHARED ${SOURCES} ${HEADERS})
+add_library(sec SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(utilities Qt5::Core Qt5::Network)
+target_link_libraries(sec Qt5::Core Qt5::Network)
 
-install (TARGETS utilities DESTINATION lib)
+install (TARGETS sec DESTINATION lib)
 install (FILES ${HEADERS}
-         DESTINATION include/utilities)
+         DESTINATION include/sec)
