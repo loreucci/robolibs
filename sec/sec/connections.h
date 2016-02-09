@@ -39,6 +39,15 @@ void connect(C1& source, NodeOut<T> C1::* out, C2& sink, NodeIn<T> C2::* in) {
 
 }
 
+// TODO: this does not work with subclasses of OneToOneNode, investigate...
+template <class C1, class C2, typename T1, typename T2>
+void connect(C1& source, NodeOut<T1> C1::* out, C2& sink, NodeIn<T2> C2::* in) {
+
+    (sink.*in).connect(new LinkConverter<T1, T2>(&(source.*out)));
+    main_controller.registerConnection(&source, &sink);
+
+}
+
 // TODO: move to printer.h
 template <class C1, typename T>
 void connect(C1& source, NodeOut<T> C1::* out, Printer& printer, const std::string& sep = "") {

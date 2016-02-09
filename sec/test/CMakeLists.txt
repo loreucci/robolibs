@@ -7,3 +7,5 @@ function(add_new_test target)
 endfunction()
 
 add_new_test(test_plot test_plot.cpp)
+add_new_test(test_nodelink test_nodelink.cpp)
+

@@ -2,6 +2,7 @@ set(SOURCES controller.cpp
             printer.cpp
             sleeper.cpp
             logger.cpp
+            nodelink.cpp
             simplenodes.cpp
             source.cpp
             node.cpp
