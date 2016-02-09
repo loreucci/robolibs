@@ -14,7 +14,7 @@ class Printer : public Node {
 public:
     using FunType = std::function<std::string(void)>;
 
-    Printer(const std::string& sep = " ");
+    Printer(const std::string& sep = " ", double freq = 0.0);
 
     void addFun(FunType fun);
 

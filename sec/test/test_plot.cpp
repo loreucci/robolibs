@@ -12,7 +12,8 @@ int main(void) {
 
     sec::SinusoidalSource source2(5.0, 2.0, 0.0, 5.0, 30.0);
 
-//    sec::Logger logger;
+    sec::Logger logger;
+    logger.toggleLogging();
 
     sec::connect(source2, &sec::SinusoidalSource::output, plots, "test2");
     sec::connect(source, &sec::SinusoidalSource::output, plots, "test");
@@ -20,6 +21,7 @@ int main(void) {
 //    sec::connect(source, &sec::SinusoidalSource::output, logger, "test");
 //    sec::connect(source2, &sec::SinusoidalSource::output, logger, "test2");
 
+    logger.logNodes(sec::main_controller.getAllNodes());
 
     sec::main_controller.run(10.0);
 

@@ -94,6 +94,8 @@ public:
 
     void run();
 
+    void sleep(double ms);
+
     void print(); //debug only
 
 protected:

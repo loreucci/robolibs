@@ -71,8 +71,9 @@ void PlottingServer::readMessage() {
         for (unsigned int i = 1; i < cmd.size(); i+=2){
             int id = cmd[i].toInt();
             plot->graph(id)->addData(t, cmd[i+1].toDouble());
-            plot->graph(id)->rescaleValueAxis();
+//            plot->graph(id)->rescaleValueAxis();
         }
+        plot->rescaleAxes();
 
 
 

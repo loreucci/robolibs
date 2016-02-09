@@ -41,6 +41,8 @@ public:
 
     void saveToFile() const;
 
+    void logNodes(std::vector<Node*> nodes) const;
+
 protected:
     std::string basename, separator, extension, timestamp;
     bool enabled;

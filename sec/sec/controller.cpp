@@ -226,6 +226,17 @@ void Controller::printAdj() const {
 
 }
 
+std::vector<Node*> Controller::getAllNodes() {
+    std::vector<Node*> ret;
+    for (const auto& it : nodes) {
+        for (const auto n : it.second) {
+            ret.push_back(n);
+        }
+    }
+
+    return ret;
+}
+
 Controller main_controller = Controller();
 
 }

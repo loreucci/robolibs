@@ -104,6 +104,11 @@ void PlottingClient::disconnect() {
     socket->disconnectFromServer();
 }
 
+//void PlottingClient::setFrequency(double freq) {
+//    Node::setFrequency(freq);
+//    changeFreq(freq);
+//}
+
 void PlottingClient::write(const QString& str) {
 
     QByteArray msg;

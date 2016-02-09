@@ -11,6 +11,7 @@
 #include "node.h"
 #include "nodelink.h"
 #include "controller.h"
+#include "simplenodes.h"
 
 
 namespace sec {
@@ -62,6 +63,13 @@ template <class C1>
 void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name) {
 
     sink.addConnection(&(source.*out), QString(name.c_str()));
+
+}
+
+template <typename T>
+void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& sink, const std::string& name) {
+
+    sink.addConnection(&(source.output(out)), QString(name.c_str()));
 
 }
 

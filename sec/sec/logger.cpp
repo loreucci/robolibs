@@ -83,12 +83,22 @@ void Logger::saveToFile() const {
     file.close();
 }
 
+void Logger::logNodes(std::vector<Node*> nodes) const {
+
+    std::ofstream file(basename+timestamp+"_parameters"+extension, std::ios_base::out | std::ios_base::app);
+    for (const auto n : nodes){
+        file << n->parameters() << std::endl;
+    }
+    file.close();
+
+}
+
 void Logger::toFile(std::ostream& o) const {
 
     if (!enabled)
         return;
 
-    o << "Phase<" << counter << ">" << separator;
+    o << "T " << separator;
     for (auto l : listeners) {
         o << l->getName() << separator;
     }

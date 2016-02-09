@@ -5,8 +5,8 @@
 
 namespace sec {
 
-Printer::Printer(const std::string& sep)
-    :Node(0.0), sep(sep) {
+Printer::Printer(const std::string& sep, double freq)
+    :Node(freq), sep(sep) {
 
 }
 

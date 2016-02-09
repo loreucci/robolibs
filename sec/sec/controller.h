@@ -45,6 +45,9 @@ public:
     void printNodes() const;
     void printAdj() const;
 
+    // TODO: make an iterator
+    std::vector<Node*> getAllNodes();
+
 protected:
     std::unordered_map<double, std::forward_list<Node*>> nodes;
     std::unordered_map<Node*, std::forward_list<Node*>> adj;

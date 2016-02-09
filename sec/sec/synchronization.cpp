@@ -201,6 +201,10 @@ void Synchronizer::run() {
 
 }
 
+void Synchronizer::sleep(double ms) {
+    sleeper->sleep(ms);
+}
+
 void Synchronizer::print() {
     sq.print();
 }
