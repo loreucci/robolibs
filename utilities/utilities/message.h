@@ -165,6 +165,22 @@ Message<T, S, ID> operator-(const Message<T, S, ID>& m1, const Message<T, S, ID>
 
 }
 
+//! Unary minus operator on Messages.
+/*!
+  \param m the operand.
+  \return element-wise unary minus of m.
+*/
+template <typename T, unsigned int S, unsigned int ID>
+Message<T, S, ID> operator-(const Message<T, S, ID>& m) {
+
+    Message<T, S, ID> ret;
+    for (unsigned int i = 0; i < S; i++) {
+        ret[i] = -m[i];
+    }
+    return ret;
+
+}
+
 //! Insertion operator.
 /*!
   \param o output stream.

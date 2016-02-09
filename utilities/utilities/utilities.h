@@ -165,7 +165,7 @@ std::string make_string(const std::vector<T>& v, const std::string& sep = "") {
         return "";
     std::string ret;
     for (unsigned int i = 0; i < v.size()-1; i++) {
-        ret += Utils::make_string(v[i], sep);
+        ret += Utils::make_string(v[i], sep) + sep;
     }
     ret += Utils::make_string(v[v.size()-1]);
     return ret;
@@ -184,7 +184,7 @@ std::string make_string(const Message<T, S, ID>& m, const std::string& sep = "")
         return "";
     std::string ret;
     for (unsigned int i = 0; i < m.size-1; i++) {
-        ret += Utils::make_string(m[i], sep);
+        ret += Utils::make_string(m[i], sep) + sep;
     }
     ret += Utils::make_string(m[m.size-1]);
     return ret;
