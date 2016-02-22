@@ -1,7 +1,11 @@
-set(SOURCES utilities.cpp)
+set(SOURCES utilities.cpp
+            derivatives.cpp
+            signals.cpp)
 
 set(HEADERS utilities.h
-            message.h)
+            message.h
+            derivatives.h
+            signals.h)
 
 
 add_library(utilities SHARED ${SOURCES} ${HEADERS})

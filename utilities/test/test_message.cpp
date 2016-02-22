@@ -2,7 +2,7 @@
     \brief Test file for the Message class.
 */
 
-#include <utilities/message.h>
+#include "utilities/message.h"
 
 #include <vector>
 #include <iostream>
