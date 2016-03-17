@@ -8,4 +8,5 @@ endfunction()
 
 add_new_test(test_plot test_plot.cpp)
 add_new_test(test_nodelink test_nodelink.cpp)
+add_new_test(test_filesource test_filesource.cpp)
 

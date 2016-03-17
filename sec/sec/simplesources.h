@@ -1,6 +1,8 @@
 #ifndef SIMPLESOURCES_H
 #define SIMPLESOURCES_H
 
+#include <fstream>
+
 #include <utilities/utilities.h>
 
 #include "source.h"
@@ -49,6 +51,31 @@ protected:
 
 };
 
+
+class FileSource : public Source {
+
+public:
+    FileSource(const std::string& filename, unsigned int ignorelines = 0, bool repeat = false, double samplingfreq = 0.0);
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
+
+    bool valid() const;
+
+    NodeOut<std::vector<double>> output;
+
+protected:
+    std::string filename;
+    unsigned int ignorelines;
+    bool repeat, over;
+    std::ifstream file;
+
+    void skiplines();
+
+};
+
 }
+
 
 #endif // SIMPLESOURCES_H
