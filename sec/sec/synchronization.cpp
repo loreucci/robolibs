@@ -145,6 +145,7 @@ Synchronizer::Synchronizer(Sleeper* sleeper)
 
     stop_flag = false;
     started = false;
+    time = 0.0;
 }
 
 void Synchronizer::setSleeper(Sleeper* sleeper) {
@@ -195,7 +196,9 @@ void Synchronizer::run() {
 
     while (!stop_flag) {
         auto sqi = sq.advance();
-        sleeper->sleep(sqi.getRemaining());
+        double remtime = sqi.getRemaining();
+        sleeper->sleep(remtime);
+        time += remtime;
         sqi.getSemaphore().wakeup();
     }
 
@@ -203,6 +206,10 @@ void Synchronizer::run() {
 
 void Synchronizer::sleep(double ms) {
     sleeper->sleep(ms);
+}
+
+double Synchronizer::getTime() {
+    return time/1000.0;
 }
 
 void Synchronizer::print() {

@@ -96,6 +96,8 @@ public:
 
     void sleep(double ms);
 
+    double getTime();
+
     void print(); //debug only
 
 protected:
@@ -104,6 +106,7 @@ protected:
     std::mutex mtx;
     std::shared_ptr<Sleeper> sleeper;
     std::atomic_bool stop_flag;
+    double time;
 
 };
 
