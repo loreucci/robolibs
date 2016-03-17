@@ -39,7 +39,7 @@ public:
     void executeThread(ExecThread* et);
     void executeFreq(double freq);
 
-    void run(double time = 0.0);
+    void run(double time = 0.0, std::vector<std::function<bool(void)>> endconditions = {});
 
     // DEBUG ONLY
     void printNodes() const;

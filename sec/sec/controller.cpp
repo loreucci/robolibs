@@ -144,7 +144,7 @@ void Controller::executeThread(ExecThread* et) {
 
 }
 
-void Controller::run(double time) {
+void Controller::run(double time, std::vector<std::function<bool(void)>> endconditions) {
 
     // check everything
     if (!checkConnections())
@@ -177,6 +177,10 @@ void Controller::run(double time) {
     for (unsigned int i = 0; i < threads.size()-1; i++) {
         threads[i].t = new std::thread(&Controller::executeThread, this, &threads[i]);
     }
+
+    // add termination conditions to main thread
+    for (auto& tc : endconditions)
+        threads.back().endconditions.push_front(tc);
 
     // create termination condition for time
     unsigned int count = 0;
