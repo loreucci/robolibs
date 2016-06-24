@@ -137,8 +137,10 @@ void Controller::executeThread(ExecThread* et) {
 
         // check if the thread execution time exceeded max
         std::chrono::duration<double> diff = std::chrono::system_clock::now()-start;
-        if (diff.count() > maxtime)
-            std::cerr << "Warning: this thread is too slow to run @ " << et->nodes.front()->getFrequency() << "Hz.\n";
+        if (diff.count() > maxtime) {
+            std::cerr << "Warning: this thread is too slow to run @ " << et->nodes.front()->getFrequency() << "Hz.";
+            std::cerr << " (effective: " << 1.0/diff.count() << "Hz)\n";
+        }
 
     }
 
