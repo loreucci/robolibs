@@ -13,6 +13,8 @@ Logger::Logger(const std::string& basename, const std::string& separator, const 
     enabled = true;
     counter = 0;
 
+    parameters_logged = false;
+
     // TODO
     auto now = std::chrono::system_clock::now();
     auto now_c = std::chrono::system_clock::to_time_t(now);
@@ -81,6 +83,11 @@ void Logger::saveToFile() const {
     std::ofstream file(basename+timestamp+extension);
     toFile(file);
     file.close();
+
+    std::ofstream logs("logs.txt", std::ios_base::app);
+    logs << basename+timestamp+extension << ";" << (parameters_logged ? 1 : 0) << ";;\n";
+    logs.close();
+
 }
 
 void Logger::logNodes(std::vector<Node*> nodes) const {
@@ -90,6 +97,7 @@ void Logger::logNodes(std::vector<Node*> nodes) const {
         file << n->parameters() << std::endl;
     }
     file.close();
+    parameters_logged = true;
 
 }
 

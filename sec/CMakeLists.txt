@@ -32,6 +32,9 @@ add_subdirectory(sec)
 # plotting server
 add_subdirectory(plottingserver)
 
+# results explorer
+add_subdirectory(resultsexplorer)
+
 # doc
 if(ENABLE_DOC)
 	add_subdirectory(doc)

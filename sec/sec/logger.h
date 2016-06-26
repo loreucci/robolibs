@@ -46,6 +46,7 @@ public:
 protected:
     std::string basename, separator, extension, timestamp;
     bool enabled;
+    mutable bool parameters_logged;
     unsigned int counter;
     std::vector<Listener*> listeners;
 
