@@ -17,6 +17,7 @@ public slots:
     void changeFolder();
     void connectToDatabase(const QString& folder);
     void exportLogs();
+    void deleteLogs();
     void nyi();
 
 protected:

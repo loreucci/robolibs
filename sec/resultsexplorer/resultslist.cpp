@@ -152,7 +152,7 @@ bool ResultsList::isChanged() {
     return data->isChanged();
 }
 
-QList<QStringList> ResultsList::getExportRequests() {
+QList<QStringList> ResultsList::getSelectedList() {
 
     QList<QStringList> ret;
     for (int r = 0; r < data->rowCount(); r++) {
@@ -296,6 +296,22 @@ void ResultsList::saveChanges() {
     file.close();
 
     data->resetChange();
+
+}
+
+void ResultsList::deleteSelected() {
+
+    QList<int> selected;
+    for (int r = 0; r < data->rowCount(); r++) {
+        if (data->itemFromIndex(data->index(r, 0))->checkState() == Qt::Checked) {
+            selected.push_back(r);
+        }
+    }
+
+    for (int i = selected.length()-1; i >= 0; i--)
+        data->removeRow(selected[i]);
+
+    saveChanges();
 
 }
 

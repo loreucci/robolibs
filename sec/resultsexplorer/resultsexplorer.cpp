@@ -23,6 +23,7 @@ ResultsExplorer::ResultsExplorer(QWidget* parent) : QMainWindow(parent) {
     QMenu* menuLogs = menuBar()->addMenu("Logs");
     menuLogs->addAction("Save changes", list, SLOT(saveChanges()));
     menuLogs->addAction("Export selected", this, SLOT(exportLogs()));
+    menuLogs->addAction("Delete selected", this, SLOT(deleteLogs()));
 
     setCentralWidget(list);
 
@@ -67,7 +68,7 @@ void ResultsExplorer::connectToDatabase(const QString& folder) {
 
 void ResultsExplorer::exportLogs() {
 
-    auto l = list->getExportRequests();
+    auto l = list->getSelectedList();
 
 
     // check for empty fields
@@ -133,6 +134,47 @@ void ResultsExplorer::exportLogs() {
         }
 
     }
+
+}
+
+void ResultsExplorer::deleteLogs() {
+
+    QMessageBox msgBox;
+    msgBox.setText("Deleting the log files is permanent.");
+    msgBox.setInformativeText("Are you sure you want to delete them?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    int ret = msgBox.exec();
+    if (ret == QMessageBox::Cancel)
+        return;
+
+    auto l = list->getSelectedList();
+
+    // copy files
+    for (int i = 0; i < l.size(); i++) {
+
+        QFile::remove(currentfolder + "/" + l[i][0]);
+
+        // parameters
+        if (l[i][2] == "YES") {
+
+            // find name and extension
+            QStringList parts = l[i][0].split(".");
+
+            // guess parameters name
+            QString parameters = currentfolder + "/" + parts[0] + "_parameters";
+            for (int j = 1; j < parts.size(); j++) {
+                parameters.append(".");
+                parameters.append(parts[j]);
+            }
+
+            QFile::remove(parameters);
+
+        }
+
+    }
+
+    list->deleteSelected();
 
 }
 

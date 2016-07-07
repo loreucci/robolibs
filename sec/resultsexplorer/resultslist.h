@@ -67,12 +67,13 @@ public:
 
     bool isChanged();
 
-    QList<QStringList> getExportRequests();
+    QList<QStringList> getSelectedList();
 
 public slots:
     void loadData();
     void addNewData();
     void saveChanges();
+    void deleteSelected();
 
 protected:
     QString datafile;
