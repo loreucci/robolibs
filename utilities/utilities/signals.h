@@ -83,7 +83,7 @@ protected:
 
 //!  constant class.
 /*!
-  This class represent a constant signal.
+  This class represents a constant signal.
 */
 class constant : public Signal {
 
@@ -109,7 +109,7 @@ protected:
 
 //!  sin class.
 /*!
-  This class represent a sinusoidal signal.
+  This class represents a sinusoidal signal.
 */
 class sin : public Signal {
 
@@ -131,6 +131,93 @@ public:
 protected:
     double ampl, freq, phase;
 
+};
+
+
+//! ramp class
+/*!
+  This class represents a ramp signal.
+*/
+class ramp : public Signal {
+
+public:
+    //! Ramp signal constructor.
+    /*!
+      Creates a new ramp signal.
+      \param slope the slope of the ramp.
+      \param initialvalue initial value of the signal.
+      \param starttime time at which the splope should start.
+      \param samplingfreq the sampling frequency.
+    */
+    ramp(double slope, double initialvalue, double starttime = 0.0, double samplingfreq = 100.0);
+
+    virtual double output() override;
+
+    virtual std::string to_string() const override;
+
+protected:
+    double slope, initialvalue, starttime;
+
+};
+
+//! rampandhold class
+/*!
+  This class represents a ramp signal that stops increasing after a certain time.
+*/
+class rampandhold : public Signal {
+
+public:
+    //! Ramp and hold signal constructor.
+    /*!
+      Creates a new ramp and hold signal.
+      \param slope the slope of the ramp.
+      \param initialvalue initial value of the signal.
+      \param stop time at which the splope should stop increasing.
+      \param starttime time at which the splope should start.
+      \param samplingfreq the sampling frequency.
+    */
+    rampandhold(double slope, double initialvalue, double stoptime, double starttime = 0.0, double samplingfreq = 100.0);
+
+    virtual double output() override;
+
+    virtual std::string to_string() const override;
+
+protected:
+    double slope, initialvalue, stoptime, starttime, lastvalue;
+
+};
+
+
+//! Signal switch class.
+/*!
+  This class implements a switching mechanism between signals that activates after a certain time.
+  The first signal will be the ouput before the switching time, the second one after.
+*/
+class Switch : public Signal {
+
+public:
+    //! Switch signal constructor.
+    /*!
+      Creates a new switch between two signals.
+      \param s1 first singnal.
+      \param s2 second singal.
+      \param switchtime time of the switch.
+      \param samplingfreq the sampling frequency.
+    */
+    Switch(Signal& s1, Signal& s2, double switchtime, double samplingfreq = 100.0);
+
+    virtual double output() override;
+
+    virtual std::string to_string() const override;
+
+    virtual void reset(double time = 0.0) override;
+
+    virtual void setSamplingFreq(double samplingfreq) override;
+
+protected:
+    Signal& s1;
+    Signal& s2;
+    double switchtime;
 };
 
 
@@ -157,6 +244,8 @@ public:
     virtual double output() override;
 
     virtual std::string to_string() const override;
+
+    virtual void reset(double time = 0.0) override;
 
     virtual void setSamplingFreq(double samplingfreq) override;
 

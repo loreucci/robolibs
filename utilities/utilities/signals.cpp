@@ -72,6 +72,89 @@ std::string constant::to_string() const {
 
 
 
+ramp::ramp(double slope, double initialvalue, double starttime, double samplingfreq)
+    :Signal(samplingfreq), slope(slope), initialvalue(initialvalue), starttime(starttime) {}
+
+double ramp::output() {
+    double time = t / samplingfreq;
+    if (time <= starttime) {
+        t++;
+        return initialvalue;
+    }
+    t++;
+    return slope*(time-starttime);
+}
+
+std::string ramp::to_string() const {
+    std::string str = "[ramp: ";
+    str += "slope=" + std::to_string(slope) + ", ";
+    str += "initialvalue=" + std::to_string(initialvalue) + ", ";
+    str += "starttime=" + std::to_string(starttime) + "]";
+    return str;
+}
+
+
+
+rampandhold::rampandhold(double slope, double initialvalue, double stoptime, double starttime, double samplingfreq)
+    :Signal(samplingfreq), slope(slope), initialvalue(initialvalue), stoptime(stoptime), starttime(starttime) {
+    lastvalue = 0.0;
+}
+
+double rampandhold::output() {
+    double time = t / samplingfreq;
+    if (time <= starttime)
+        lastvalue = initialvalue;
+    else if (time <= stoptime)
+        lastvalue = slope*(time-starttime);
+    t++;
+    return lastvalue;
+}
+
+std::string rampandhold::to_string() const {
+    std::string str = "[ramp: ";
+    str += "slope=" + std::to_string(slope) + ", ";
+    str += "initialvalue=" + std::to_string(initialvalue) + ", ";
+    str += "stoptime=" + std::to_string(stoptime) + ", ";
+    str += "starttime=" + std::to_string(starttime) + "]";
+    return str;
+}
+
+
+
+Switch::Switch(Signal& s1, Signal& s2, double switchtime, double samplingfreq)
+    :Signal(samplingfreq), s1(s1), s2(s2), switchtime(switchtime) {}
+
+double Switch::output() {
+
+    double out1 = s1();
+    double out2 = s2();
+
+    if (t/samplingfreq <= switchtime) {
+        t++;
+        return out1;
+    }
+    t++;
+    return out2;
+
+}
+
+std::string Switch::to_string() const {
+    return "[switch: s1=" + s1.to_string() + ", s2=" + s2.to_string() + ", time=" + std::to_string(switchtime) + "]";
+}
+
+void Switch::reset(double time) {
+    s1.reset(time);
+    s2.reset(time);
+}
+
+void Switch::setSamplingFreq(double samplingfreq) {
+    Signal::setSamplingFreq(samplingfreq);
+    s1.setSamplingFreq(samplingfreq);
+    s2.setSamplingFreq(samplingfreq);
+}
+
+
+
 BinaryOperation::BinaryOperation(Signal& s1, Signal& s2, std::function<double(double, double)> fun)
     :Signal(0.0), s1(s1), s2(s2), fun(fun) {}
 
@@ -90,6 +173,11 @@ double BinaryOperation::output() {
 
 std::string BinaryOperation::to_string() const {
     return "[operation: s1=" + s1.to_string() + ", s2=" + s2.to_string() + "]";
+}
+
+void BinaryOperation::reset(double time) {
+    s1.reset(time);
+    s2.reset(time);
 }
 
 void BinaryOperation::setSamplingFreq(double samplingfreq) {
@@ -115,6 +203,9 @@ BinaryOperation operator*(Signal& s1, Signal& s2) {
 BinaryOperation operator/(Signal& s1, Signal& s2) {
     return BinaryOperation(s1, s2, std::divides<double>());
 }
+
+
+
 
 //BinaryOperation operator+(Signal& s1, double s2) {
 //    return BinaryOperation(s1, constant(s2), std::plus<double>());
