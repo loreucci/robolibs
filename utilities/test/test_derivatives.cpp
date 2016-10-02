@@ -6,6 +6,7 @@
 #include "utilities/derivatives.h"
 
 #include <iostream>
+#undef NDEBUG
 #include <cassert>
 
 

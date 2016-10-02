@@ -1,8 +1,10 @@
-set(SOURCES utilities.cpp
+set(SOURCES vector.cpp
+            utilities.cpp
             derivatives.cpp
             signals.cpp)
 
-set(HEADERS utilities.h
+set(HEADERS vector.h
+            utilities.h
             message.h
             derivatives.h
             signals.h)

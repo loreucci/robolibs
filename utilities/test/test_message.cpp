@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <iostream>
+#undef NDEBUG
 #include <cassert>
 
 

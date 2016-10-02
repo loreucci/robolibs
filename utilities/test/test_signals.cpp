@@ -5,6 +5,7 @@
 #include "utilities/signals.h"
 
 #include <iostream>
+#undef NDEBUG
 #include <cassert>
 
 

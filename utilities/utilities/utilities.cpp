@@ -26,50 +26,6 @@ std::function<std::vector<double>(void)> uniformGenerator(unsigned int size, dou
 
 }
 
-// operations on vectors
-double norm(const std::vector<double>& v) {
-    double n = std::inner_product(v.begin(), v.end(), v.begin(), 0.0);
-    return std::sqrt(n);
-}
-
-double squaredNorm(const std::vector<double>& v) {
-    double n = norm(v);
-    return n*n;
-}
-
-std::vector<double> normalized(const std::vector<double>& v) {
-    std::vector<double> v1 = v;
-    double n = norm(v1);
-    for (double& d : v1)
-        d /= n;
-    return v1;
-}
-
-std::vector<double> difference(const std::vector<double>& v1, const std::vector<double>& v2) {
-    if (v1.size() != v2.size())
-        throw std::invalid_argument("Utils::difference: vector sizes do not match.");
-    std::vector<double> ret(v1.size());
-    for (unsigned int i = 0; i < ret.size(); i++) {
-        ret[i] = v1[i] - v2[i];
-    }
-    return ret;
-}
-
-std::vector<double> normalizedDifference(const std::vector<double>& v1, const std::vector<double>& v2) {
-    return normalized(difference(v1, v2));
-}
-
-double distance(const std::vector<double>& v1, const std::vector<double>& v2) {
-    if (v1.size() != v2.size())
-        throw std::invalid_argument("Utils::distance: vector sizes do not match.");
-    double ret = 0.0;
-    for (unsigned int i = 0; i < v1.size(); i++) {
-        ret += (v1[i]-v2[i])*(v1[i]-v2[i]);
-    }
-    return std::sqrt(ret);
-}
-
-
 
 void printVector(const std::vector<double> v, const std::string& pre, bool endline) {
 
@@ -80,9 +36,6 @@ void printVector(const std::vector<double> v, const std::string& pre, bool endli
 
 }
 
-double squaredDistance(const std::vector<double>& v1, const std::vector<double>& v2) {
-    return squaredNorm(difference(v1, v2));
-}
 
 std::vector<std::vector<double> > readDatasetFromFile(const std::string& filename) {
 
