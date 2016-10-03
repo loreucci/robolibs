@@ -139,7 +139,7 @@ void Controller::executeThread(ExecThread* et) {
         std::chrono::duration<double> diff = std::chrono::system_clock::now()-start;
         if (diff.count() > maxtime) {
             std::cerr << "Warning: this thread is too slow to run @ " << et->nodes.front()->getFrequency() << "Hz.";
-            std::cerr << " (effective: " << 1.0/diff.count() << "Hz)\n";
+            std::cerr << " (actual: " << 1.0/diff.count() << "Hz)\n";
         }
 
     }
