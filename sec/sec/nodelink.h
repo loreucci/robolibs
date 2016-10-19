@@ -68,7 +68,7 @@ template <typename T>
 class NodeIn {
 
 public:
-    NodeIn(NodeOut<T>* nodeout = nullptr)
+    NodeIn(const LinkSource<T>* nodeout = nullptr)
         :nodeout(nodeout),
          data(T()),
          lastid(0),
@@ -85,7 +85,7 @@ public:
 
     void refreshData() {
         if (!isConnected())
-            throw std::runtime_error("NodeIn: NodeLink is not connected.");
+            return;
         auto d = nodeout->getData();
         if (d.second != lastid) {
             data = d.first;

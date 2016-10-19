@@ -8,6 +8,8 @@
 #include <QtNetwork/QLocalSocket>
 #include <QDataStream>
 
+#include <utilities/vector.h>
+
 #include "node.h"
 #include "nodelink.h"
 #include "controller.h"
@@ -25,6 +27,7 @@ public:
     virtual ~PlottingClient();
 
     void addConnection(NodeOut<double>* out, const QString& name);
+    void addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx);
 
     void clear();
 
@@ -42,6 +45,7 @@ public:
 
 protected:
     std::vector<std::pair<unsigned int, NodeIn<double>>> inputs;
+    std::vector<std::tuple<unsigned int, NodeIn<Utils::Vector>, unsigned int>> inputsvec;
     QLocalSocket* socket;
 
     unsigned int addGraph(const QString& name);
@@ -70,6 +74,19 @@ template <typename T>
 void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& sink, const std::string& name) {
 
     sink.addConnection(&(source.output(out)), QString(name.c_str()));
+
+}
+
+template <typename C1>
+void connect(C1& source, NodeOut<Utils::Vector> C1::* out, const std::vector<unsigned int>& indexes, PlottingClient& sink, const std::vector<std::string>& names) {
+
+    if (indexes.size() != names.size()) {
+        throw std::runtime_error("Plottingserver::connect: indexes and names lenght do not match.");
+    }
+
+    for (unsigned int i = 0; i < names.size(); i++) {
+        sink.addVectorConnection(&(source.*out), QString(names[i].c_str()), indexes[i]);
+    }
 
 }
 

@@ -29,6 +29,13 @@ void PlottingClient::addConnection(NodeOut<double>* out, const QString& name) {
 
 }
 
+void PlottingClient::addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx) {
+
+    unsigned int id = addGraph(name);
+    inputsvec.push_back(std::make_tuple(id, NodeIn<Utils::Vector>(out), idx));
+
+}
+
 //void PlottingClient::setFrequency(double freq) {
 //    if (freq < 0) {
 //        std::invalid_argument("Controller: frequence must be non-negative.");
@@ -46,12 +53,19 @@ void PlottingClient::refreshInputs() {
     for (auto& in : inputs) {
         in.second.refreshData();
     }
+    for (auto& in : inputsvec) {
+        std::get<1>(in).refreshData();
+    }
 }
 
 bool PlottingClient::connected() const {
     for (const auto& in : inputs)
         if (!in.second.isConnected())
             return false;
+    for (auto& in : inputsvec) {
+        if (!std::get<1>(in).isConnected())
+            return false;
+    }
     return true;
 }
 
@@ -60,6 +74,9 @@ void PlottingClient::execute() {
     for (auto& in : inputs) {
 //        newValue(in.first, in.second);
         newvalues += QString::number(in.first) + " " + QString::number(in.second.getData()) + " ";
+    }
+    for (auto& in : inputsvec) {
+        newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<1>(in).getData()[std::get<2>(in)]) + " ";
     }
     newvalues.chop(1);
     write(newvalues);
