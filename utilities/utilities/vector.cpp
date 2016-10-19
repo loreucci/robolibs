@@ -98,5 +98,32 @@ double squaredDistance(const Vector& v1, const Vector& v2) {
     return d*d;
 }
 
+Vector subvector(const Vector& v, unsigned int start, unsigned int end) {
+    Vector ret;
+
+    // max end should be v.size
+    if (end > v.size())
+        end = v.size();
+
+    // empty case
+    if (start >= end) {
+        return ret;
+    }
+
+    for (unsigned int i = start; i < end; i++)
+        ret.push_back(v[i]);
+
+    return ret;
+}
+
+std::ostream&operator<<(std::ostream& o, const Vector& v) {
+
+    for (unsigned int i = 0; i < v.size(); i++)
+        o << v[i] << " ";
+
+    return o;
+
+}
+
 
 }
