@@ -51,9 +51,9 @@ int main(void) {
 //    sec::Logger logger;
 //    logger.toggleLogging();
 
-    sec::connect(tvn, &TestVecNode::output, {0, 2}, plots, {"a", "c"});
+    sec::connect(tvn, &TestVecNode::output, {0, 2}, plots, {"a", "c"}, {[](double x){return x+2;}, [](double x){return x-1;}});
 
-//    sec::connect(source2, &sec::SinusoidalSource::output, plots, "test2");
+//    sec::connect(source2, &sec::SinusoidalSource::output, plots, "test2", [](double x){return x+5.0;});
 //    sec::connect(source, &sec::SinusoidalSource::output, plots, "test");
 
 //    sec::connect(source, &sec::SinusoidalSource::output, logger, "test");

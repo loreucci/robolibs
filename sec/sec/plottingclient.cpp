@@ -22,17 +22,17 @@ PlottingClient::~PlottingClient() {
     disconnect();
 }
 
-void PlottingClient::addConnection(NodeOut<double>* out, const QString& name) {
+void PlottingClient::addConnection(NodeOut<double>* out, const QString& name, std::function<double(double)> fun) {
 
     unsigned int id = addGraph(name);
-    inputs.push_back(std::make_pair(id, NodeIn<double>(out)));
+    inputs.push_back(std::make_tuple(id, NodeIn<double>(out), fun));
 
 }
 
-void PlottingClient::addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx) {
+void PlottingClient::addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx, std::function<double(double)> fun) {
 
     unsigned int id = addGraph(name);
-    inputsvec.push_back(std::make_tuple(id, NodeIn<Utils::Vector>(out), idx));
+    inputsvec.push_back(std::make_tuple(id, NodeIn<Utils::Vector>(out), idx, fun));
 
 }
 
@@ -51,7 +51,7 @@ void PlottingClient::addVectorConnection(NodeOut<Utils::Vector>* out, const QStr
 
 void PlottingClient::refreshInputs() {
     for (auto& in : inputs) {
-        in.second.refreshData();
+        std::get<1>(in).refreshData();
     }
     for (auto& in : inputsvec) {
         std::get<1>(in).refreshData();
@@ -60,7 +60,7 @@ void PlottingClient::refreshInputs() {
 
 bool PlottingClient::connected() const {
     for (const auto& in : inputs)
-        if (!in.second.isConnected())
+        if (!std::get<1>(in).isConnected())
             return false;
     for (auto& in : inputsvec) {
         if (!std::get<1>(in).isConnected())
@@ -73,14 +73,14 @@ void PlottingClient::execute() {
     QString newvalues = "newvalues ";
     for (auto& in : inputs) {
 //        newValue(in.first, in.second);
-        newvalues += QString::number(in.first) + " " + QString::number(in.second.getData()) + " ";
+        newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<2>(in)(std::get<1>(in).getData())) + " ";
     }
     for (auto& in : inputsvec) {
-        newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<1>(in).getData()[std::get<2>(in)]) + " ";
+        newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<3>(in)(std::get<1>(in).getData()[std::get<2>(in)])) + " ";
     }
     newvalues.chop(1);
     write(newvalues);
-    read();
+    readResponse();
     advance();
 }
 
@@ -91,7 +91,7 @@ std::string PlottingClient::parameters() const {
 unsigned int PlottingClient::addGraph(const QString& name) {
 
     write(QString("addgraph ") + name);
-    return read().toInt();
+    return readResponse().toInt();
 
 }
 
@@ -104,17 +104,17 @@ unsigned int PlottingClient::addGraph(const QString& name) {
 
 void PlottingClient::clear() {
     write("clearall");
-    read();
+    readResponse();
 }
 
 void PlottingClient::changeFreq(double freq) {
     write("setfreq " + QString::number(freq));
-    read();
+    readResponse();
 }
 
 void PlottingClient::advance() {
     write("advance");
-    read();
+    readResponse();
 }
 
 void PlottingClient::disconnect() {
@@ -137,7 +137,7 @@ void PlottingClient::write(const QString& str) {
 
 }
 
-QString PlottingClient::read() {
+QString PlottingClient::readResponse() {
 
     socket->waitForReadyRead();
 

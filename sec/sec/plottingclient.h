@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include <functional>
 
 #include <QObject>
 #include <QtNetwork/QLocalSocket>
@@ -26,8 +27,8 @@ public:
     explicit PlottingClient(double freq = 0.0, QObject *parent = 0);
     virtual ~PlottingClient();
 
-    void addConnection(NodeOut<double>* out, const QString& name);
-    void addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx);
+    void addConnection(NodeOut<double>* out, const QString& name, std::function<double(double)> fun);
+    void addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx, std::function<double(double)> fun);
 
     void clear();
 
@@ -44,8 +45,8 @@ public:
     virtual std::string parameters() const;
 
 protected:
-    std::vector<std::pair<unsigned int, NodeIn<double>>> inputs;
-    std::vector<std::tuple<unsigned int, NodeIn<Utils::Vector>, unsigned int>> inputsvec;
+    std::vector<std::tuple<unsigned int, NodeIn<double>, std::function<double(double)>>> inputs;
+    std::vector<std::tuple<unsigned int, NodeIn<Utils::Vector>, unsigned int, std::function<double(double)>>> inputsvec;
     QLocalSocket* socket;
 
     unsigned int addGraph(const QString& name);
@@ -58,34 +59,42 @@ protected:
 
     void write(const QString& str);
 
-    QString read();
+    QString readResponse();
 
 };
 
 
 template <class C1>
-void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name) {
+void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = [](double x){return x;}) {
 
-    sink.addConnection(&(source.*out), QString(name.c_str()));
+    sink.addConnection(&(source.*out), QString(name.c_str()), fun);
 
 }
 
 template <typename T>
-void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& sink, const std::string& name) {
+void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = [](double x){return x;}) {
 
-    sink.addConnection(&(source.output(out)), QString(name.c_str()));
+    sink.addConnection(&(source.output(out)), QString(name.c_str()), fun);
 
 }
 
 template <typename C1>
-void connect(C1& source, NodeOut<Utils::Vector> C1::* out, const std::vector<unsigned int>& indexes, PlottingClient& sink, const std::vector<std::string>& names) {
+void connect(C1& source, NodeOut<Utils::Vector> C1::* out, const std::vector<unsigned int>& indexes, PlottingClient& sink, const std::vector<std::string>& names, std::vector<std::function<double(double)>> funs = {}) {
 
     if (indexes.size() != names.size()) {
         throw std::runtime_error("Plottingserver::connect: indexes and names lenght do not match.");
     }
 
+    if (funs.size() == 0) {
+        funs.resize(indexes.size(), [](double x){return x;});
+    }
+
+    if (indexes.size() != funs.size()) {
+        throw std::runtime_error("Plottingserver::connect: indexes and transformation functions lenght do not match.");
+    }
+
     for (unsigned int i = 0; i < names.size(); i++) {
-        sink.addVectorConnection(&(source.*out), QString(names[i].c_str()), indexes[i]);
+        sink.addVectorConnection(&(source.*out), QString(names[i].c_str()), indexes[i], funs[i]);
     }
 
 }
