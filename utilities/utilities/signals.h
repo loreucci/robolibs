@@ -9,6 +9,7 @@
 
 #include <string>
 #include <functional>
+#include <vector>
 
 
 //!  Signals namespace.
@@ -35,6 +36,12 @@ public:
       \param samplingfreq the sampling frequency.
     */
     explicit Signal(double samplingfreq = 0.0);
+
+    //! Signal destructor.
+    /*!
+      Destroies the signal.
+    */
+    virtual ~Signal();
 
     //! Function operator.
     /*!
@@ -240,6 +247,7 @@ public:
 //    BinaryOperation(Signal& s1, Signal&& s2, std::function<double(double, double)> fun);
 //    BinaryOperation(Signal&& s1, Signal& s2, std::function<double(double, double)> fun);
 //    BinaryOperation(Signal&& s1, Signal&& s2, std::function<double(double, double)> fun);
+    virtual ~BinaryOperation();
 
     virtual double output() override;
 
@@ -296,6 +304,53 @@ BinaryOperation operator/(Signal& s1, Signal& s2);
     //BinaryOperation operator+(Signal& s1, double s2);
     //BinaryOperation operator+(double s1, Signal& s2);
 
+//! Plus operator between Signals and constants.
+/*!
+  Creates a BinaryOperation instance representing the sum of a given Signal and a constant one.
+  \param c constant value.
+  \param s Signal.
+  \return BinaryOperation representing the sum.
+*/
+BinaryOperation operator+(double c, Signal& s);
+BinaryOperation operator+(double c, Signal&& s);
+BinaryOperation operator+(Signal& s, double c);
+BinaryOperation operator+(Signal&& s, double c);
+
+//! Minus operator between Signals and constants.
+/*!
+  Creates a BinaryOperation instance representing the subtraction of a given Signal from a constant one.
+  \param c constant value.
+  \param s Signal.
+  \return BinaryOperation representing the subtraction.
+*/
+BinaryOperation operator-(double c, Signal& s);
+BinaryOperation operator-(double c, Signal&& s);
+BinaryOperation operator-(Signal& s, double c);
+BinaryOperation operator-(Signal&& s, double c);
+
+//! Multiply operator between Signals and constants.
+/*!
+  Creates a BinaryOperation instance representing the product of a constant signals and a given one.
+  \param c constant value.
+  \param s Signal.
+  \return BinaryOperation representing the product.
+*/
+BinaryOperation operator*(double c, Signal& s);
+BinaryOperation operator*(double c, Signal&& s);
+BinaryOperation operator*(Signal& s, double c);
+BinaryOperation operator*(Signal&& s, double c);
+
+//! Divides operator between Signals and constants.
+/*!
+  Creates a BinaryOperation instance representing the quotient of a constant Signal and a given one.
+  \param c constant value.
+  \param s Signal.
+  \return BinaryOperation representing the quotient.
+*/
+BinaryOperation operator/(double c, Signal& s);
+BinaryOperation operator/(double c, Signal&& s);
+BinaryOperation operator/(Signal& s, double c);
+BinaryOperation operator/(Signal&& s, double c);
 
 }
 

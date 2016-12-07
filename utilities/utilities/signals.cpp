@@ -3,8 +3,47 @@
 #include <cmath>
 #include "utilities.h"
 
+#include <iostream>
+
 
 namespace Signals {
+
+
+class SignalRuntime {
+
+public:
+    SignalRuntime() {
+        signals_allocated.clear();
+    }
+
+    ~SignalRuntime() {
+//        std::cout << "Runtime destructor: " << signals_allocated.size() << std::endl;
+        for (auto& s : signals_allocated)
+            delete s;
+    }
+
+//    void deleteSignal(Signal* s) {
+//        for (auto it = signals_allocated.begin(); it != signals_allocated.end(); ++it) {
+//            if (*it == s) {
+//                delete s;
+//                signals_allocated.erase(it);
+//                break;
+//            }
+//        }
+//        std::cout << "Runtime delete: " << signals_allocated.size() << std::endl;
+//    }
+
+    void addSignal(Signal* s) {
+        signals_allocated.push_back(s);
+//        std::cout << "Runtime add: " << signals_allocated.size() << std::endl;
+    }
+
+protected:
+    std::vector<Signal*> signals_allocated;
+
+};
+
+SignalRuntime signal_runtime;
 
 
 Signal::Signal(double samplingfreq) {
@@ -15,6 +54,8 @@ Signal::Signal(double samplingfreq) {
     t = 0;
 
 }
+
+Signal::~Signal() {}
 
 double Signal::operator()() {
     return output();
@@ -158,6 +199,11 @@ void Switch::setSamplingFreq(double samplingfreq) {
 BinaryOperation::BinaryOperation(Signal& s1, Signal& s2, std::function<double(double, double)> fun)
     :Signal(0.0), s1(s1), s2(s2), fun(fun) {}
 
+BinaryOperation::~BinaryOperation() {
+//    signal_runtime.deleteSignal(&s1);
+//    signal_runtime.deleteSignal(&s2);
+}
+
 //BinaryOperation::BinaryOperation(Signal& s1, Signal&& s2, std::function<double(double, double)> fun)
 //    :Signal(0.0), s1(s1), s2(s2), fun(fun) {}
 
@@ -186,8 +232,6 @@ void BinaryOperation::setSamplingFreq(double samplingfreq) {
     s2.setSamplingFreq(samplingfreq);
 }
 
-
-
 BinaryOperation operator+(Signal& s1, Signal& s2) {
     return BinaryOperation(s1, s2, std::plus<double>());
 }
@@ -205,6 +249,104 @@ BinaryOperation operator/(Signal& s1, Signal& s2) {
 }
 
 
+BinaryOperation operator+(double c, Signal& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::plus<double>());
+}
+
+BinaryOperation operator+(double c, Signal&& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::plus<double>());
+}
+
+BinaryOperation operator+(Signal& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::plus<double>());
+}
+
+BinaryOperation operator+(Signal&& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::plus<double>());
+}
+
+
+BinaryOperation operator-(double c, Signal& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::minus<double>());
+}
+
+BinaryOperation operator-(double c, Signal&& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::minus<double>());
+}
+
+BinaryOperation operator-(Signal& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::minus<double>());
+}
+
+BinaryOperation operator-(Signal&& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::minus<double>());
+}
+
+
+BinaryOperation operator*(double c, Signal& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::multiplies<double>());
+}
+
+BinaryOperation operator*(double c, Signal&& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::multiplies<double>());
+}
+
+BinaryOperation operator*(Signal& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::multiplies<double>());
+}
+
+BinaryOperation operator*(Signal&& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::multiplies<double>());
+}
+
+
+BinaryOperation operator/(double c, Signal& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::divides<double>());
+}
+
+BinaryOperation operator/(double c, Signal&& s) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(*cs, s, std::divides<double>());
+}
+
+BinaryOperation operator/(Signal& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::divides<double>());
+}
+
+BinaryOperation operator/(Signal&& s, double c) {
+    Signal* cs = new constant(c, s.getSamplingFreq());
+    signal_runtime.addSignal(cs);
+    return BinaryOperation(s, *cs, std::divides<double>());
+}
 
 
 //BinaryOperation operator+(Signal& s1, double s2) {

@@ -14,7 +14,9 @@ int main(void) {
     Signals::sin ss(10.0, 1.0, 0.0, 100.0);
     Signals::constant c(3.0);
 //    Signals::BinaryOperation so(ss, c, std::plus<double>());
-    auto so = ss + c;
+    auto so = 2*(ss + 3);
+
+//    auto so2 = 2.0 + so;
 //    auto so2 = so + 2.0;
 
 //    for (unsigned int i = 0; i < 500; i++) {
@@ -26,9 +28,10 @@ int main(void) {
 
     Signals::Switch sw(ss, c, 2.5);
 
+//    std::cout << "prova" << std::endl;
     for (unsigned int i = 0; i < 500; i++) {
 //        std::cout << rs() << " " << rh() << std::endl;
-        std::cout << sw() << std::endl;
+        std::cout << so() << std::endl;
     }
 
 //    std::cout << ss.to_string() << std::endl;
