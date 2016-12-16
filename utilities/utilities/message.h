@@ -20,7 +20,7 @@
   - an unique ID.
 */
 template <typename T, unsigned int S, unsigned int ID>
-class Message {
+class [[deprecated("Usage is too messy, replaced by Utils::Vector.")]] Message {
 
 public:
 
