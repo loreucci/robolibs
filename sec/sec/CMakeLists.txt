@@ -31,7 +31,7 @@ set(HEADERS ${HEADERS} plottingclient.h)
 
 add_library(sec SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(sec Qt5::Core Qt5::Network)
+target_link_libraries(sec utilities Qt5::Core Qt5::Network)
 
 install (TARGETS sec DESTINATION lib)
 install (FILES ${HEADERS}

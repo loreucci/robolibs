@@ -43,6 +43,54 @@ FileSource::FileSource(const std::string& filename, unsigned int ignorelines, bo
 
 }
 
+
+SignalSource::SignalSource(Signals::Signal signal, double samplingfreq)
+    :Source(samplingfreq), signal(signal) {
+    signal.setSamplingFreq(samplingfreq);
+}
+
+void SignalSource::execute() {
+    output = signal();
+}
+
+std::string SignalSource::parameters() const {
+    return "SignalSource with " + signal.to_string();
+}
+
+
+SignalSourceVector::SignalSourceVector(const std::vector<Signals::Signal>& signalvec, double samplingfreq)
+    :Source(samplingfreq), signalvec(signalvec) {
+
+    if (signalvec.empty())
+        throw std::invalid_argument("SignalSourceVector: signalvector must not be empty.");
+
+    output = Utils::Vector(signalvec.size());
+
+}
+
+void SignalSourceVector::execute() {
+
+    Utils::Vector out(signalvec.size());
+    for (unsigned int i = 0; i < signalvec.size(); i++) {
+        out[i] = signalvec[i].output();
+    }
+
+    output = out;
+
+}
+
+std::string SignalSourceVector::parameters() const {
+
+    std::string ret = "SignalSourceVector with [";
+    for (unsigned int i = 0; i < signalvec.size(); i++) {
+        ret += "\n\t" + signalvec[i].to_string();
+    }
+    ret += "\n\t]";
+
+    return ret;
+}
+
+
 void FileSource::execute() {
 
     if (over)
