@@ -12,7 +12,7 @@
 
 int main(void) {
 
-    Signals::sin ss(10.0, 1.0, 0.0, 100.0);
+    auto ss = Signals::sin(10.0, 1.0, 0.0, 100.0);
     Derivative d(9, 100.0);
 
     for (unsigned int i = 0; i < 1000; i++) {

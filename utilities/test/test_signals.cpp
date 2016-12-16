@@ -11,8 +11,8 @@
 
 int main(void) {
 
-    Signals::sin ss(10.0, 1.0, 0.0, 100.0);
-    Signals::constant c(3.0);
+    auto ss = Signals::sin(10.0, 1.0, 0.0, 100.0);
+    auto c = Signals::constant(3.0);
 //    Signals::BinaryOperation so(ss, c, std::plus<double>());
     auto so = 2*(ss + 3);
 
@@ -23,10 +23,12 @@ int main(void) {
 //        std::cout << so() << std::endl;
 //    }
 
-    Signals::ramp rs(1, 0.0, 1.0);
-    Signals::rampandhold rh(1, 0.0, 3.0, 1.0);
+//    Signals::ramp rs(1, 0.0, 1.0);
+    auto rh = Signals::rampandhold(1, 0.0, 3.0, 1.0, 100.0);
 
-    Signals::Switch sw(ss, c, 2.5);
+    auto sw = Signals::Switch(ss, c, 2.5);
+
+//    auto so = 4 + ss + c + c;
 
 //    std::cout << "prova" << std::endl;
     for (unsigned int i = 0; i < 500; i++) {

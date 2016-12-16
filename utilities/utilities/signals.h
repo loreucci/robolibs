@@ -1,15 +1,7 @@
-//!  \file signals.h
-/*!
-  This file contains the implementation of common signals.
-*/
-
 #ifndef SIGNALS_H
 #define SIGNALS_H
 
-
-#include <string>
 #include <functional>
-#include <vector>
 
 
 //!  Signals namespace.
@@ -23,9 +15,9 @@ namespace Signals {
   This class describes the signal interface as well as managing some internal state such
   as the current step.
 
-  Each signal should be implemented as a function that gives the next output at each call,
-  thus incrementing the internal step. These functions should be called with a fixed
-  sampling frequency.
+  Each signal should be implemented as a function that provides the Signal constructor
+  the appropriate signal function (that has the current step and sampling frequency as parameters)
+  and a description. These functions should be called with a fixed sampling frequency.
 */
 class Signal {
 
@@ -33,41 +25,45 @@ public:
     //! Signal constructor.
     /*!
       Creates a new Signal with a fixed sampling frequency.
+      \param fun the signal function that will be called at each step.
+      \param description a description of the signal (for logging).
       \param samplingfreq the sampling frequency.
     */
-    explicit Signal(double samplingfreq = 0.0);
-
-    //! Signal destructor.
-    /*!
-      Destroies the signal.
-    */
-    virtual ~Signal();
+    explicit Signal(std::function<double(unsigned int, double)> fun = [](unsigned int, double){return 0.0;},
+                    const std::string& description = "[default signal (0)]",
+                    double samplingfreq = 0.0);
 
     //! Function operator.
     /*!
       Calls output().
       \return the output value of the signal.
     */
-    virtual double operator()() final;
+    double operator()();
 
     //! Function operator.
     /*!
       \return the output value of the signal.
     */
-    virtual double output() = 0;
+    double output();
 
     //! Resets the signal to a specific point in time.
     /*!
       \param time time to which the signal will be reset.
     */
-    virtual void reset(double time = 0.0);
+    void reset(double time = 0.0);
 
     //! Conversion to string.
     /*!
       Synthetic representation of the signal.
       \return the string representation.
     */
-    virtual std::string to_string() const = 0;
+    std::string to_string() const;
+
+    //! Signal function getter.
+    /*!
+      \return the signal function.
+    */
+    std::function<double(unsigned int, double)> getFunction() const;
 
     //! Sampling frequency getter.
     /*!
@@ -79,278 +75,154 @@ public:
     /*!
       \param samplingfreq new sampling frequency.
     */
-    virtual void setSamplingFreq(double samplingfreq);
+    void setSamplingFreq(double samplingfreq);
 
 protected:
-    double samplingfreq;
     unsigned int t;
+    std::function<double(unsigned int, double)> fun;
+    std::string description;
+    double samplingfreq;
 
 };
 
-
-//!  constant class.
+//! Constant signal.
 /*!
-  This class represents a constant signal.
+  Creates a new constant signal.
+  The sampling frequency is not used in this signal type.
+  \param c value of the signal.
+  \param samplingfreq the sampling frequency.
 */
-class constant : public Signal {
+Signal constant(double c, double samplingfreq = 0.0);
 
-public:
-    //! Constant signal constructor.
-    /*!
-      Creates a new constant signal.
-      The sampling frequency is not used in this signal type.
-      \param c value of the signal.
-      \param samplingfreq the sampling frequency.
-    */
-    constant(double c, double samplingfreq = 0.0);
-
-    virtual double output() override;
-
-    virtual std::string to_string() const override;
-
-protected:
-    double c;
-
-};
-
-
-//!  sin class.
+//! Sinusoidal signal.
 /*!
-  This class represents a sinusoidal signal.
+  Creates a new sinusoidal signal.
+  \param ampl amplitude.
+  \param freq frequency.
+  \param phase phase.
+  \param samplingfreq the sampling frequency.
 */
-class sin : public Signal {
+Signal sin(double ampl, double freq, double phase = 0.0, double samplingfreq = 100.0);
 
-public:
-    //! Sinusoidal signal constructor.
-    /*!
-      Creates a new sinusoidal signal.
-      \param ampl amplitude.
-      \param freq frequency.
-      \param phase phase.
-      \param samplingfreq the sampling frequency.
-    */
-    sin(double ampl, double freq, double phase = 0.0, double samplingfreq = 100.0);
-
-    virtual double output() override;
-
-    virtual std::string to_string() const override;
-
-protected:
-    double ampl, freq, phase;
-
-};
-
-
-//! ramp class
+//! Ramp signal.
 /*!
-  This class represents a ramp signal.
+  Creates a new ramp signal.
+  \param slope the slope of the ramp.
+  \param initialvalue initial value of the signal.
+  \param starttime time at which the splope should start.
+  \param samplingfreq the sampling frequency.
 */
-class ramp : public Signal {
+Signal ramp(double slope, double initialvalue, double starttime = 0.0, double samplingfreq = 100.0);
 
-public:
-    //! Ramp signal constructor.
-    /*!
-      Creates a new ramp signal.
-      \param slope the slope of the ramp.
-      \param initialvalue initial value of the signal.
-      \param starttime time at which the splope should start.
-      \param samplingfreq the sampling frequency.
-    */
-    ramp(double slope, double initialvalue, double starttime = 0.0, double samplingfreq = 100.0);
-
-    virtual double output() override;
-
-    virtual std::string to_string() const override;
-
-protected:
-    double slope, initialvalue, starttime;
-
-};
-
-//! rampandhold class
+//! Ramp and hold signal.
 /*!
-  This class represents a ramp signal that stops increasing after a certain time.
+  Creates a new ramp and hold signal, i.e. a ramp signal that stops increasing after a certain time.
+  \param slope the slope of the ramp.
+  \param initialvalue initial value of the signal.
+  \param stop time at which the splope should stop increasing.
+  \param starttime time at which the splope should start.
+  \param samplingfreq the sampling frequency.
 */
-class rampandhold : public Signal {
+Signal rampandhold(double slope, double initialvalue, double stoptime, double starttime = 0.0, double samplingfreq = 100.0);
 
-public:
-    //! Ramp and hold signal constructor.
-    /*!
-      Creates a new ramp and hold signal.
-      \param slope the slope of the ramp.
-      \param initialvalue initial value of the signal.
-      \param stop time at which the splope should stop increasing.
-      \param starttime time at which the splope should start.
-      \param samplingfreq the sampling frequency.
-    */
-    rampandhold(double slope, double initialvalue, double stoptime, double starttime = 0.0, double samplingfreq = 100.0);
-
-    virtual double output() override;
-
-    virtual std::string to_string() const override;
-
-protected:
-    double slope, initialvalue, stoptime, starttime, lastvalue;
-
-};
-
-
-//! Signal switch class.
+//! Switch signal.
 /*!
-  This class implements a switching mechanism between signals that activates after a certain time.
+  Creates a new switch between two signals that activates after a certain time.
   The first signal will be the ouput before the switching time, the second one after.
+  \param s1 first singnal.
+  \param s2 second singal.
+  \param switchtime time of the switch.
+  \param samplingfreq the sampling frequency.
 */
-class Switch : public Signal {
+Signal Switch(Signal s1, Signal s2, double switchtime, double samplingfreq = 100.0);
 
-public:
-    //! Switch signal constructor.
-    /*!
-      Creates a new switch between two signals.
-      \param s1 first singnal.
-      \param s2 second singal.
-      \param switchtime time of the switch.
-      \param samplingfreq the sampling frequency.
-    */
-    Switch(Signal& s1, Signal& s2, double switchtime, double samplingfreq = 100.0);
-
-    virtual double output() override;
-
-    virtual std::string to_string() const override;
-
-    virtual void reset(double time = 0.0) override;
-
-    virtual void setSamplingFreq(double samplingfreq) override;
-
-protected:
-    Signal& s1;
-    Signal& s2;
-    double switchtime;
-};
-
-
-//!  BinaryOperation class.
+//! BinaryOperation signal.
 /*!
-  This class is used to represent a binary operation between two signals (eg. +, -).
-  The operation behaves like a Signal.
+  Creates a signal that is a generic binary operation between two signals (eg. +, -).
+  Used as a base function for all binary operations implemented.
+  \param s1 first operand.
+  \param s2 second operand.
+  \param fun binary operator.
 */
-class BinaryOperation : public Signal {
-
-public:
-    //! BinaryOperation constructor.
-    /*!
-      Creates a new binary operation between two signals.
-      \param s1 first operand.
-      \param s2 second operand.
-      \param fun binary operator.
-    */
-    BinaryOperation(Signal& s1, Signal& s2, std::function<double(double, double)> fun);
-//    BinaryOperation(Signal& s1, Signal&& s2, std::function<double(double, double)> fun);
-//    BinaryOperation(Signal&& s1, Signal& s2, std::function<double(double, double)> fun);
-//    BinaryOperation(Signal&& s1, Signal&& s2, std::function<double(double, double)> fun);
-    virtual ~BinaryOperation();
-
-    virtual double output() override;
-
-    virtual std::string to_string() const override;
-
-    virtual void reset(double time = 0.0) override;
-
-    virtual void setSamplingFreq(double samplingfreq) override;
-
-protected:
-    Signal& s1;
-    Signal& s2;
-    std::function<double(double, double)> fun;
-
-};
+Signal BinaryOperation(Signal s1, Signal s2, std::function<double(double, double)> op, double samplingfreq = 100.0);
 
 
 //! Plus operator between Signals.
 /*!
-  Creates a BinaryOperation instance representing the sum of two signals.
+  Creates a signal that is the sum of two signals.
   \param s1 first operand.
   \param s2 second operand.
-  \return BinaryOperation representing the sum.
+  \return Signal representing the sum.
 */
-BinaryOperation operator+(Signal& s1, Signal& s2);
+Signal operator+(Signal s1, Signal s2);
 
 //! Minus operator between Signals.
 /*!
-  Creates a BinaryOperation instance representing the subtraction of two signals.
+  Creates a signal that is the subtraction of two signals.
   \param s1 first operand.
   \param s2 second operand.
-  \return BinaryOperation representing the subtraction.
+  \return Signal representing the subtraction.
 */
-BinaryOperation operator-(Signal& s1, Signal& s2);
+Signal operator-(Signal& s1, Signal& s2);
 
 //! Multiplies operator between Signals.
 /*!
-  Creates a BinaryOperation instance representing the product of the two signals.
+  Creates a signal that is the product of the two signals.
   \param s1 first operand.
   \param s2 second operand.
-  \return BinaryOperation representing the product.
+  \return Signal representing the product.
 */
-BinaryOperation operator*(Signal& s1, Signal& s2);
+Signal operator*(Signal& s1, Signal& s2);
 
 //! Divides operator between Signals.
 /*!
-  Creates a BinaryOperation instance representing the quotient of the two signals.
+  Creates a signal that is the quotient of the two signals.
   \param s1 first operand.
   \param s2 second operand.
-  \return BinaryOperation representing the quotient.
+  \return Signal representing the quotient.
 */
-BinaryOperation operator/(Signal& s1, Signal& s2);
+Signal operator/(Signal& s1, Signal& s2);
 
-    //BinaryOperation operator+(Signal& s1, double s2);
-    //BinaryOperation operator+(double s1, Signal& s2);
 
 //! Plus operator between Signals and constants.
 /*!
-  Creates a BinaryOperation instance representing the sum of a given Signal and a constant one.
+  Creates a signal that is the sum of a given Signal and a constant one.
   \param c constant value.
   \param s Signal.
-  \return BinaryOperation representing the sum.
+  \return Signal representing the sum.
 */
-BinaryOperation operator+(double c, Signal& s);
-BinaryOperation operator+(double c, Signal&& s);
-BinaryOperation operator+(Signal& s, double c);
-BinaryOperation operator+(Signal&& s, double c);
+Signal operator+(double c, Signal s);
+Signal operator+(Signal s, double c);
 
 //! Minus operator between Signals and constants.
 /*!
-  Creates a BinaryOperation instance representing the subtraction of a given Signal from a constant one.
+  Creates a signal that is the subtraction of a given Signal from a constant one.
   \param c constant value.
   \param s Signal.
-  \return BinaryOperation representing the subtraction.
+  \return Signal representing the subtraction.
 */
-BinaryOperation operator-(double c, Signal& s);
-BinaryOperation operator-(double c, Signal&& s);
-BinaryOperation operator-(Signal& s, double c);
-BinaryOperation operator-(Signal&& s, double c);
+Signal operator-(double c, Signal s);
+Signal operator-(Signal s, double c);
 
 //! Multiply operator between Signals and constants.
 /*!
-  Creates a BinaryOperation instance representing the product of a constant signals and a given one.
+  Creates a signal that is the product of a constant signals and a given one.
   \param c constant value.
   \param s Signal.
-  \return BinaryOperation representing the product.
+  \return Signal representing the product.
 */
-BinaryOperation operator*(double c, Signal& s);
-BinaryOperation operator*(double c, Signal&& s);
-BinaryOperation operator*(Signal& s, double c);
-BinaryOperation operator*(Signal&& s, double c);
+Signal operator*(double c, Signal s);
+Signal operator*(Signal s, double c);
 
 //! Divides operator between Signals and constants.
 /*!
-  Creates a BinaryOperation instance representing the quotient of a constant Signal and a given one.
+  Creates a signal that is the quotient of a constant Signal and a given one.
   \param c constant value.
   \param s Signal.
-  \return BinaryOperation representing the quotient.
+  \return Signal representing the quotient.
 */
-BinaryOperation operator/(double c, Signal& s);
-BinaryOperation operator/(double c, Signal&& s);
-BinaryOperation operator/(Signal& s, double c);
-BinaryOperation operator/(Signal&& s, double c);
+Signal operator/(double c, Signal s);
+Signal operator/(Signal s, double c);
 
 }
 
