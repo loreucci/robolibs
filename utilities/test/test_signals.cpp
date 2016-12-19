@@ -14,7 +14,7 @@ int main(void) {
     auto ss = Signals::sin(10.0, 1.0, 0.0, 100.0);
     auto c = Signals::constant(3.0);
 //    Signals::BinaryOperation so(ss, c, std::plus<double>());
-    auto so = 2*(ss + 3);
+    auto so = 2*(ss + 3) + Signals::noise(0.0, 0.5);
 
 //    auto so2 = 2.0 + so;
 //    auto so2 = so + 2.0;

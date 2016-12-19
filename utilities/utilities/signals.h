@@ -91,6 +91,7 @@ protected:
   The sampling frequency is not used in this signal type.
   \param c value of the signal.
   \param samplingfreq the sampling frequency.
+  \return the constant Signal.
 */
 Signal constant(double c, double samplingfreq = 0.0);
 
@@ -101,6 +102,7 @@ Signal constant(double c, double samplingfreq = 0.0);
   \param freq frequency.
   \param phase phase.
   \param samplingfreq the sampling frequency.
+  \return the sinusoidal Signal.
 */
 Signal sin(double ampl, double freq, double phase = 0.0, double samplingfreq = 100.0);
 
@@ -111,6 +113,7 @@ Signal sin(double ampl, double freq, double phase = 0.0, double samplingfreq = 1
   \param initialvalue initial value of the signal.
   \param starttime time at which the splope should start.
   \param samplingfreq the sampling frequency.
+  \return the ramp Signal.
 */
 Signal ramp(double slope, double initialvalue, double starttime = 0.0, double samplingfreq = 100.0);
 
@@ -122,8 +125,19 @@ Signal ramp(double slope, double initialvalue, double starttime = 0.0, double sa
   \param stop time at which the splope should stop increasing.
   \param starttime time at which the splope should start.
   \param samplingfreq the sampling frequency.
+  \return the ramp and hold Signal.
 */
 Signal rampandhold(double slope, double initialvalue, double stoptime, double starttime = 0.0, double samplingfreq = 100.0);
+
+//! Noise signal.
+/*!
+  Creates a Gaussian noise signal.
+  \param mean mean value of the noise.
+  \param stddev standard deviation of the noise.
+  \param samplingfreq the sampling frequency.
+  \return the noise Signal.
+*/
+Signal noise(double mean, double stddev, double samplingfreq = 100.0);
 
 //! Switch signal.
 /*!

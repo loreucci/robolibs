@@ -1,5 +1,7 @@
 #include "signals.h"
 
+#include <random>
+
 #include <cmath>
 #include "utilities.h"
 
@@ -106,6 +108,27 @@ Signal rampandhold(double slope, double initialvalue, double stoptime, double st
         else if (time <= stoptime)
             lastvalue = slope*(time-starttime);
         return lastvalue;
+    };
+
+    return Signal(fun, str, samplingfreq);
+
+}
+
+Signal noise(double mean, double stddev, double samplingfreq) {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // values near the mean are the most likely
+    // standard deviation affects the dispersion of generated values from the mean
+    std::normal_distribution<> d(mean, stddev);
+
+    std::string str = "[noise: ";
+    str += "mean=" + std::to_string(mean) + ", ";
+    str += "stddev=" + std::to_string(stddev) + "]";
+
+    auto fun = [d, gen] (unsigned int, double) mutable {
+        return d(gen);
     };
 
     return Signal(fun, str, samplingfreq);
