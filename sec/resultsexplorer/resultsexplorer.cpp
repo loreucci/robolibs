@@ -24,11 +24,16 @@ ResultsExplorer::ResultsExplorer(QWidget* parent) : QMainWindow(parent) {
     menuLogs->addAction("Save changes", list, SLOT(saveChanges()));
     menuLogs->addAction("Export selected", this, SLOT(exportLogs()));
     menuLogs->addAction("Delete selected", this, SLOT(deleteLogs()));
+    menuLogs->addSeparator();
+    menuLogs->addAction("Select all", list, SLOT(selectall()));
+    menuLogs->addAction("Deselect all", list, SLOT(deselectall()));
 
     setCentralWidget(list);
 
     currentfolder = QDir::currentPath();
     connectToDatabase(currentfolder);
+
+    lastexportdir = "";
 
     this->resize(600, 400);
 
@@ -86,13 +91,25 @@ void ResultsExplorer::exportLogs() {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::Directory);
     dialog.setViewMode(QFileDialog::List);
-    dialog.setDirectory(currentfolder);
+    if (!lastexportdir.isEmpty())
+        dialog.setDirectory(lastexportdir);
+    else
+        dialog.setDirectory(currentfolder);
     QStringList fileNames;
     if (dialog.exec())
         fileNames = dialog.selectedFiles();
     else
         return;
     QString exportdir = fileNames[0];
+    lastexportdir = exportdir;
+
+    // ask the user if he wants also the parameters
+    QMessageBox msgBox;
+    msgBox.setText("Exporting " + QString::number(l.size()) + " files.");
+    msgBox.setInformativeText("Do you want to export also the paramters?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int alsoparams = msgBox.exec();
 
     // copy files
     for (int i = 0; i < l.size(); i++) {
@@ -107,7 +124,7 @@ void ResultsExplorer::exportLogs() {
         QFile::copy(currentfolder + "/" + l[i][0], exportname);
 
         // parameters
-        if (l[i][2] == "YES") {
+        if (alsoparams == QMessageBox::Yes && l[i][2] == "YES") {
 
             // find name and extension
             QStringList parts = l[i][0].split(".");
@@ -177,7 +194,6 @@ void ResultsExplorer::deleteLogs() {
     list->deleteSelected();
 
 }
-
 
 void ResultsExplorer::nyi() {
 

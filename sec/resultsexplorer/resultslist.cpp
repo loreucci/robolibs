@@ -315,6 +315,22 @@ void ResultsList::deleteSelected() {
 
 }
 
+void ResultsList::selectall() {
+
+    for (int r = 0; r < data->rowCount(); r++) {
+        data->itemFromIndex(data->index(r, 0))->setCheckState(Qt::Checked);
+    }
+
+}
+
+void ResultsList::deselectall() {
+
+    for (int r = 0; r < data->rowCount(); r++) {
+        data->itemFromIndex(data->index(r, 0))->setCheckState(Qt::Unchecked);
+    }
+
+}
+
 void ResultsList::loadFromFile() {
 
     QFile file(datafile);

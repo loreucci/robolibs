@@ -18,11 +18,13 @@ public slots:
     void connectToDatabase(const QString& folder);
     void exportLogs();
     void deleteLogs();
+
+    // to be removed, hopefully
     void nyi();
 
 protected:
     ResultsList* list;
-    QString currentfolder;
+    QString currentfolder, lastexportdir;
 
     void closeEvent(QCloseEvent* event) override;
 

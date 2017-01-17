@@ -74,6 +74,8 @@ public slots:
     void addNewData();
     void saveChanges();
     void deleteSelected();
+    void selectall();
+    void deselectall();
 
 protected:
     QString datafile;
