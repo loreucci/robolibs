@@ -64,15 +64,19 @@ protected:
 };
 
 
+// this function has to created just once in order to avoid a linking error with the templates
+extern std::function<double(double)> identity_fun;
+
+
 template <class C1>
-void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = [](double x){return x;}) {
+void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun) {
 
     sink.addConnection(&(source.*out), QString(name.c_str()), fun);
 
 }
 
 template <typename T>
-void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = [](double x){return x;}) {
+void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun) {
 
     sink.addConnection(&(source.output(out)), QString(name.c_str()), fun);
 
@@ -86,7 +90,7 @@ void connect(C1& source, NodeOut<Utils::Vector> C1::* out, const std::vector<uns
     }
 
     if (funs.size() == 0) {
-        funs.resize(indexes.size(), [](double x){return x;});
+        funs.resize(indexes.size(), identity_fun);
     }
 
     if (indexes.size() != funs.size()) {

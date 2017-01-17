@@ -150,4 +150,6 @@ QString PlottingClient::readResponse() {
 
 }
 
+std::function<double(double)> identity_fun = [](double x){return x;};
+
 }
