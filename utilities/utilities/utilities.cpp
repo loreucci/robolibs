@@ -108,4 +108,12 @@ std::string replace(const std::string& str, const std::string& target, const std
 
 }
 
+double degtorad(double deg) {
+    return (deg / 360.0) * (2 * PI);
+}
+
+double radtodeg(double rad) {
+    return (rad / (2*PI)) * 360.0;
+}
+
 }

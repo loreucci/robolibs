@@ -85,7 +85,7 @@ Signal ramp(double slope, double initialvalue, double starttime, double sampling
         if (time <= starttime) {
             return initialvalue;
         }
-        return slope*(time-starttime);
+        return slope*(time-starttime)+initialvalue;
     };
 
     return Signal(fun, str, samplingfreq);
@@ -106,7 +106,7 @@ Signal rampandhold(double slope, double initialvalue, double stoptime, double st
         if (time <= starttime)
             lastvalue = initialvalue;
         else if (time <= stoptime)
-            lastvalue = slope*(time-starttime);
+            lastvalue = slope*(time-starttime)+initialvalue;
         return lastvalue;
     };
 

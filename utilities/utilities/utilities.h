@@ -32,6 +32,20 @@ namespace Utils {
 //! Greek pi.
 const double PI = 3.1415926535;
 
+//! Degree to radians conversion.
+/*!
+  \param deg the angle in degrees.
+  \return the angle in radians.
+*/
+double degtorad(double deg);
+
+//! Radians to degree conversion.
+/*!
+  \param rad the angle in radians.
+  \return the angle in degrees.
+*/
+double radtodeg(double rad);
+
 
 //! Uniform random number generator.
 /*!
