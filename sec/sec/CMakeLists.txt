@@ -1,4 +1,5 @@
-set(SOURCES controller.cpp
+set(SOURCES commons.cpp
+            controller.cpp
             printer.cpp
             sleeper.cpp
             logger.cpp
@@ -9,7 +10,8 @@ set(SOURCES controller.cpp
             simplesources.cpp
             synchronization.cpp)
 
-set(HEADERS connections.h
+set(HEADERS commons.h
+            connections.h
             controller.h
             listener.h
             logger.h
