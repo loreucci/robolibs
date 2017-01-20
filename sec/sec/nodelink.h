@@ -12,8 +12,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include <utilities/message.h>
-
 // TODO: consider using a condition_variable
 
 namespace sec {
@@ -126,16 +124,6 @@ B convert(const A& a) {
 
 std::vector<double> convert(const double& a);
 double convert(const std::vector<double>& a);
-
-template <typename T, unsigned int N, unsigned int ID>
-std::vector<T> convert(const Message<T, N, ID>& a) {
-    return a.to_vector();
-}
-
-//template <typename T, unsigned int N, unsigned int ID>
-//Message<T, N, ID> convert(const std::vector<T>& a) {
-//    return Message<T, N, ID>(a);
-//}
 
 
 template <typename A, typename B>

@@ -10,8 +10,6 @@
 #include <string>
 #include <vector>
 
-#include "message.h"
-
 
 //!  Mark a paramaters as unused.
 #define UTILS_UNUSED(x) [&x]{}()
@@ -89,7 +87,7 @@ void saveToFile(const std::string& filename, const std::vector<std::vector<doubl
 //! Creates a string out of data.
 /*!
   Creates a string out of a generic data.
-  Specific version for std::vector and Message are selected by SFINAE.
+  Specific version for std::vector or other types are selected by SFINAE.
   \param t the data.
   \param sep unused.
   \return the string.
@@ -119,25 +117,6 @@ std::string make_string(const std::vector<T>& v, const std::string& sep = "") {
     return ret;
 }
 
-//! Creates a string out of a Message.
-/*!
-  Creates a string out of a Message.
-  \param m the Message.
-  \param sep separator to be appended after each element, except for last.
-  \return the string.
-*/
-template <typename T, unsigned int S, unsigned int ID>
-std::string make_string(const Message<T, S, ID>& m, const std::string& sep = "") {
-    if (m.size == 0)
-        return "";
-    std::string ret;
-    for (unsigned int i = 0; i < m.size-1; i++) {
-        ret += Utils::make_string(m[i], sep) + sep;
-    }
-    ret += Utils::make_string(m[m.size-1]);
-    return ret;
-}
-
 //! Substring replacement.
 /*!
   Replaces a substring with another, inside a string.
@@ -147,22 +126,6 @@ std::string make_string(const Message<T, S, ID>& m, const std::string& sep = "")
   \return modified string.
 */
 std::string replace(const std::string& str, const std::string& target, const std::string& repl);
-
-//! Message mask application.
-/*!
-  Applies a mask to a Message. The mask is another Message of the same type and size.
-  \param msg input message.
-  \param mask mask.
-  \return element-wise application of the mask to the Message.
-*/
-template <typename T, unsigned int S, unsigned int ID1, unsigned int ID2>
-Message<T, S, ID1> apply_mask(const Message<T, S, ID1>& msg, const Message<T, S, ID2>& mask) {
-    Message<T, S, ID1> ret;
-    for (unsigned int i = 0; i < S; i++) {
-        ret[i] = msg[i] * mask[i];
-    }
-    return ret;
-}
 
 }
 

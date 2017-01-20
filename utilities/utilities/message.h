@@ -11,6 +11,9 @@
 #include <vector>
 #include <initializer_list>
 
+#include "utilities.h"
+
+
 //!  Message class.
 /*!
   This class represent a container for a message that can be exchanged.
@@ -194,6 +197,46 @@ std::ostream& operator<<(std::ostream& o, const Message<T, S, ID>& m) {
         o << m[i] << " ";
 
     return o;
+
+}
+
+
+namespace Utils {
+
+//! Creates a string out of a Message.
+/*!
+  Creates a string out of a Message.
+  \param m the Message.
+  \param sep separator to be appended after each element, except for last.
+  \return the string.
+*/
+template <typename T, unsigned int S, unsigned int ID>
+std::string make_string(const Message<T, S, ID>& m, const std::string& sep = "") {
+    if (m.size == 0)
+        return "";
+    std::string ret;
+    for (unsigned int i = 0; i < m.size-1; i++) {
+        ret += Utils::make_string(m[i], sep) + sep;
+    }
+    ret += Utils::make_string(m[m.size-1]);
+    return ret;
+}
+
+//! Message mask application.
+/*!
+  Applies a mask to a Message. The mask is another Message of the same type and size.
+  \param msg input message.
+  \param mask mask.
+  \return element-wise application of the mask to the Message.
+*/
+template <typename T, unsigned int S, unsigned int ID1, unsigned int ID2>
+Message<T, S, ID1> apply_mask(const Message<T, S, ID1>& msg, const Message<T, S, ID2>& mask) {
+    Message<T, S, ID1> ret;
+    for (unsigned int i = 0; i < S; i++) {
+        ret[i] = msg[i] * mask[i];
+    }
+    return ret;
+}
 
 }
 
