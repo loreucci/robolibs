@@ -1,0 +1,49 @@
+#include "datainterfaces.h"
+
+#include <stdexcept>
+
+namespace py = boost::python;
+
+namespace nest {
+
+StatusSetter::StatusSetter(const boost::python::list& gids)
+    :gids(gids) {
+
+    if (py::len(gids) == 0)
+        throw std::invalid_argument("ParameterSetter: cannot be executed on empty list.");
+
+}
+
+void StatusSetter::execute() {
+
+    generateParams();
+
+    py::object cmd = "nest.SetStatus(%s, %s)" % py::make_tuple(gids, params);
+    py::exec((py::str)cmd, main_namespace);
+}
+
+StatusGetter::StatusGetter(const boost::python::list& gids)
+    :gids(gids) {
+
+}
+
+void StatusGetter::execute() {
+
+    py::object cmd = "nest.GetStatus(%s)[0]" % gids;
+    py::object result = py::eval((py::str)cmd, main_namespace);
+
+    params = py::extract<py::dict>(result);
+
+    consumeParams();
+
+}
+
+void DataInjector::setNamespace(const boost::python::api::object& main_namespace) {
+    this->main_namespace = main_namespace;
+}
+
+void DataReceiver::setNamespace(const boost::python::api::object& main_namespace) {
+    this->main_namespace = main_namespace;
+}
+
+}
