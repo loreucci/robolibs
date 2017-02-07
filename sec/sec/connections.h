@@ -12,6 +12,13 @@
 
 namespace sec {
 
+// this will not register the connection,
+// but it may be useful if the links are not
+// in nodes
+template <typename T>
+void connect(NodeOut<T>* out, NodeIn<T>* in) {
+    in->connect(out);
+}
 
 template <class C1, class C2>
 void connect(C1& source, C2& sink) {
