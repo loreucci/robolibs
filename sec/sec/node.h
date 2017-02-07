@@ -26,6 +26,8 @@ public:
 
     virtual double getFrequency() const final;
 
+    virtual void runOnSingleThread() final;
+
     virtual void refreshInputs() = 0;
 
     virtual bool connected() const = 0;

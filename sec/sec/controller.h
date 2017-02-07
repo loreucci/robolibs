@@ -34,6 +34,8 @@ public:
     bool checkConnections() const;
     void adjustFrequencies();
 
+    void moveNodeToSingleThread(Node* node);
+
     void sortNodes();
 
     void executeThread(ExecThread* et);
@@ -51,6 +53,7 @@ public:
 protected:
     std::unordered_map<double, std::forward_list<Node*>> nodes;
     std::unordered_map<Node*, std::forward_list<Node*>> adj;
+    std::vector<std::pair<double, Node*>> singleThreadNodes;
     double maxfreq;
 
 };

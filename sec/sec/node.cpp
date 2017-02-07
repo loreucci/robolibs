@@ -36,4 +36,8 @@ double Node::getFrequency() const {
     return freq;
 }
 
+void Node::runOnSingleThread() {
+    main_controller.moveNodeToSingleThread(this);
+}
+
 }

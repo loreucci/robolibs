@@ -34,6 +34,9 @@ void Controller::moveNode(Node* node, double old_freq) {
 
     if (nodes.find(old_freq) != nodes.end()) {
         nodes[old_freq].remove_if([node](sec::Node* n){return n->ID == node->ID;});
+    } else if (std::find(singleThreadNodes.begin(), singleThreadNodes.end(), std::make_pair(old_freq, node)) != singleThreadNodes.end()) {
+        auto it = std::find(singleThreadNodes.begin(), singleThreadNodes.end(), std::make_pair(old_freq, node));
+        (*it).first = node->getFrequency();
     } else {
         throw std::runtime_error("Node not found in list.");
     }
@@ -72,6 +75,10 @@ bool Controller::checkConnections() const {
                 return false;
         }
     }
+    for (const auto& n : singleThreadNodes) {
+        if (!n.second->connected())
+            return false;
+    }
     return true;
 }
 
@@ -105,6 +112,14 @@ void Controller::adjustFrequencies() {
 
         }
     }
+
+}
+
+void Controller::moveNodeToSingleThread(Node* node) {
+
+    nodes[node->getFrequency()].remove(node);
+
+    singleThreadNodes.push_back(std::make_pair(node->getFrequency(), node));
 
 }
 
@@ -167,6 +182,14 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
         threads.push_back(th);
     }
 
+    for (auto it : singleThreadNodes) {
+        ExecThread th{nullptr,
+                      {it.second},
+                      synchronizer.registerSignal(it.first),
+                      std::forward_list<std::function<bool(void)>>()};
+        threads.push_back(th);
+    }
+
     if (threads.empty())
         throw std::runtime_error("Controller: nothing to run.");
 
@@ -215,8 +238,17 @@ void Controller::printNodes() const {
             std::cout << n->ID << "\n  ";
         }
         std::cout << std::endl;
+    }
+
+    if (singleThreadNodes.size() > 0) {
+        std::cout << "single thread nodes:\n";
+        for (auto& it : singleThreadNodes) {
+            std::cout << it.first << ": " << it.second << std::endl;
+        }
         std::cout << std::endl;
     }
+
+    std::cout << std::endl;
 
 }
 
@@ -238,6 +270,10 @@ std::vector<Node*> Controller::getAllNodes() {
         for (const auto n : it.second) {
             ret.push_back(n);
         }
+    }
+
+    for (const auto& it : singleThreadNodes) {
+        ret.push_back(it.second);
     }
 
     return ret;
