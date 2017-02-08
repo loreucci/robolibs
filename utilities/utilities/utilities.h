@@ -127,6 +127,35 @@ std::string make_string(const std::vector<T>& v, const std::string& sep = "") {
 */
 std::string replace(const std::string& str, const std::string& target, const std::string& repl);
 
+
+//! Create a vector from a specified range.
+/*!
+  \param start lower limit of the range.
+  \param end upper limit of the range.
+  \param step the step between elements.
+  \return the vector containing the range.
+*/
+template <typename T>
+std::vector<T> range(T start, T end, T step = 1) {
+
+    if (step == 0)
+        return std::vector<T>();
+
+    if (end > start && step < 0) {
+        return std::vector<T>();
+    }
+
+    if (end < start && step > 0) {
+        return std::vector<T>();
+    }
+
+    std::vector<T> ret;
+    for (T v = start; v < end; v += step) {
+        ret.push_back(v);
+    }
+    return ret;
+}
+
 }
 
 #endif // UTILS_H
