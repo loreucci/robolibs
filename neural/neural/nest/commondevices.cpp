@@ -19,10 +19,6 @@ void PoissonGeneratorSetter::generateParams() {
 }
 
 
-
-SpikeDetectorGetter::SpikeDetectorGetter(const boost::python::list& gids, double timestep)
-    :StatusGetter(gids), lastlen(0) {}
-
 void SpikeDetectorGetter::generatePyplot() {
 
     py::exec("from nest import raster_plot", main_namespace);

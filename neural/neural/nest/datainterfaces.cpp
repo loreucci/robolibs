@@ -6,13 +6,25 @@ namespace py = boost::python;
 
 namespace nest {
 
-StatusSetter::StatusSetter(const boost::python::list& gids)
+HasGIDList::HasGIDList(const boost::python::list& gids)
     :gids(gids) {
 
     if (py::len(gids) == 0)
         throw std::invalid_argument("ParameterSetter: cannot be executed on empty list.");
 
 }
+
+HasGIDList::HasGIDList(const std::vector<unsigned int>& gidsv) {
+    for (auto v : gidsv) {
+        gids.append(v);
+    }
+
+    if (py::len(gids) == 0)
+        throw std::invalid_argument("ParameterSetter: cannot be executed on empty list.");
+}
+
+HasGIDList::HasGIDList(std::initializer_list<unsigned int> l)
+    :HasGIDList(std::vector<unsigned int>(l)) {}
 
 void StatusSetter::execute() {
 
@@ -22,10 +34,6 @@ void StatusSetter::execute() {
     py::exec((py::str)cmd, main_namespace);
 }
 
-StatusGetter::StatusGetter(const boost::python::list& gids)
-    :gids(gids) {
-
-}
 
 void StatusGetter::execute() {
 

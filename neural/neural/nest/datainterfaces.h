@@ -1,6 +1,8 @@
 #ifndef NESTDATAINTERFACES_H
 #define NESTDATAINTERFACES_H
 
+#include <vector>
+
 #include <boost/python.hpp>
 
 
@@ -43,17 +45,27 @@ protected:
 };
 
 
-
-
-class StatusSetter : public DataInjector {
+class HasGIDList {
 
 public:
-    StatusSetter(const boost::python::list& gids);
+    explicit HasGIDList(const boost::python::list& gids);
+    explicit HasGIDList(const std::vector<unsigned int>& gidsv);
+    explicit HasGIDList(std::initializer_list<unsigned int> l);
+
+protected:
+    boost::python::list gids;
+
+};
+
+
+class StatusSetter : public DataInjector, public HasGIDList {
+
+public:
+    using HasGIDList::HasGIDList;
 
     virtual void execute() final override;
 
 protected:
-    boost::python::list gids;
     boost::python::dict params;
 
     virtual void generateParams() = 0;
@@ -61,15 +73,14 @@ protected:
 };
 
 
-class StatusGetter : public DataReceiver {
+class StatusGetter : public DataReceiver, public HasGIDList {
 
 public:
-    StatusGetter(const boost::python::list& gids);
+    using HasGIDList::HasGIDList;
 
     virtual void execute() final override;
 
 protected:
-    boost::python::list gids;
     boost::python::dict params;
 
     virtual void consumeParams() = 0;

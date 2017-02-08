@@ -29,7 +29,7 @@ protected:
 class SpikeDetectorGetter : public StatusGetter {
 
 public:
-    SpikeDetectorGetter(const boost::python::list& gids, double timestep = 10.0);
+    using StatusGetter::StatusGetter;
 
     void generatePyplot();
 

@@ -17,15 +17,10 @@ int main() {
         auto rah = Signals::rampandhold(100, 50, 2.0, 1.0, 100.0);
         sec::SignalSource ss(rah, 100.0);
 
-        boost::python::list pgl;
-        pgl.append(1);
-        nest::PoissonGeneratorSetter pg(pgl);
-
+        nest::PoissonGeneratorSetter pg({1});
         sec::connect(&ss.output, &pg.rate);
 
-        boost::python::list sdl;
-        sdl.append(2);
-        nest::SpikeDetectorGetter sd(sdl);
+        nest::SpikeDetectorGetter sd({1});
 
         nest::ExecutionNode nn("test_nest.py", {&pg}, {&sd}, 100.0);
         nn.suppressOutput();
