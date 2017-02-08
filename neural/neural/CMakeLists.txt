@@ -58,5 +58,10 @@ install (TARGETS neural DESTINATION lib)
 install (FILES ${COMMON_HEADERS}
          DESTINATION include/neural)
 
+# SpiNNaker
 install (FILES ${SPINNAKER_HEADERS}
          DESTINATION include/neural/spinnaker)
+
+# NEST
+install (FILES ${NEST_HEADERS}
+         DESTINATION include/neural/nest)
