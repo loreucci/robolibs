@@ -23,6 +23,9 @@ get_filename_component (ROBOLIBS_PATH ${ROBOLIBS_PATH} ABSOLUTE)
 include_directories ("${ROBOLIBS_PATH}/include")
 link_directories ("${ROBOLIBS_PATH}/lib")
 
+# flag for guis
+set(BUILD_GUI "ON" CACHE STRING "Build GUIs.")
+
 # local includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -30,20 +33,24 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(sec)
 
 # plotting server
-add_subdirectory(plottingserver)
+if(BUILD_GUI)
+    add_subdirectory(plottingserver)
+endif(BUILD_GUI)
 
 # results explorer
-add_subdirectory(resultsexplorer)
+if(BUILD_GUI)
+    add_subdirectory(resultsexplorer)
+endif(BUILD_GUI)
 
 # doc
 if(ENABLE_DOC)
-	add_subdirectory(doc)
+    add_subdirectory(doc)
 endif()
 
 # testing
 if(ENABLE_TEST)
-	enable_testing()
-	add_subdirectory(test)
+    enable_testing()
+    add_subdirectory(test)
 endif()
 
 set(CONFIGURED_ONCE TRUE CACHE INTERNAL
