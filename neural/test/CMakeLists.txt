@@ -6,10 +6,14 @@ function(add_new_test target)
 
 endfunction()
 
-add_new_test(test_raster test_raster.cpp)
-add_new_test(test_spikes test_spikes.cpp)
 add_new_test(test_spikelogger test_spikelogger.cpp)
 
+if(BUILD_GUI)
+    add_new_test(test_raster test_raster.cpp)
+    add_new_test(test_spikes test_spikes.cpp)
+endif(BUILD_GUI)
 
-add_new_test(test_nest test_nest.cpp)
-target_include_directories(test_nest PUBLIC ${PYTHON_INCLUDE_DIRS})
+if(WITH_NEST)
+    add_new_test(test_nest test_nest.cpp)
+    target_include_directories(test_nest PUBLIC ${PYTHON_INCLUDE_DIRS})
+endif(WITH_NEST)

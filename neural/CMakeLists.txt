@@ -23,24 +23,33 @@ get_filename_component (ROBOLIBS_PATH ${ROBOLIBS_PATH} ABSOLUTE)
 include_directories ("${ROBOLIBS_PATH}/include")
 link_directories ("${ROBOLIBS_PATH}/lib")
 
+# flag for guis
+set(BUILD_GUI "ON" CACHE STRING "Build GUIs.")
+
+# flags for simulators
+set(WITH_NEST "ON" CACHE STRING "Include NEST support.")
+set(WITH_SPINNAKER "ON" CACHE STRING "Include SpiNNaker support.")
+
 # local includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # main lib
 add_subdirectory(neural)
 
-# plotting server
-add_subdirectory(rasterserver)
+# raster server
+if(BUILD_GUI)
+    add_subdirectory(rasterserver)
+endif(BUILD_GUI)
 
 # doc
 if(ENABLE_DOC)
-	add_subdirectory(doc)
+    add_subdirectory(doc)
 endif()
 
 # testing
 if(ENABLE_TEST)
-	enable_testing()
-	add_subdirectory(test)
+    enable_testing()
+    add_subdirectory(test)
 endif()
 
 set(CONFIGURED_ONCE TRUE CACHE INTERNAL
