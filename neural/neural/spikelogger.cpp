@@ -4,6 +4,7 @@
 
 #include <sec/commons.h>
 
+
 namespace neural {
 
 
@@ -12,6 +13,8 @@ SpikeLogger::SpikeLogger(const std::string& basename, const std::string& extensi
 
     listeners.clear();
     timestamp = sec::getUniqueTimeStamp();
+
+    enabled = true;
 
 }
 

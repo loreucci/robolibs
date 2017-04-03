@@ -40,8 +40,8 @@ void DataInjector::spikes_start(char* label, SpynnakerLiveSpikesConnection* conn
 
 }
 
-DataReceiver::DataReceiver(const std::string& population_name)
-    :population_name(population_name) {}
+DataReceiver::DataReceiver(const std::string& population_name, unsigned int IDoffset)
+    :population_name(population_name), IDoffset(IDoffset) {}
 
 std::string DataReceiver::getPopulationName() const {
     return population_name;
@@ -56,15 +56,16 @@ void DataReceiver::receive_spikes(char* label, int time, int n_spikes, int* spik
     neural::SpikeData newdata;
     for (int spike = 0;  spike < n_spikes; spike++) {
 //        printf("Received spike at time %d, from %s - %d \n", time, label, spikes[spike]);
-        newdata.push_back({(unsigned int)spikes[spike], (double)time/1000.0});
+        newdata.push_back({(unsigned int)spikes[spike]+IDoffset, (double)time/1000.0});
         // TODO                                                      ^^^^^^
     }
 
+    datamutex.lock();
+    data.clear();
     if (!newdata.empty()) {
-        datamutex.lock();
         data.insert(data.end(), newdata.begin(), newdata.end());
-        datamutex.unlock();
     }
+    datamutex.unlock();
 
 }
 

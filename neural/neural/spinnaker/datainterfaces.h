@@ -48,7 +48,7 @@ protected:
 class DataReceiver : public SpikeReceiveCallbackInterface {
 
 public:
-    explicit DataReceiver(const std::string& population_name);
+    DataReceiver(const std::string& population_name, unsigned int IDoffset = 0);
 
     std::string getPopulationName() const;
 
@@ -60,6 +60,7 @@ public:
 protected:
     std::mutex datamutex;
     neural::SpikeData data;
+    unsigned int IDoffset;
 
     std::string population_name;
 
