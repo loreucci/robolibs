@@ -9,7 +9,8 @@ set(SOURCES
     source.cpp
     node.cpp
     simplesources.cpp
-    synchronization.cpp)
+    synchronization.cpp
+    sec.cpp)
 
 set(HEADERS
     commons.h
@@ -24,7 +25,8 @@ set(HEADERS
     simplesources.h
     sleeper.h
     source.h
-    synchronization.h)
+    synchronization.h
+    sec.h)
 
 if(BUILD_GUI)
     set(CMAKE_AUTOMOC ON)
