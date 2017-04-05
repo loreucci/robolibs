@@ -2,6 +2,7 @@
 #define SPIKELOGGER_H
 
 #include <sec/node.h>
+#include <sec/resultscollector.h>
 
 #include "spikes.h"
 
@@ -9,10 +10,10 @@
 namespace neural {
 
 
-class SpikeLogger : public sec::Node {
+class SpikeLogger : public sec::Node, public sec::Logger {
 
 public:
-    SpikeLogger(const std::string& basename = "test", const std::string& extension = ".txt");
+    SpikeLogger(const std::string& filename = "spikes.txt");
 
     virtual ~SpikeLogger();
 
@@ -26,15 +27,11 @@ public:
 
     void addSpikeSource(SpikeNodeOut* source);
 
-    void saveToFile() const;
-
-    void toggleLogging(bool toggle = false);
-
+    void logToFile() const override;
 
 protected:
-    std::string basename, extension, timestamp;
+    std::string filename, prefix;
     std::vector<SpikeNodeIn*> listeners;
-    bool enabled;
 
     SpikeData data;
 

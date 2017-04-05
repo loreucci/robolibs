@@ -7,7 +7,7 @@
 #include "nodelink.h"
 #include "printer.h"
 #include "controller.h"
-#include "logger.h"
+#include "datalogger.h"
 
 
 namespace sec {
@@ -69,9 +69,9 @@ void connect(C1& source, NodeOut<T> C1::* out, Printer& printer, const std::stri
 
 // TODO: move to logger.h
 template <class C1, typename T>
-void connect(C1& source, NodeOut<T> C1::* out, Logger& logger, const std::string& name) {
+void connect(C1& source, NodeOut<T> C1::* out, DataLogger& logger, const std::string& name) {
 
-    Listener* l = new NodeListener<T>(name, &(source.*out));
+    DataListener* l = new NodeListener<T>(name, &(source.*out));
 
     logger.addListener(l);
 
@@ -118,9 +118,9 @@ void connect(DictionaryNode<T>& source, const std::string& out, Printer& printer
 
 // dict to logger
 template <typename T>
-void connect(DictionaryNode<T>& source, const std::string& out, Logger& logger, const std::string& name) {
+void connect(DictionaryNode<T>& source, const std::string& out, DataLogger& logger, const std::string& name) {
 
-    Listener* l = new NodeListener<T>(name, &(source.output(out)));
+    DataListener* l = new NodeListener<T>(name, &(source.output(out)));
 
     logger.addListener(l);
 

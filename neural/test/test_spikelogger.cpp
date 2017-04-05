@@ -1,8 +1,7 @@
 #include <neural/spikelogger.h>
 
-#include <sec/synchronization.h>
 #include <utilities/utilities.h>
-#include <sec/node.h>
+#include <sec/sec.h>
 
 
 auto gen = Utils::uniformGenerator(1, 0.0, 0.01);
@@ -44,9 +43,11 @@ public:
 
 int main(void) {
 
+    sec::setResultsMode(sec::ResultsCollector::SINGLE_FILES_MODE);
+
     TestSpikeSource ss(100.0);
 
-    neural::SpikeLogger logger("testspikes");
+    neural::SpikeLogger logger;
 
     sec::connect(ss, &TestSpikeSource::output1, logger);
     sec::connect(ss, &TestSpikeSource::output2, logger);

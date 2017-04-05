@@ -26,7 +26,7 @@ int main() {
         nn.suppressOutput();
         nn.runOnSingleThread();
 
-        neural::SpikeLogger logger("testspikes");
+        neural::SpikeLogger logger;
         sec::connect(&sd.spikes, logger);
 
         sec::main_controller.run(3.0);

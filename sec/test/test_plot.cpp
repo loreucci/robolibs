@@ -1,7 +1,7 @@
 #include <sec/plottingclient.h>
 #include <sec/controller.h>
 #include <sec/simplesources.h>
-#include <sec/logger.h>
+#include <sec/datalogger.h>
 #include <sec/connections.h>
 
 #include <utilities/vector.h>

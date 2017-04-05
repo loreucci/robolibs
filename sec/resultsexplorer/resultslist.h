@@ -57,6 +57,16 @@ protected:
 
 };
 
+struct ExportableEntry {
+
+    unsigned int mode;
+    QString basename;
+    QString timestamp;
+    QString filelist;
+    QString exportname;
+
+};
+
 
 class ResultsList : public QTableView {
     Q_OBJECT
@@ -67,7 +77,7 @@ public:
 
     bool isChanged();
 
-    QList<QStringList> getSelectedList();
+    QList<ExportableEntry> getSelectedList();
 
 public slots:
     void loadData();
@@ -83,6 +93,7 @@ protected:
     QTimer* timer = nullptr;
 
     void loadFromFile();
+    void parseLine(const QString& line, int row);
 
 };
 

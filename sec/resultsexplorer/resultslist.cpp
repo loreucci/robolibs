@@ -16,7 +16,7 @@ FileModel::FileModel(QObject *parent)
 }
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const {
-    if (index.column() == 1 || index.column() == 2)
+    if (index.column() >= 1 && index.column() <= 4)
         return Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
     return QStandardItemModel::flags(index);
 }
@@ -152,16 +152,18 @@ bool ResultsList::isChanged() {
     return data->isChanged();
 }
 
-QList<QStringList> ResultsList::getSelectedList() {
+QList<ExportableEntry> ResultsList::getSelectedList() {
 
-    QList<QStringList> ret;
+    QList<ExportableEntry> ret;
     for (int r = 0; r < data->rowCount(); r++) {
         if (data->itemFromIndex(data->index(r, 0))->checkState() == Qt::Checked) {
-            QStringList names;
-            names.append(data->data(data->index(r, 1)).toString());
-            names.append(data->data(data->index(r, 4)).toString());
-            names.append(data->data(data->index(r, 2)).toString());
-            ret.append(names);
+            ExportableEntry entry;
+            entry.mode = data->data(data->index(r, 1)).toInt();
+            entry.basename = data->data(data->index(r, 2)).toString();
+            entry.timestamp = data->data(data->index(r, 3)).toString();
+            entry.filelist = data->data(data->index(r, 4)).toString();
+            entry.exportname = data->data(data->index(r, 6)).toString();
+            ret.append(entry);
         }
     }
 
@@ -244,19 +246,7 @@ void ResultsList::addNewData() {
             row++;
             continue;
         }
-        QStringList lline = line.split(";");
-        for (int i = 0; i < lline.size(); i++) {
-            QStandardItem* item;
-            if (i != 1)
-                item = new QStandardItem(lline[i]);
-            else {
-                if (lline[i] == "0")
-                    item = new QStandardItem("NO");
-                else
-                    item = new QStandardItem("YES");
-            }
-            data->setItem(row, i+1, item);
-        }
+        parseLine(line, row);
         QStandardItem* item = new QStandardItem();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -281,14 +271,7 @@ void ResultsList::saveChanges() {
     for (int r = 0; r < data->rowCount(); r++) {
         int c = 1;
         for (; c < data->columnCount()-1; c++) {
-            if (c != 2)
-                out << data->data(data->index(r, c)).toString() << ";";
-            else {
-                if (data->data(data->index(r, c)).toString() == "NO")
-                    out << 0 << ";";
-                else
-                    out << 1 << ";";
-            }
+            out << data->data(data->index(r, c)).toString() << ";";
         }
         out << data->data(data->index(r, c)).toString() << "\n";
     }
@@ -341,19 +324,7 @@ void ResultsList::loadFromFile() {
     int row = 0;
     while (!in.atEnd()) {
         QString line = in.readLine();
-        QStringList lline = line.split(";");
-        for (int i = 0; i < lline.size(); i++) {
-            QStandardItem* item;
-            if (i != 1)
-                item = new QStandardItem(lline[i]);
-            else {
-                if (lline[i] == "0")
-                    item = new QStandardItem("NO");
-                else
-                    item = new QStandardItem("YES");
-            }
-            data->setItem(row, i+1, item);
-        }
+        parseLine(line, row);
         QStandardItem* item = new QStandardItem();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -362,15 +333,27 @@ void ResultsList::loadFromFile() {
     }
 
     data->setHeaderData(0, Qt::Horizontal, "");
-    data->setHeaderData(1, Qt::Horizontal, "Filename");
-    data->setHeaderData(2, Qt::Horizontal, "HasParams");
-    data->setHeaderData(3, Qt::Horizontal, "Comment");
-    data->setHeaderData(4, Qt::Horizontal, "ExportName");
+    data->setHeaderData(1, Qt::Horizontal, "M");
+    data->setHeaderData(2, Qt::Horizontal, "Name");
+    data->setHeaderData(3, Qt::Horizontal, "Timestamp");
+    data->setHeaderData(4, Qt::Horizontal, "Files");
+    data->setHeaderData(5, Qt::Horizontal, "Comment");
+    data->setHeaderData(6, Qt::Horizontal, "ExportName");
 
     file.close();
 
     data->resetChange();
     this->resizeColumnsToContents();
+
+}
+
+void ResultsList::parseLine(const QString& line, int row) {
+
+    QStringList lline = line.split(";");
+    for (int i = 0; i < lline.size(); i++) {
+        QStandardItem* item = new QStandardItem(lline[i]);
+        data->setItem(row, i+1, item);
+    }
 
 }
 

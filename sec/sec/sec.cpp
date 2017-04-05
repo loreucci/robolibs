@@ -11,4 +11,8 @@ void sleep(double ms) {
     synchronizer.sleep(ms);
 }
 
+void setSleeper(Sleeper* sleeper) {
+    synchronizer.setSleeper(sleeper);
+}
+
 }

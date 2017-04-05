@@ -58,7 +58,6 @@ protected:
 
 };
 
-// TODO: move all singletons on a separate file (sec.h)?
 extern Controller main_controller;
 
 }

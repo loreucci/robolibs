@@ -9,6 +9,8 @@ namespace sec {
 
 void run(double time = 0.0, std::vector<std::function<bool(void)>> endconditions = {});
 
+void setSleeper(Sleeper* sleeper);
+
 void sleep(double ms);
 
 }

@@ -8,19 +8,17 @@
 namespace neural {
 
 
-SpikeLogger::SpikeLogger(const std::string& basename, const std::string& extension)
-    :Node(0.0), basename(basename), extension(extension) {
+SpikeLogger::SpikeLogger(const std::string& filename)
+    :Node(0.0), filename(filename) {
 
     listeners.clear();
-    timestamp = sec::getUniqueTimeStamp();
 
-    enabled = true;
+    prefix = sec::results_collector.getFilenamePrefix();
+    sec::results_collector.registerLogger(this, filename);
 
 }
 
 SpikeLogger::~SpikeLogger() {
-
-    saveToFile();
 
     for (auto& l : listeners) {
         delete l;
@@ -53,7 +51,7 @@ void SpikeLogger::execute() {
 }
 
 std::string SpikeLogger::parameters() const {
-    return "Spike logger.";
+    return "Spike logger (" + filename + ").";
 }
 
 void SpikeLogger::addSpikeSource(SpikeNodeOut* source) {
@@ -64,12 +62,9 @@ void SpikeLogger::addSpikeSource(SpikeNodeOut* source) {
 
 }
 
-void SpikeLogger::saveToFile() const {
+void SpikeLogger::logToFile() const {
 
-    if (!enabled)
-        return;
-
-    std::ofstream file(basename+timestamp+extension);
+    std::ofstream file(prefix+filename);
     file << "ID time" << std::endl;
     for (const Spike& sp : data) {
         file << sp.neuron_id << " " << sp.time << std::endl;
@@ -77,10 +72,6 @@ void SpikeLogger::saveToFile() const {
 
     file.close();
 
-}
-
-void SpikeLogger::toggleLogging(bool toggle) {
-    enabled = toggle;
 }
 
 

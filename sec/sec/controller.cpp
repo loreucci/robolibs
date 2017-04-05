@@ -4,6 +4,8 @@
 #include <csignal>
 #include <iostream>
 
+#include "resultscollector.h"
+
 
 namespace sec {
 
@@ -229,6 +231,8 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
             th.t->join();
     }
 
+    // save results
+    results_collector.saveAll();
 
 }
 

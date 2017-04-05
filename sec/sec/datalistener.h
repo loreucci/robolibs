@@ -1,5 +1,5 @@
-#ifndef LISTENER_H
-#define LISTENER_H
+#ifndef DATALISTENER_H
+#define DATALISTENER_H
 
 #include <functional>
 #include <vector>
@@ -11,14 +11,14 @@
 
 namespace sec {
 
-class Listener {
+class DataListener {
 
 public:
 
-    Listener(const std::string& name = "")
+    DataListener(const std::string& name = "")
         :name(name) {}
 
-    virtual ~Listener(){}
+    virtual ~DataListener(){}
 
     virtual void read() = 0;
 
@@ -35,11 +35,11 @@ protected:
 
 
 template <typename T>
-class ValueListener : public Listener {
+class ValueListener : public DataListener {
 
 public:
     ValueListener(const std::string& name, T& val)
-        :Listener(name), val(val) { }
+        :DataListener(name), val(val) { }
 
     virtual void read() override {
         values.push_back(val);
@@ -57,11 +57,11 @@ protected:
 
 
 template <typename T>
-class NodeListener : public Listener {
+class NodeListener : public DataListener {
 
 public:
     NodeListener(const std::string& name, NodeOut<T>* nodelink)
-        :Listener(name), nodelink(nodelink) { }
+        :DataListener(name), nodelink(nodelink) { }
 
     virtual void read() override {
         values.push_back(nodelink->getData().first);
@@ -79,14 +79,14 @@ protected:
 
 
 template <typename T>
-class FunctionListener : public Listener {
+class FunctionListener : public DataListener {
 
 public:
 
     using funtype = std::function<T(void)>;
 
     FunctionListener(const std::string& name, funtype fun)
-        :Listener(name), fun(fun){ }
+        :DataListener(name), fun(fun){ }
 
     virtual void read() override {
         values.push_back(fun());
@@ -105,5 +105,5 @@ protected:
 
 }
 
-#endif // LISTENER_H
+#endif // DATALISTENER_H
 

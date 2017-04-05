@@ -79,7 +79,7 @@ void ResultsExplorer::exportLogs() {
     // check for empty fields
     for (int i = 0; i < l.size(); i++) {
 
-        if (l[i][1].isEmpty()) {
+        if (l[i].exportname.isEmpty()) {
             QMessageBox::critical(this, "ResultsExplorer", "Some ExportNames are empty!");
             return;
         }
@@ -103,50 +103,36 @@ void ResultsExplorer::exportLogs() {
     QString exportdir = fileNames[0];
     lastexportdir = exportdir;
 
-    // ask the user if he wants also the parameters
-    QMessageBox msgBox;
-    msgBox.setText("Exporting " + QString::number(l.size()) + " files.");
-    msgBox.setInformativeText("Do you want to export also the paramters?");
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setDefaultButton(QMessageBox::No);
-    int alsoparams = msgBox.exec();
-
-    // copy files
+    // copy entries
     for (int i = 0; i < l.size(); i++) {
 
-        QString exportname = exportdir + "/" + l[i][1];
-
-
-        // copy files
-        if (QFile::exists(exportname)) {
-            QFile::remove(exportname);
+        // create destination folder if FOLDER_MODE
+        if (l[i].mode == 0) {
+            QDir dir(exportdir);
+            if (!dir.exists(l[i].exportname))
+                dir.mkdir(l[i].exportname);
         }
-        QFile::copy(currentfolder + "/" + l[i][0], exportname);
 
-        // parameters
-        if (alsoparams == QMessageBox::Yes && l[i][2] == "YES") {
+        // create proper suffixes
+        QString exportprefix = exportdir + "/" + l[i].exportname;
+        QString originalprefix = currentfolder + "/" + l[i].basename + "-" + l[i].timestamp;
+        if (l[i].mode == 0) {
+            exportprefix += "/";
+            originalprefix += "/";
+        } else {
+            exportprefix += "_";
+            originalprefix += "_";
+        }
 
-            // find name and extension
-            QStringList parts = l[i][0].split(".");
-            QStringList partsexp = l[i][1].split(".");
+        //copy files
+        QStringList files = l[i].filelist.split(",");
+        for (int j = 0; j < files.length(); j++) {
 
-            // guess parameters name
-            QString parameters = currentfolder + "/" + parts[0] + "_parameters";
-            for (int j = 1; j < parts.size(); j++) {
-                parameters.append(".");
-                parameters.append(parts[j]);
+            if (QFile::exists(exportprefix + files[j])) {
+                QFile::remove(exportprefix + files[j]);
             }
 
-            QString parametersexp = exportdir + "/" + partsexp[0] + "_parameters";
-            for (int j = 1; j < partsexp.size(); j++) {
-                parametersexp.append(".");
-                parametersexp.append(partsexp[j]);
-            }
-
-            if (QFile::exists(parametersexp)) {
-                QFile::remove(parametersexp);
-            }
-            QFile::copy(parameters, parametersexp);
+            QFile::copy(originalprefix + files[j], exportprefix + files[j]);
 
         }
 
@@ -167,31 +153,29 @@ void ResultsExplorer::deleteLogs() {
 
     auto l = list->getSelectedList();
 
-    // copy files
+    // delete entries
     for (int i = 0; i < l.size(); i++) {
 
-        QFile::remove(currentfolder + "/" + l[i][0]);
+        // remove all dir if FOLDER_MODE, otherwise all files
+        if (l[i].mode == 0) {
 
-        // parameters
-        if (l[i][2] == "YES") {
+            QDir dir(currentfolder + "/" + l[i].basename + "-" + l[i].timestamp);
+            dir.removeRecursively();
 
-            // find name and extension
-            QStringList parts = l[i][0].split(".");
+        } else {
 
-            // guess parameters name
-            QString parameters = currentfolder + "/" + parts[0] + "_parameters";
-            for (int j = 1; j < parts.size(); j++) {
-                parameters.append(".");
-                parameters.append(parts[j]);
+            QString prefix = currentfolder + "/" + l[i].basename + "-" + l[i].timestamp + "_";
+
+            QStringList files = l[i].filelist.split(",");
+            for (int j = 0; j < files.length(); j++) {
+                QFile::remove(prefix + files[j]);
             }
-
-            QFile::remove(parameters);
 
         }
 
     }
 
-    list->deleteSelected();
+//    list->deleteSelected();
 
 }
 

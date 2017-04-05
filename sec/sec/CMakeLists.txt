@@ -3,21 +3,22 @@ set(SOURCES
     controller.cpp
     printer.cpp
     sleeper.cpp
-    logger.cpp
+    datalogger.cpp
     nodelink.cpp
     simplenodes.cpp
     source.cpp
     node.cpp
     simplesources.cpp
     synchronization.cpp
-    sec.cpp)
+    sec.cpp
+    resultscollector.cpp)
 
 set(HEADERS
     commons.h
     connections.h
     controller.h
-    listener.h
-    logger.h
+    datalistener.h
+    datalogger.h
     node.h
     nodelink.h
     printer.h
@@ -26,7 +27,8 @@ set(HEADERS
     sleeper.h
     source.h
     synchronization.h
-    sec.h)
+    sec.h
+    resultscollector.h)
 
 if(BUILD_GUI)
     set(CMAKE_AUTOMOC ON)
@@ -42,7 +44,7 @@ add_library(sec SHARED ${SOURCES} ${HEADERS})
 target_link_libraries(sec utilities pthread)
 
 if(BUILD_GUI)
-    target_link_libraries(sec utilities Qt5::Core Qt5::Network)
+    target_link_libraries(sec Qt5::Core Qt5::Network)
 endif(BUILD_GUI)
 
 install (TARGETS sec DESTINATION lib)
