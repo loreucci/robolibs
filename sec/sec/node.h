@@ -36,10 +36,14 @@ public:
 
     virtual std::string parameters() const = 0;
 
+    virtual void setDelay(double delay) final;
+
+    virtual double getDelay() const final;
+
     const unsigned int ID;
 
 protected:
-    double freq;
+    double freq, delay;
 
     static unsigned int nextid;
 

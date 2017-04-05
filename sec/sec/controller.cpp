@@ -130,6 +130,7 @@ void Controller::executeThread(ExecThread* et) {
 
     bool endcond = false;
     double maxtime = 1.0 / et->nodes.front()->getFrequency();
+    double threadtime = 0.0;
 
     while (!et->sem.shouldquit() && !endcond) {
 
@@ -138,13 +139,12 @@ void Controller::executeThread(ExecThread* et) {
         auto start = std::chrono::system_clock::now();
 
         // exec nodes
-//        std::cout << "Times:" << std::endl;
-        for (auto n : et->nodes) {
-//            auto startino = std::chrono::system_clock::now();
+        for (auto n : et->nodes) {;
+            if (n->getDelay() > threadtime) {
+                continue;
+            }
             n->refreshInputs();
             n->execute();
-//            std::chrono::duration<double> diff = std::chrono::system_clock::now()-startino;
-//            std::cout << "\t" << n->ID << ": " << diff.count() << std::endl;
         }
 
         // check for termination conditions
@@ -158,6 +158,8 @@ void Controller::executeThread(ExecThread* et) {
             std::cerr << "Warning: this thread is too slow to run @ " << et->nodes.front()->getFrequency() << "Hz.";
             std::cerr << " (actual: " << 1.0/diff.count() << "Hz)\n";
         }
+
+        threadtime += 1.0 / et->nodes.front()->getFrequency();
 
     }
 

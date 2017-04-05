@@ -7,7 +7,7 @@ namespace sec {
 unsigned int Node::nextid = 0;
 
 Node::Node(double freq)
-    :ID(nextid++) {
+    :ID(nextid++), delay(0.0) {
 
     if (freq < 0) {
         std::invalid_argument("Controller: frequence must be non-negative.");
@@ -38,6 +38,14 @@ double Node::getFrequency() const {
 
 void Node::runOnSingleThread() {
     main_controller.moveNodeToSingleThread(this);
+}
+
+void Node::setDelay(double delay) {
+    this->delay = delay;
+}
+
+double Node::getDelay() const {
+    return delay;
 }
 
 }
