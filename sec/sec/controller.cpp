@@ -221,12 +221,14 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     synchronizer.start();
     executeThread(&threads.back());
     synchronizer.quitAll();
+    synchronizer.stop();
 
     // join all
     for (auto& th : threads) {
         if (th.t != nullptr)
             th.t->join();
     }
+
 
 }
 

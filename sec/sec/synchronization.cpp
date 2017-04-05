@@ -146,6 +146,13 @@ Synchronizer::Synchronizer(Sleeper* sleeper)
     stop_flag = false;
     started = false;
     time = 0.0;
+
+    t = nullptr;
+
+}
+
+Synchronizer::~Synchronizer() {
+    t->join();
 }
 
 void Synchronizer::setSleeper(Sleeper* sleeper) {
@@ -181,8 +188,7 @@ void Synchronizer::start() {
     if (started)
         return;
 
-    std::thread t(&Synchronizer::run, this);
-    t.detach();
+    t = new std::thread(&Synchronizer::run, this);
     started = true;
 
 

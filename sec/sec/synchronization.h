@@ -6,6 +6,7 @@
 #include <mutex>
 #include <queue>
 #include <atomic>
+#include <thread>
 
 #include "sleeper.h"
 
@@ -81,6 +82,7 @@ class Synchronizer {
 
 public:
     Synchronizer(Sleeper* sleeper = new BasicSleeper());
+    ~Synchronizer();
 
     void setSleeper(Sleeper* sleeper);
 
@@ -106,6 +108,7 @@ protected:
     std::mutex mtx;
     std::shared_ptr<Sleeper> sleeper;
     std::atomic_bool stop_flag;
+    std::thread* t;
     double time;
 
 };
