@@ -51,6 +51,16 @@ protected:
 
 };
 
+// connections
+template <class C1, typename T>
+void connect(C1& source, NodeOut<T> C1::* out, DataLogger& logger, const std::string& name) {
+
+    DataListener* l = new NodeListener<T>(name, &(source.*out));
+
+    logger.addListener(l);
+
+}
+
 }
 
 #endif // DATALOGGER_H

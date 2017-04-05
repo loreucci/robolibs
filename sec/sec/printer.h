@@ -5,7 +5,10 @@
 #include <functional>
 #include <string>
 
+#include <utilities/utilities.h>
+
 #include "node.h"
+#include "nodelink.h"
 
 namespace sec {
 
@@ -32,6 +35,18 @@ protected:
     std::deque<FunType> funs;
 
 };
+
+// connections
+template <class C1, typename T>
+void connect(C1& source, NodeOut<T> C1::* out, Printer& printer, const std::string& sep = "") {
+
+    auto fun = [&source, out, sep] () {
+        return Utils::make_string((source.*out).getData().first, sep);
+    };
+
+    printer.addFun(fun);
+
+}
 
 }
 
