@@ -152,7 +152,8 @@ Synchronizer::Synchronizer(Sleeper* sleeper)
 }
 
 Synchronizer::~Synchronizer() {
-    t->join();
+    if (t != nullptr)
+        t->join();
 }
 
 void Synchronizer::setSleeper(Sleeper* sleeper) {
