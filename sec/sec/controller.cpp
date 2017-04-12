@@ -9,16 +9,19 @@
 
 namespace sec {
 
-
+unsigned int escalation = 0;
 void handler(int) {
     synchronizer.quitAll();
+    escalation++;
+    if (escalation >= 3) {
+        std::raise(SIGKILL);
+    }
 }
 
 
 Controller::Controller() {
 
     maxfreq = 0.0;
-    std::signal(SIGINT, handler);
 
 }
 
@@ -166,6 +169,9 @@ void Controller::executeThread(ExecThread* et) {
 }
 
 void Controller::run(double time, std::vector<std::function<bool(void)>> endconditions) {
+
+    // register signal handler
+    std::signal(SIGINT, handler);
 
     // check everything
     if (!checkConnections())
