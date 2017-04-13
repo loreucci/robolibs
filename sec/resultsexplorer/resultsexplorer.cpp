@@ -7,8 +7,6 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 
-#include <QDebug>
-
 
 const QString defaultname = "/logs.txt";
 

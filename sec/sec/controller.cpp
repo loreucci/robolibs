@@ -170,8 +170,9 @@ void Controller::executeThread(ExecThread* et) {
 
 void Controller::run(double time, std::vector<std::function<bool(void)>> endconditions) {
 
-    // register signal handler
+    // register signal handlers
     std::signal(SIGINT, handler);
+    std::signal(SIGTERM, handler);
 
     // check everything
     if (!checkConnections())

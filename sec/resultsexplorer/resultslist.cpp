@@ -4,8 +4,6 @@
 #include <QFile>
 #include <QTextStream>
 
-#include <QDebug>
-
 FileModel::FileModel(QObject *parent)
     :QStandardItemModel(parent) {
 
@@ -35,102 +33,6 @@ void FileModel::checkForChange(QStandardItem* item) {
         changed = true;
 
 }
-
-//DataProxy::DataProxy(QObject* parent)
-//    :QSortFilterProxyModel(parent) {
-
-//    checks = new QStandardItemModel(this);
-
-//}
-
-//int DataProxy::rowCount(const QModelIndex& parent) const {
-//    return QSortFilterProxyModel::rowCount(parent);
-//}
-
-//int DataProxy::columnCount(const QModelIndex& parent) const {
-//    return QSortFilterProxyModel::columnCount(parent) + 1;
-//}
-
-////Qt::ItemFlags DataProxy::flags(const QModelIndex& index) const
-////{
-////    if (index.column() == DifferenceColumn)
-////    {
-////        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-////    }
-////    return QSortFilterProxyModel::flags(index);
-////}
-
-////Qt::ItemFlags DataProxy::flags(const QModelIndex& index) const {
-////    Qt::ItemFlags result = this->sourceModel()->flags(index);
-////    if (index.column() == 3)
-////    {
-////        result |= Qt::ItemIsEditable;
-////    }
-////    return result;
-////}
-
-//QVariant DataProxy::data(const QModelIndex& index, int role) const {
-
-//    if (index.column() == checkColumn) {
-//        return checks->data(checks->index(index.row(), checkColumn), role);
-//    }
-
-//    return QSortFilterProxyModel::data(mapToSource(index), role);
-
-//}
-
-//QVariant DataProxy::headerData(int section, Qt::Orientation orientation, int role) {
-
-//    qDebug() << section << "\n";
-
-//    if (orientation == Qt::Horizontal) {
-//        if(section == checkColumn)
-//            return "Selected";
-//        else
-//            return QSortFilterProxyModel::headerData(section-1, orientation, role);
-//    }
-
-//    return QSortFilterProxyModel::headerData(section, orientation, role);
-
-//}
-
-//void DataProxy::setSourceModel(QAbstractItemModel* sourceModel) {
-//    QSortFilterProxyModel::setSourceModel(sourceModel);
-
-//    int rows = sourceModel->rowCount();
-//    qDebug() << rows << "\n";
-//    for (int i = 0; i < rows; i++) {
-//        QStandardItem* item = new QStandardItem();
-//        item->setCheckable(true);
-//        if (i % 2 == 0)
-//            item->setCheckState(Qt::Unchecked);
-//        else
-//            item->setCheckState(Qt::Checked);
-//        checks->setItem(i, 0, item);
-//    }
-
-//}
-
-//QModelIndex DataProxy::mapFromSource(const QModelIndex& sourceIndex) const {
-
-//    this->index(sourceIndex.row(), sourceIndex.column());
-
-//}
-
-//QModelIndex DataProxy::mapToSource(const QModelIndex& proxyIndex) const {
-//    if (proxyIndex.column() == checkColumn)
-//        return QModelIndex();
-//    return sourceModel()->index(proxyIndex.row(), proxyIndex.column());
-//}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -193,40 +95,6 @@ void ResultsList::loadData() {
         connect(timer, SIGNAL(timeout()), this, SLOT(addNewData()));
         timer->start(1000);
     }
-
-
-//    this->setModel(data);
-
-//    // old model
-//    QItemSelectionModel *m = this->selectionModel();
-
-//    QSqlTableModel* model = new QSqlTableModel(this, QSqlDatabase::database("database"));
-//    model->setTable("logs");
-//    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-//    model->select();
-//    model->setHeaderData(0, Qt::Horizontal, "Filename");
-//    model->setHeaderData(1, Qt::Horizontal, "HasParams");
-//    model->setHeaderData(2, Qt::Horizontal, "Comment");
-//    model->setHeaderData(3, Qt::Horizontal, "ExportName");
-
-//    DataProxy *proxyModel = new DataProxy(this);
-//    proxyModel->setSourceModel(model);
-
-//    this->setModel(proxyModel);
-
-//    // delete old model
-//    delete m;
-
-//    for (int row = 0; row < 4; ++row) {
-//        QStandardItem* item = new QStandardItem();
-//        item->setCheckable(true);
-//        item->setCheckState(Qt::Unchecked);
-//        data->setItem(row, 0, item);
-//        for (int column = 1; column < 5; ++column) {
-//            QStandardItem *item = new QStandardItem(QString("row %0, column %1").arg(row).arg(column));
-//            data->setItem(row, column, item);
-//        }
-//    }
 
 }
 

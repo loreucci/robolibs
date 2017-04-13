@@ -1,15 +1,15 @@
 #include <QApplication>
 
-#include "resultsexplorer.h"
+#include "launcher.h"
 
 
 int main(int argc, char *argv[]) {
 
     QApplication a(argc, argv);
 
-    ResultsExplorer resexplorer;
+    Launcher launcher;
 
-    resexplorer.show();
+    launcher.show();
 
     return a.exec();
 

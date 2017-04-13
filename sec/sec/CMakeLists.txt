@@ -11,7 +11,8 @@ set(SOURCES
     simplesources.cpp
     synchronization.cpp
     sec.cpp
-    resultscollector.cpp)
+    resultscollector.cpp
+    argumentparser.cpp)
 
 set(HEADERS
     commons.h
@@ -28,7 +29,8 @@ set(HEADERS
     source.h
     synchronization.h
     sec.h
-    resultscollector.h)
+    resultscollector.h
+    argumentparser.h)
 
 if(BUILD_GUI)
     set(CMAKE_AUTOMOC ON)
