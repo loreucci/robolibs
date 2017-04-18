@@ -142,7 +142,7 @@ void Controller::executeThread(ExecThread* et) {
         auto start = std::chrono::system_clock::now();
 
         // exec nodes
-        for (auto n : et->nodes) {;
+        for (auto n : et->nodes) {
             if (n->getDelay() > threadtime) {
                 continue;
             }
@@ -155,15 +155,23 @@ void Controller::executeThread(ExecThread* et) {
             if (endfun())
                 endcond = true;
 
-        // check if the thread execution time exceeded max
-        std::chrono::duration<double> diff = std::chrono::system_clock::now()-start;
-        if (diff.count() > maxtime) {
-            std::cerr << "Warning: this thread is too slow to run @ " << et->nodes.front()->getFrequency() << "Hz.";
-            std::cerr << " (actual: " << 1.0/diff.count() << "Hz)\n";
+        if (synchronizer.isSynchronous()) {
+            et->sem.completion_notify();
+        } else {
+            // check if the thread execution time exceeded max
+            std::chrono::duration<double> diff = std::chrono::system_clock::now()-start;
+            if (diff.count() > maxtime) {
+                std::cerr << "Warning: this thread is too slow to run @ " << et->nodes.front()->getFrequency() << "Hz.";
+                std::cerr << " (actual: " << 1.0/diff.count() << "Hz)\n";
+            }
         }
 
         threadtime += 1.0 / et->nodes.front()->getFrequency();
 
+    }
+
+    if (synchronizer.isSynchronous()) {
+        et->sem.completion_notify();
     }
 
 }
@@ -209,6 +217,14 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
         return t1.nodes.front()->getFrequency() < t2.nodes.front()->getFrequency();
     });
 
+    // check for same frequency in synchronous mode
+    if (synchronizer.isSynchronous()) {
+        for (unsigned int i = 0; i < threads.size()-1; i++) {
+            if (threads[i].nodes.front()->getFrequency() != threads[i+1].nodes.front()->getFrequency())
+                throw std::runtime_error("Controller: synchronous mode is not compatible with multi-frequencies executions.");
+        }
+    }
+
     // create threads
     for (unsigned int i = 0; i < threads.size()-1; i++) {
         threads[i].t = new std::thread(&Controller::executeThread, this, &threads[i]);
@@ -231,8 +247,8 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     // run main
     synchronizer.start();
     executeThread(&threads.back());
-    synchronizer.quitAll();
     synchronizer.stop();
+    synchronizer.quitAll();
 
     // join all
     for (auto& th : threads) {

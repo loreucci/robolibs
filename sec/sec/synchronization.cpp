@@ -2,23 +2,32 @@
 
 #include <thread>
 
-#include <iostream> //debug only
-
 
 namespace sec {
 
 Semaphore::Semaphore()
     :mtx(new std::mutex()),
-     cv(new std::condition_variable()),
-     end(new std::atomic_bool(false)) { }
+      completion_mtx(new std::mutex()),
+      cv(new std::condition_variable()),
+      completion_cv(new std::condition_variable()),
+      end(new std::atomic_bool(false)),
+      wakeup_flag(new std::atomic_bool(false)),
+      completion_flag(new std::atomic_bool(false)) {
+
+}
 
 void Semaphore::wait() {
     std::unique_lock<std::mutex> lk(*mtx);
-    cv->wait(lk);
+    while(!*wakeup_flag)
+        cv->wait(lk);
+    *wakeup_flag = false;
     lk.unlock();
 }
 
 void Semaphore::wakeup() {
+    std::unique_lock<std::mutex> lk(*mtx);
+    *wakeup_flag = true;
+    lk.unlock();
     cv->notify_one();
 }
 
@@ -32,7 +41,23 @@ void Semaphore::sendquit() {
 
     *end = true;
     wakeup();
+    completion_notify();
 
+}
+
+void Semaphore::completion_wait() {
+    std::unique_lock<std::mutex> lk(*completion_mtx);
+    while (!*completion_flag)
+        completion_cv->wait(lk);
+    *completion_flag = false;
+    lk.unlock();
+}
+
+void Semaphore::completion_notify() {
+    std::unique_lock<std::mutex> lk(*completion_mtx);
+    *completion_flag = true;
+    lk.unlock();
+    completion_cv->notify_one();
 }
 
 
@@ -115,12 +140,18 @@ void SemaphoreQueue::quitAll() {
     }
 }
 
-void SemaphoreQueue::print() {
-    std::cout << "( ";
-    for (SemaphoreQueueItem& sqi : queue) {
-        std::cout << sqi.getRemaining() << " ";
+double SemaphoreQueue::getTotalTime() {
+    double time = 0.0;
+    for (const auto& sqi : queue) {
+        time += sqi.getRemaining() - time;
     }
-    std::cout << ")\n";
+    return time;
+}
+
+void SemaphoreQueue::waitForAllCompletion() {
+    for (auto& sqi : queue) {
+        sqi.getSemaphore().completion_wait();
+    }
 }
 
 void SemaphoreQueue::insert(SemaphoreQueueItem& sqi) {
@@ -164,6 +195,10 @@ void Synchronizer::setSleeper(Sleeper* sleeper) {
     this->sleeper = std::shared_ptr<Sleeper>(sleeper);
 }
 
+bool Synchronizer::isSynchronous() {
+    return sleeper->isSynchronous();
+}
+
 Semaphore Synchronizer::registerSignal(double frequency) {
 
     double time = 1.0/frequency*1000.0; // time is in milliseconds
@@ -201,12 +236,23 @@ void Synchronizer::stop() {
 
 void Synchronizer::run() {
 
-    while (!stop_flag) {
-        auto sqi = sq.advance();
-        double remtime = sqi.getRemaining();
-        sleeper->sleep(remtime);
-        time += remtime;
-        sqi.getSemaphore().wakeup();
+    if (sleeper->isSynchronous()) {
+        // SYNCHRONOUS MODE
+        while (!stop_flag) {
+            sq.wakeAll();
+            time += sq.getTotalTime();
+            sq.waitForAllCompletion();
+        }
+
+    } else {
+        // REALTIME MODE
+        while (!stop_flag) {
+            auto sqi = sq.advance();
+            double remtime = sqi.getRemaining();
+            sleeper->sleep(remtime);
+            time += remtime;
+            sqi.getSemaphore().wakeup();
+        }
     }
 
 }
@@ -217,10 +263,6 @@ void Synchronizer::sleep(double ms) {
 
 double Synchronizer::getTime() {
     return time/1000.0;
-}
-
-void Synchronizer::print() {
-    sq.print();
 }
 
 Synchronizer synchronizer;

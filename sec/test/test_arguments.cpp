@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     sec::argument_parser.addArgument("prova23", "ciao");
 
-    sec::argument_parser.printArgs();
+//    sec::argument_parser.printArgs();
 
 //    std::cout << sec::argument_parser.getValue<double>("prova") << std::endl;
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     sec::argument_parser.parseArguments(argc, argv);
 
 //    std::cout << "\n\n";
-    sec::argument_parser.printArgs();
+//    sec::argument_parser.printArgs();
 
     sec::argument_parser.saveArgsToFile();
 

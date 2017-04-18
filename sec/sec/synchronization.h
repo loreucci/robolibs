@@ -23,10 +23,13 @@ public:
     bool shouldquit();
     void sendquit();
 
+    void completion_wait();
+    void completion_notify();
+
 protected:
-    std::shared_ptr<std::mutex> mtx;
-    std::shared_ptr<std::condition_variable> cv;
-    std::shared_ptr<std::atomic_bool> end;
+    std::shared_ptr<std::mutex> mtx, completion_mtx;
+    std::shared_ptr<std::condition_variable> cv, completion_cv;
+    std::shared_ptr<std::atomic_bool> end, wakeup_flag, completion_flag;
 
 };
 
@@ -43,8 +46,6 @@ public:
     Semaphore& getSemaphore();
 
     void decreaseTime(double t);
-
-//    friend bool operator<(const SemaphoreQueueItem& sqi1, const SemaphoreQueueItem& sqi2);
 
 protected:
 
@@ -68,7 +69,8 @@ public:
     void wakeAll();
     void quitAll();
 
-    void print(); //debug only
+    double getTotalTime();
+    void waitForAllCompletion();
 
 protected:
     std::deque<SemaphoreQueueItem> queue;
@@ -85,6 +87,7 @@ public:
     ~Synchronizer();
 
     void setSleeper(Sleeper* sleeper);
+    bool isSynchronous();
 
     Semaphore registerSignal(double frequency);
 
@@ -94,13 +97,9 @@ public:
     void start();
     void stop();
 
-    void run();
-
     void sleep(double ms);
 
     double getTime();
-
-    void print(); //debug only
 
 protected:
     bool started;
@@ -110,6 +109,8 @@ protected:
     std::atomic_bool stop_flag;
     std::thread* t;
     double time;
+
+    void run();
 
 };
 
