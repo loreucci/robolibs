@@ -1,13 +1,15 @@
 set(SOURCES vector.cpp
             utilities.cpp
             derivatives.cpp
-            signals.cpp)
+            signals.cpp
+            chrono.cpp)
 
 set(HEADERS vector.h
             utilities.h
             message.h
             derivatives.h
-            signals.h)
+            signals.h
+            chrono.h)
 
 
 add_library(utilities SHARED ${SOURCES} ${HEADERS})
