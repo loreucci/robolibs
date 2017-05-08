@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <cmath>
+#include <algorithm>
 
 
 namespace Utils {
@@ -69,7 +70,7 @@ double dot(const Vector& v1, const Vector& v2) {
     if (v1.size() != v2.size())
         throw std::invalid_argument("Vector sizes mismatch.");
 
-    return std::inner_product(v1.begin(), v2.end(), v1.begin(), 0.0);;
+    return std::inner_product(v1.begin(), v1.end(), v2.begin(), 0.0);;
 
 }
 
@@ -122,6 +123,48 @@ std::ostream&operator<<(std::ostream& o, const Vector& v) {
         o << v[i] << " ";
 
     return o;
+
+}
+
+Vector rangeNormalization(const Vector& v, double outmin, double outmax) {
+
+    double inmax = *std::max_element(v.begin(), v.end());
+    double inmin = *std::min_element(v.begin(), v.end());
+
+    Vector ret = v;
+    for (double& d : ret) {
+        d = (d-inmin)/(inmax-inmin)*(outmax-outmin)+outmin;
+    }
+
+    return ret;
+
+}
+
+Vector rangeNormalization(const Vector& v, const Vector& inmin, const Vector& inmax, double outmin, double outmax) {
+
+    if ((v.size() != inmin.size()) || (v.size() != inmax.size()))
+        throw std::invalid_argument("Vector sizes mismatch.");
+
+    Vector ret = v;
+    for (unsigned int i = 0; i < v.size(); i++) {
+        ret[i] = (ret[i]-inmin[i])/(inmax[i]-inmin[i])*(outmax-outmin)+outmin;
+    }
+
+    return ret;
+
+}
+
+Vector rangeNormalization(const Vector& v, double inmin, double inmax, const Vector& outmin, const Vector& outmax) {
+
+    if ((v.size() != outmin.size()) || (v.size() != outmax.size()))
+        throw std::invalid_argument("Vector sizes mismatch.");
+
+    Vector ret = v;
+    for (unsigned int i = 0; i < v.size(); i++) {
+        ret[i] = (ret[i]-inmin)/(inmax-inmin)*(outmax[i]-outmin[i])+outmin[i];
+    }
+
+    return ret;
 
 }
 

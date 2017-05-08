@@ -143,8 +143,43 @@ double squaredDistance(const Vector& v1, const Vector& v2);
 Vector subvector(const Vector& v, unsigned int start, unsigned int end);
 
 
+//! Vector range normalization
+/*!
+  Scale the Vector elements from [min(v); max(v)] to [outmin; outmax].
+  \param v source Vector.
+  \param outmin minimum scaled value.
+  \param outmax maximum scaled value.
+  \return range normalized vector.
+*/
+Vector rangeNormalization(const Vector& v, double outmin = 0, double outmax = 1);
+
+//! Vector range normalization
+/*!
+  Scale the Vector element i from [inmin(i); inmax(i)] to [outmin; outmax].
+  \param v source Vector.
+  \param inmin minimum value for each element.
+  \param inmax maximum value for each element.
+  \param outmin minimum scaled value.
+  \param outmax maximum scaled value.
+  \return range normalized vector.
+*/
+Vector rangeNormalization(const Vector& v, const Vector& inmin, const Vector& inmax, double outmin, double outmax);
+
+//! Vector range normalization
+/*!
+  Scale the Vector element i from [inmin, inmax] to [outmin(i); outmax(i)].
+  \param v source Vector.
+  \param inmin minimum value.
+  \param inmax maximum value.
+  \param outmin minimum scaled value for each element.
+  \param outmax maximum scaled value for each element.
+  \return range normalized vector.
+*/
+Vector rangeNormalization(const Vector& v, double inmin, double inmax, const Vector& outmin, const Vector& outmax);
+
 //! Insertion operator on Vectors.
 /*!
+  The elements will be separated by spaces.
   \param o output stream.
   \param v Vector to be inserted into the stream.
   \return output stream.

@@ -6,6 +6,8 @@
 
 #include "utilities/utilities.h"
 
+#include <cmath>
+
 #include <iostream>
 #undef NDEBUG
 #include <cassert>
@@ -33,8 +35,9 @@ int main(void) {
     assert(k * v1 == v1 * k);
 
     // dot
-    assert(dot(v1, v2) == 32);
+    assert(std::abs(dot(v1, v2) - 32) < 0.01);
 
+    std::cout << rangeNormalization(v2) << std::endl;
 
     return 0;
 
