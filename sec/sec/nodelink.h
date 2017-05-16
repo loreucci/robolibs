@@ -11,6 +11,7 @@
 #include <utility>
 #include <stdexcept>
 #include <vector>
+#include <functional>
 
 // TODO: consider using a condition_variable
 
@@ -142,6 +143,26 @@ public:
 
 protected:
     const NodeOut<A>* nodeout;
+
+};
+
+
+template <typename A, typename B>
+class LinkFunction : public LinkSource<B> {
+
+public:
+
+    LinkFunction(const NodeOut<A>* nodeout, std::function<B(A)> fun)
+        :nodeout(nodeout), fun(fun) {}
+
+    virtual std::pair<B, unsigned int> getData() const override {
+        auto r = nodeout->getData();
+        return std::make_pair(fun(r.first), r.second);
+    }
+
+protected:
+    const NodeOut<A>* nodeout;
+    std::function<B(A)> fun;
 
 };
 

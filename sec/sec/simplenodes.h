@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
+#include <functional>
 
 #include <utilities/utilities.h>
 
@@ -179,6 +180,30 @@ template <typename T>
 void connect(DictionaryNode<T>& source, const std::string& out, DictionaryNode<T>& sink, const std::string& in) {
 
     sink.input(in).connect(&(source.output(out)));
+    main_controller.registerConnection(&source, &sink);
+
+}
+
+template <class C1, typename T>
+void connect(C1& source, NodeOut<T> C1::* out, DictionaryNode<T>& sink, const std::string& in, std::function<T(T)> fun) {
+
+    sink.input(in).connect(new LinkFunction<T, T>(&(source.*out), fun));
+    main_controller.registerConnection(&source, &sink);
+
+}
+
+template <class C2, typename T>
+void connect(DictionaryNode<T>& source, const std::string& out, C2& sink, NodeIn<T> C2::* in, std::function<T(T)> fun) {
+
+    (sink.*in).connect(new LinkFunction<T, T>(&(source.output(out)), fun));
+    main_controller.registerConnection(&source, &sink);
+
+}
+
+template <typename T>
+void connect(DictionaryNode<T>& source, const std::string& out, DictionaryNode<T>& sink, const std::string& in, std::function<T(T)> fun) {
+
+    sink.input(in).connect(new LinkFunction<T, T>(&(source.output(out)), fun));
     main_controller.registerConnection(&source, &sink);
 
 }
