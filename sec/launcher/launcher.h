@@ -39,8 +39,11 @@ protected:
     QProcess* process = nullptr;
 
     // stuff for initialization
-    bool initialized;
+    enum State {CHOOSE, LAUNCH, EXEC};
+    State currentstate;
     QLineEdit* execedit = nullptr;
+
+    QTimer* timer;
 
     QAction *startAct = nullptr, *stopAct = nullptr, *killAct = nullptr;
 

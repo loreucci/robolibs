@@ -14,13 +14,16 @@
 
 #include <QDebug>
 
+#include "dataoutwidget.h"
+
 
 const QString defaultname = "args.txt";
+const QString defaultdatasocketarg = QString::fromStdString(sec::launchersocketarg);
 
 Launcher::Launcher(QWidget* parent)
     :QMainWindow(parent) {
 
-    initialized = false;
+    currentstate = CHOOSE;
 
     QMenu* menuFile = menuBar()->addMenu("File");
     menuFile->addAction("Select file", this, SLOT(selectFile()));
@@ -32,7 +35,7 @@ Launcher::Launcher(QWidget* parent)
     QToolBar* toolbar = addToolBar("main_toolbar");
     addToolBar(Qt::BottomToolBarArea, toolbar);
 
-    if (!initialized) {
+    if (currentstate == CHOOSE) {
         startAct = new QAction("Start (gen-only)", this);
     } else {
         startAct = new QAction("Start", this);
@@ -58,7 +61,7 @@ Launcher::Launcher(QWidget* parent)
     lastfile = defaultname;
 
     // check for changes
-    QTimer* timer = new QTimer(this);
+    timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkChanged()));
     timer->start(1000);
 
@@ -87,8 +90,9 @@ void Launcher::selectFile() {
 bool Launcher::openfile(QString filename) {
 
     QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false;
+    }
 
     QList<Entry> _args;
 
@@ -114,17 +118,25 @@ bool Launcher::openfile(QString filename) {
         _l << e.name;
     }
     _l.sort();
-    if (l == _l)
-        return false;
+    if (l == _l) {
+        if (currentstate != LAUNCH) {
+            currentstate = LAUNCH;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     args.clear();
     args = _args;
     for (auto& e : args) {
+        if (e.name == defaultdatasocketarg)
+            continue;
         e.edit = new QLineEdit(this);
         e.edit->setText(e.value);
     }
 
-    initialized = true;
+    currentstate = LAUNCH;
     if (startAct != nullptr)
         startAct->setText("Start");
     return true;
@@ -155,35 +167,64 @@ void Launcher::closeEvent(QCloseEvent* event) {
 
 void Launcher::createContent() {
 
-    QWidget* central = new QWidget(this);
 
-    QFormLayout* layout = new QFormLayout(central);
-    central->setLayout(layout);
+    if (currentstate == CHOOSE) {
 
-    if (!initialized) {
+        QWidget* central = new QWidget(this);
+        QFormLayout* layout = new QFormLayout(central);
+        central->setLayout(layout);
 
         execedit = new QLineEdit(central);
         layout->addRow("Executable:", execedit);
 
-    } else {
+        if (centralWidget() != nullptr)
+            centralWidget()->deleteLater();
+        setCentralWidget(central);
+
+    } else if (currentstate == LAUNCH) {
+
+        QWidget* central = new QWidget(this);
+        QFormLayout* layout = new QFormLayout(central);
+        central->setLayout(layout);
 
         layout->addRow("Executable:", new QLabel(execname, central));
 
         for (int i = 0; i < args.size(); i++) {
+            if (args[i].name == defaultdatasocketarg)
+                continue;
             layout->addRow(args[i].name, args[i].edit);
         }
-    }
 
-    if (centralWidget() != nullptr)
-        centralWidget()->deleteLater();
-    setCentralWidget(central);
+        if (centralWidget() != nullptr)
+            centralWidget()->deleteLater();
+        setCentralWidget(central);
+
+    } if (currentstate == EXEC) {
+
+        int i = 0;
+        for (; i < args.size(); i++) {
+            if (args[i].name == defaultdatasocketarg)
+                break;
+        }
+        if (i < args.size()) {
+            DataOutWidget* central = new DataOutWidget(args[i].value, this);
+            if (centralWidget() != nullptr)
+                centralWidget()->deleteLater();
+            setCentralWidget(central);
+        }
+
+    }
 
 }
 
 void Launcher::processStarted() {
+    timer->stop();
+    if (currentstate != CHOOSE)
+        currentstate = EXEC;
     startAct->setEnabled(false);
     stopAct->setEnabled(true);
     killAct->setEnabled(true);
+    createContent();
 }
 
 void Launcher::processEnded(int, QProcess::ExitStatus) {
@@ -192,6 +233,9 @@ void Launcher::processEnded(int, QProcess::ExitStatus) {
     killAct->setEnabled(false);
     process->deleteLater();
     process = nullptr;
+    timer->start(1000);
+    currentstate = CHOOSE;
+    checkChanged();
 }
 
 void Launcher::processError(QProcess::ProcessError error) {
@@ -206,12 +250,17 @@ void Launcher::processOutput() {
 
 void Launcher::execstart(bool) {
 
+    if (currentstate == EXEC)
+        return;
+
     // get args
     QStringList arglist;
-    if (!initialized) {
+    if (currentstate == CHOOSE) {
         arglist << "--gen-only";
     } else {
         for (auto& a : args) {
+            if (a.name == defaultdatasocketarg)
+                continue;
             arglist << "--" + a.name;
             arglist << a.edit->text();
         }
@@ -226,7 +275,7 @@ void Launcher::execstart(bool) {
     connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
 
-    if (!initialized) {
+    if (currentstate == CHOOSE) {
         process->start(execedit->text(), arglist);
     } else {
         process->start(execname, arglist);
