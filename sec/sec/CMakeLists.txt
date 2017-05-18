@@ -37,8 +37,10 @@ if(BUILD_GUI)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
     find_package(Qt5Core REQUIRED)
     find_package(Qt5Network REQUIRED)
-    set(SOURCES ${SOURCES} plottingclient.cpp)
-    set(HEADERS ${HEADERS} plottingclient.h)
+    set(SOURCES ${SOURCES} plottingclient.cpp
+                           socketdataexchange.cpp)
+    set(HEADERS ${HEADERS} plottingclient.h
+                           socketdataexchange.h)
 endif(BUILD_GUI)
 
 add_library(sec SHARED ${SOURCES} ${HEADERS})

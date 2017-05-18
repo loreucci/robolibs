@@ -15,4 +15,6 @@ add_new_test(test_synch test_synch.cpp)
 
 if(BUILD_GUI)
     add_new_test(test_plot test_plot.cpp)
+    add_new_test(test_dataexchangeserver test_dataexchangeserver.cpp)
+    add_new_test(test_dataexchangeclient test_dataexchangeclient.cpp)
 endif(BUILD_GUI)
