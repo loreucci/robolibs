@@ -6,11 +6,20 @@ namespace py = boost::python;
 
 namespace nest {
 
+HasGIDList::HasGIDList(const boost::python::tuple& gids) {
+
+    this->gids = py::list(gids);
+
+    if (py::len(this->gids) == 0)
+        throw std::invalid_argument("ParameterSetter/Getter: cannot be executed on empty list.");
+
+}
+
 HasGIDList::HasGIDList(const boost::python::list& gids)
     :gids(gids) {
 
     if (py::len(gids) == 0)
-        throw std::invalid_argument("ParameterSetter: cannot be executed on empty list.");
+        throw std::invalid_argument("ParameterSetter/Getter: cannot be executed on empty list.");
 
 }
 
@@ -20,7 +29,7 @@ HasGIDList::HasGIDList(const std::vector<unsigned int>& gidsv) {
     }
 
     if (py::len(gids) == 0)
-        throw std::invalid_argument("ParameterSetter: cannot be executed on empty list.");
+        throw std::invalid_argument("ParameterSetter/Getter: cannot be executed on empty list.");
 }
 
 HasGIDList::HasGIDList(std::initializer_list<unsigned int> l)

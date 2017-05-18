@@ -48,6 +48,7 @@ protected:
 class HasGIDList {
 
 public:
+    explicit HasGIDList(const boost::python::tuple& gids);
     explicit HasGIDList(const boost::python::list& gids);
     explicit HasGIDList(const std::vector<unsigned int>& gidsv);
     explicit HasGIDList(std::initializer_list<unsigned int> l);
