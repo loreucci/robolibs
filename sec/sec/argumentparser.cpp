@@ -7,6 +7,14 @@ namespace sec {
 
 
 template <>
+Any::Any(bool val) {
+    if (val)
+        value = "true";
+    else
+        value = "false";
+}
+
+template <>
 Any::Any(std::string val) {
     value = val;
 }
@@ -16,8 +24,16 @@ sec::Any::Any(const char* val) {
     value = std::string(val);
 }
 
+template<>
+bool Any::getValue() const {
+    bool ret;
+    std::stringstream ss(value);
+    ss >> std::boolalpha >> ret;
+    return ret;
+}
+
 template <>
-std::string Any::getValue() const{
+std::string Any::getValue() const {
     return value;
 }
 

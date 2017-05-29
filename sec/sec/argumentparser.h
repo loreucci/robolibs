@@ -35,10 +35,16 @@ protected:
 };
 
 template <>
+Any::Any(bool val);
+
+template <>
 Any::Any(std::string val);
 
 template <>
 Any::Any(const char* val);
+
+template<>
+bool Any::getValue() const;
 
 template <>
 std::string Any::getValue() const;
