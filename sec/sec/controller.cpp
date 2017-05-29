@@ -25,6 +25,27 @@ Controller::Controller() {
 
 }
 
+Controller::~Controller() {
+
+    std::vector<Node*> todel;
+    for (auto& bucket : nodes) {
+        for (auto& n : bucket.second) {
+            todel.push_back(n);
+        }
+        bucket.second.clear();
+    }
+    nodes.clear();
+    for (const auto& n : singleThreadNodes) {
+        todel.push_back(n.second);
+    }
+    singleThreadNodes.clear();
+
+    for (unsigned int i = 0; i < todel.size(); i++) {
+        delete todel[i];
+    }
+
+}
+
 void Controller::addNode(sec::Node* node) {
 
     if (node->getFrequency() > maxfreq)
@@ -53,6 +74,15 @@ void Controller::registerConnection(Node* source, Node* sink) {
 
     adj[source].push_front(sink);
     adj[sink].push_front(source);
+
+}
+
+void Controller::removeNode(Node* node) {
+
+    for (auto& bucket : nodes) {
+        bucket.second.remove_if([node](sec::Node* n){return n->ID == node->ID;});
+    }
+    std::remove_if(singleThreadNodes.begin(), singleThreadNodes.end(), [node](std::pair<double, Node*> p){return p.second->ID == node->ID;});
 
 }
 

@@ -25,10 +25,12 @@ class Controller {
 
 public:
     Controller();
+    ~Controller();
 
     void addNode(Node* node);
     void moveNode(Node* node, double old_freq);
     void registerConnection(Node* source, Node* sink);
+    void removeNode(Node* node);
 
 
     std::pair<bool, std::vector<Node*>> checkConnections() const;

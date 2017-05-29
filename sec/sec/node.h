@@ -20,6 +20,12 @@ class Node {
 public:
     Node(double freq = 0.0);
 
+    // Node is not MoveConstructible, CopyConstructible, MoveAssignable or CopyAssignable
+    Node(Node&&) = delete;
+    Node(const Node&) = delete;
+    Node& operator=(Node&&) = delete;
+    Node& operator=(const Node&) = delete;
+
     virtual ~Node();
 
     virtual void setFrequency(double freq) final;

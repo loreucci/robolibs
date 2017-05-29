@@ -18,7 +18,11 @@ Node::Node(double freq)
 
 }
 
-Node::~Node() {}
+Node::~Node() {
+
+    main_controller.removeNode(this);
+
+}
 
 void Node::setFrequency(double freq) {
 
