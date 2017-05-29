@@ -73,18 +73,19 @@ void Controller::sortNodes() {
     }
 }
 
-bool Controller::checkConnections() const {
+std::pair<bool, std::vector<Node*>> Controller::checkConnections() const {
+    std::vector<Node*> disc;
     for (const auto& bucket : nodes) {
         for (const auto& n : bucket.second) {
             if (!n->connected())
-                return false;
+                disc.push_back(n);
         }
     }
     for (const auto& n : singleThreadNodes) {
         if (!n.second->connected())
-            return false;
+            disc.push_back(n.second);
     }
-    return true;
+    return std::make_pair(disc.empty(), disc);
 }
 
 void Controller::adjustFrequencies() {
@@ -183,8 +184,13 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     std::signal(SIGTERM, handler);
 
     // check everything
-    if (!checkConnections())
-        throw std::runtime_error("Controller: some nodes are not connected.");
+    auto connected = checkConnections();
+    if (!connected.first) {
+        std::string disc;
+        for (const auto& n : connected.second)
+            disc += n->parameters() + "\n";
+        throw std::runtime_error("Controller: some nodes are not connected:\n\n"+disc);
+    }
 
 
     adjustFrequencies();

@@ -31,7 +31,7 @@ public:
     void registerConnection(Node* source, Node* sink);
 
 
-    bool checkConnections() const;
+    std::pair<bool, std::vector<Node*>> checkConnections() const;
     void adjustFrequencies();
 
     void moveNodeToSingleThread(Node* node);
