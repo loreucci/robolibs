@@ -84,6 +84,12 @@ void saveToFile(const std::string& filename, const std::vector<std::vector<doubl
 
 }
 
+template <>
+std::string make_string(const std::string& t, const std::string& sep) {
+    UTILS_UNUSED(sep);
+    return t;
+}
+
 std::string replace(const std::string& str, const std::string& target, const std::string& repl) {
 
     if (target.length() == 0)

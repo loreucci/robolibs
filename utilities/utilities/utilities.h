@@ -100,7 +100,7 @@ std::string make_string(const T& t, const std::string& sep = "") {
 
 //! Creates a string out of a vector.
 /*!
-  Creates a string out of a vector.
+  Creates a string out of a vector, recursively.
   \param v the vector.
   \param sep separator to be appended after each element, except for last.
   \return the string.
@@ -116,6 +116,18 @@ std::string make_string(const std::vector<T>& v, const std::string& sep = "") {
     ret += Utils::make_string(v[v.size()-1]);
     return ret;
 }
+
+//! Creates a string out of data.
+/*!
+  Base case for std::string.
+  Specific version for std::vector or other types are selected by SFINAE.
+  \param t the data.
+  \param sep unused.
+  \return the string.
+*/
+template <>
+std::string make_string(const std::string& t, const std::string& sep);
+
 
 //! Substring replacement.
 /*!
