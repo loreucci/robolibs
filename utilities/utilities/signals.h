@@ -129,6 +129,18 @@ Signal ramp(double slope, double initialvalue, double starttime = 0.0, double sa
 */
 Signal rampandhold(double slope, double initialvalue, double stoptime, double starttime = 0.0, double samplingfreq = 100.0);
 
+//! Chirp signal.
+/*!
+  Creates a new chirp signal.
+  \param ampl amplitude.
+  \param f0 initial frequency.
+  \param k rate of frequency change (chirpyness).
+  \param phase phase.
+  \param samplingfreq the sampling frequency.
+  \return the chirp Signal.
+*/
+Signal chirp(double ampl, double f0, double k, double phase = 0.0, double samplingfreq = 100.0);
+
 //! Noise signal.
 /*!
   Creates a Gaussian noise signal.
@@ -143,12 +155,14 @@ Signal noise(double mean, double stddev, double samplingfreq = 100.0);
 /*!
   Creates a new switch between two signals that activates after a certain time.
   The first signal will be the ouput before the switching time, the second one after.
+  The second signal can be shifted in time of switchtime so that s2'(switchtime) = s2(0).
   \param s1 first singnal.
   \param s2 second singal.
   \param switchtime time of the switch.
+  \param shift shift flag.
   \param samplingfreq the sampling frequency.
 */
-Signal Switch(Signal s1, Signal s2, double switchtime, double samplingfreq = 100.0);
+Signal Switch(Signal s1, Signal s2, double switchtime, bool shift = false, double samplingfreq = 100.0);
 
 //! BinaryOperation signal.
 /*!

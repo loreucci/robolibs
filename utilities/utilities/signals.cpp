@@ -114,6 +114,23 @@ Signal rampandhold(double slope, double initialvalue, double stoptime, double st
 
 }
 
+Signal chirp(double ampl, double f0, double k, double phase, double samplingfreq) {
+
+    std::string str = "[chirp: ";
+    str += "a=" + std::to_string(ampl) + ", ";
+    str += "f0=" + std::to_string(f0) + ", ";
+    str += "k=" + std::to_string(k) + ", ";
+    str += "phase=" + std::to_string(phase) + "]";
+
+    auto fun = [ampl, f0, k, phase] (unsigned int t, double samplingfreq) {
+        return ampl * std::sin(2*Utils::PI*(f0*t/samplingfreq + k/2*std::pow(t/samplingfreq, 2)) + phase);
+    };
+
+
+    return Signal(fun, str, samplingfreq);
+
+}
+
 Signal noise(double mean, double stddev, double samplingfreq) {
 
     std::random_device rd;
@@ -136,7 +153,7 @@ Signal noise(double mean, double stddev, double samplingfreq) {
 }
 
 
-Signal Switch(Signal s1, Signal s2, double switchtime, double samplingfreq) {
+Signal Switch(Signal s1, Signal s2, double switchtime, bool shift, double samplingfreq) {
 
     if (samplingfreq == 0.0) {
         samplingfreq = s1.getSamplingFreq();
@@ -149,13 +166,18 @@ Signal Switch(Signal s1, Signal s2, double switchtime, double samplingfreq) {
 
     auto f1 = s1.getFunction();
     auto f2 = s2.getFunction();
-    auto fun = [switchtime, f1, f2] (unsigned int t, double samplingfreq) {
+    auto fun = [switchtime, f1, f2, shift] (unsigned int t, double samplingfreq) {
         double out1 = f1(t, samplingfreq);
-        double out2 = f2(t, samplingfreq);
+        double out2;
+        if (!shift)
+            out2 = f2(t, samplingfreq);
 
         if (t/samplingfreq <= switchtime) {
             return out1;
         }
+
+        if (shift)
+            out2 = f2(t-switchtime*samplingfreq, samplingfreq);
         return out2;
     };
 
