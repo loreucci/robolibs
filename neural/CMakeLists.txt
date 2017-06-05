@@ -4,10 +4,10 @@ project ("neural")
 
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(cpp14 "-std=c++14")
+    set(cpp11 "-std=c++11")
 endif()
 if (NOT CONFIGURED_ONCE)
-    set(CMAKE_CXX_FLAGS "${cpp14}"
+    set(CMAKE_CXX_FLAGS "${cpp11}"
         CACHE STRING "Flags used by the compiler during all build types." FORCE)
 endif()
 
