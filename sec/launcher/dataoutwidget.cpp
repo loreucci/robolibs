@@ -95,6 +95,12 @@ DataOutWidget::DataOutWidget(QString socketname, QWidget *parent)
 
 }
 
+DataOutWidget::~DataOutWidget() {
+    timer->stop();
+    dataout->deleteLater();
+    dataout = nullptr;
+}
+
 void DataOutWidget::timerexpired() {
 
     dataout->refreshInputs();

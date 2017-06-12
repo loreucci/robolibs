@@ -42,6 +42,7 @@ class DataOutWidget : public QWidget {
 
 public:
     explicit DataOutWidget(QString socketname, QWidget* parent = nullptr);
+    virtual ~DataOutWidget();
 
 protected:
     sec::SocketDataOut* dataout;

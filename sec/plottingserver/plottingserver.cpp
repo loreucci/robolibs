@@ -42,8 +42,6 @@ void PlottingServer::readMessage() {
 
     QStringList cmd = nextMsg.split(" ");
 
-//    qDebug() << nextMsg;
-
     if (cmd[0] == "addgraph") {             // add new graph
 
         if (cmd.size() < 2) {

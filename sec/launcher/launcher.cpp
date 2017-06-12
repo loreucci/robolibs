@@ -12,8 +12,6 @@
 #include <QTimer>
 #include <QTextStream>
 
-#include <QDebug>
-
 #include "dataoutwidget.h"
 
 
@@ -109,24 +107,24 @@ bool Launcher::openfile(QString filename) {
         row++;
     }
 
-    QStringList l, _l;
-    for (auto& e : args) {
-        l << e.name;
-    }
-    l.sort();
-    for (auto& e : _args) {
-        _l << e.name;
-    }
-    _l.sort();
-    if (l == _l) {
-        if (currentstate != LAUNCH) {
-            currentstate = LAUNCH;
-            return true;
-        } else {
+    // just check whether we need to update the gui
+    if (currentstate == LAUNCH) {
+        QStringList l, _l;
+        for (auto& e : args) {
+            l << e.name;
+        }
+        l.sort();
+        for (auto& e : _args) {
+            _l << e.name;
+        }
+        _l.sort();
+        if (l == _l) {
             return false;
         }
+
     }
 
+    // first time, new args in LAUNCH or we are back from EXEC
     args.clear();
     args = _args;
     for (auto& e : args) {
@@ -164,6 +162,7 @@ void Launcher::closeEvent(QCloseEvent* event) {
     }
 
 }
+
 
 void Launcher::createContent() {
 
@@ -258,7 +257,7 @@ void Launcher::execstart(bool) {
     if (currentstate == CHOOSE) {
         arglist << "--gen-only";
     } else {
-        for (auto& a : args) {
+        for (const auto& a : args) {
             if (a.name == defaultdatasocketarg)
                 continue;
             arglist << "--" + a.name;
@@ -274,6 +273,7 @@ void Launcher::execstart(bool) {
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processEnded(int,QProcess::ExitStatus)));
     connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
+    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(processOutput()));
 
     if (currentstate == CHOOSE) {
         process->start(execedit->text(), arglist);
