@@ -35,6 +35,7 @@ Controller::~Controller() {
         bucket.second.clear();
     }
     nodes.clear();
+
     for (const auto& n : singleThreadNodes) {
         todel.push_back(n.second);
     }
@@ -82,7 +83,8 @@ void Controller::removeNode(Node* node) {
     for (auto& bucket : nodes) {
         bucket.second.remove_if([node](sec::Node* n){return n->ID == node->ID;});
     }
-    std::remove_if(singleThreadNodes.begin(), singleThreadNodes.end(), [node](std::pair<double, Node*> p){return p.second->ID == node->ID;});
+    auto pos = std::remove_if(singleThreadNodes.begin(), singleThreadNodes.end(), [node](std::pair<double, Node*> p){return p.second->ID == node->ID;});
+    singleThreadNodes.erase(pos, singleThreadNodes.end());
 
 }
 
@@ -229,17 +231,17 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     // create thread specs
     std::deque<ExecThread> threads;
 
-    for (auto it : nodes) {
+    for (auto it : singleThreadNodes) {
         ExecThread th{nullptr,
-                      it.second,
+                      {it.second},
                       synchronizer.registerSignal(it.first),
                       std::forward_list<std::function<bool(void)>>()};
         threads.push_back(th);
     }
 
-    for (auto it : singleThreadNodes) {
+    for (auto it : nodes) {
         ExecThread th{nullptr,
-                      {it.second},
+                      it.second,
                       synchronizer.registerSignal(it.first),
                       std::forward_list<std::function<bool(void)>>()};
         threads.push_back(th);
