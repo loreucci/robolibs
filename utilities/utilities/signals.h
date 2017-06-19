@@ -161,6 +161,7 @@ Signal noise(double mean, double stddev, double samplingfreq = 100.0);
   \param switchtime time of the switch.
   \param shift shift flag.
   \param samplingfreq the sampling frequency.
+  \return the switch Signal.
 */
 Signal Switch(Signal s1, Signal s2, double switchtime, bool shift = false, double samplingfreq = 100.0);
 
@@ -171,6 +172,8 @@ Signal Switch(Signal s1, Signal s2, double switchtime, bool shift = false, doubl
   \param s1 first operand.
   \param s2 second operand.
   \param fun binary operator.
+  \param samplingfreq the sampling frequency.
+  \return the resulting Signal.
 */
 Signal BinaryOperation(Signal s1, Signal s2, std::function<double(double, double)> op, double samplingfreq = 100.0);
 
@@ -191,7 +194,7 @@ Signal operator+(Signal s1, Signal s2);
   \param s2 second operand.
   \return Signal representing the subtraction.
 */
-Signal operator-(Signal& s1, Signal& s2);
+Signal operator-(Signal s1, Signal s2);
 
 //! Multiplies operator between Signals.
 /*!
@@ -200,7 +203,7 @@ Signal operator-(Signal& s1, Signal& s2);
   \param s2 second operand.
   \return Signal representing the product.
 */
-Signal operator*(Signal& s1, Signal& s2);
+Signal operator*(Signal s1, Signal s2);
 
 //! Divides operator between Signals.
 /*!
@@ -209,7 +212,7 @@ Signal operator*(Signal& s1, Signal& s2);
   \param s2 second operand.
   \return Signal representing the quotient.
 */
-Signal operator/(Signal& s1, Signal& s2);
+Signal operator/(Signal s1, Signal s2);
 
 
 //! Plus operator between Signals and constants.

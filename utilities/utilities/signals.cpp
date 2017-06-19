@@ -210,15 +210,15 @@ Signal operator+(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::plus<double>());
 }
 
-Signal operator-(Signal& s1, Signal& s2) {
+Signal operator-(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::minus<double>());
 }
 
-Signal operator*(Signal& s1, Signal& s2) {
+Signal operator*(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::multiplies<double>());
 }
 
-Signal operator/(Signal& s1, Signal& s2) {
+Signal operator/(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::divides<double>());
 }
 
