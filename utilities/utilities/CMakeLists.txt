@@ -1,6 +1,7 @@
 set(SOURCES vector.cpp
             utilities.cpp
             derivatives.cpp
+            integrals.cpp
             signals.cpp
             chrono.cpp)
 
@@ -8,6 +9,7 @@ set(HEADERS vector.h
             utilities.h
             message.h
             derivatives.h
+            integrals.h
             signals.h
             chrono.h)
 

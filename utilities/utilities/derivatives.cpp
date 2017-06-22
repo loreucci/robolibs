@@ -3,6 +3,26 @@
 #include <stdexcept>
 #include <cmath>
 
+using namespace Utils;
+
+Derivative::Derivative(double freq)
+    :freq(freq) {}
+
+
+Utils::Vector SimpleDerivative::derive(const Utils::Vector& x) {
+
+    unsigned int sz = x.size();
+
+    if (prev.size() != sz)
+        prev.resize(sz);
+
+    auto der = (x-prev)*freq;
+
+    prev = x;
+    return der;
+
+}
+
 
 int binomialcoeff(int n, int k) {
 
@@ -23,11 +43,11 @@ int binomialcoeff(int n, int k) {
 }
 
 
-Derivative::Derivative(unsigned int N, double freq)
-    :freq(freq) {
+SmoothDerivative::SmoothDerivative(unsigned int N, double freq)
+    :Derivative(freq) {
 
     if (N % 2 != 1 || N < 5)
-        throw std::invalid_argument("DerivativeTop: N must be odd and >= 5.");
+        throw std::invalid_argument("SmoothDerivative: N must be odd and >= 5.");
 
     M = (N-1) / 2;
     m = (N-3) / 2;
@@ -47,7 +67,7 @@ Derivative::Derivative(unsigned int N, double freq)
 
 }
 
-std::vector<double> Derivative::derive(std::vector<double> x) {
+Utils::Vector SmoothDerivative::derive(const Utils::Vector& x) {
 
     // initialize buffers to the proper data size
     if (x.size() != datasize) {
