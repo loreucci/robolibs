@@ -15,8 +15,6 @@
 
 namespace sec {
 
-extern const std::string launchersocketarg;
-
 
 class SocketDataIn : public QObject, public DictionaryNode<double> {
 
@@ -27,7 +25,7 @@ public:
 
     void addExpectedInput(const std::string& name, double val);
 
-    void waitForStart();
+    virtual void waitForStart();
 
     virtual void execute() override;
 

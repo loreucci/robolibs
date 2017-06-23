@@ -38,9 +38,11 @@ if(BUILD_GUI)
     find_package(Qt5Core REQUIRED)
     find_package(Qt5Network REQUIRED)
     set(SOURCES ${SOURCES} plottingclient.cpp
-                           socketdataexchange.cpp)
+                           socketdataexchange.cpp
+                           launcherinterface.cpp)
     set(HEADERS ${HEADERS} plottingclient.h
-                           socketdataexchange.h)
+                           socketdataexchange.h
+                           launcherinterface.h)
 endif(BUILD_GUI)
 
 add_library(sec SHARED ${SOURCES} ${HEADERS})
@@ -49,6 +51,7 @@ target_link_libraries(sec utilities pthread)
 
 if(BUILD_GUI)
     target_link_libraries(sec Qt5::Core Qt5::Network)
+    target_compile_definitions(sec PRIVATE HAS_GUI)
 endif(BUILD_GUI)
 
 install (TARGETS sec DESTINATION lib)

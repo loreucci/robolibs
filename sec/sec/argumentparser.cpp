@@ -2,6 +2,10 @@
 
 #include <fstream>
 
+#ifdef HAS_GUI
+#include "launcherinterface.h"
+#endif
+
 
 namespace sec {
 
@@ -54,10 +58,16 @@ void ArgumentParser::parseArguments(int argc, char* argv[]) {
         std::string str = argv[i];
         if (str[0] == '-' && str[1] == '-') {
             str = str.substr(2);
-            if(str == "gen-only") {
+            if (str == "gen-only") {
                 saveandquit = true;
                 continue;
             }
+#ifdef HAS_GUI
+            if (str == "seclauncher") {
+                setLauncherMode(true);
+                continue;
+            }
+#endif
             auto it = args.find(str);
             if (it != args.end()) {
                 i++;

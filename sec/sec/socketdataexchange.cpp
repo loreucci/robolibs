@@ -7,8 +7,6 @@
 
 namespace sec {
 
-const std::string launchersocketarg("defaultdatasocket");
-
 
 SocketDataIn::SocketDataIn(const std::string& socketname, const std::vector<std::string>& expected, const std::vector<double> values, double freq)
     :QObject(), DictionaryNode<double>({}, {}, freq), socketname(socketname), expected(expected), values(values) {

@@ -13,7 +13,7 @@
 #include <QTextStream>
 
 #include "dataoutwidget.h"
-
+#include "../sec/launcherinterface.h"
 
 const QString defaultname = "args.txt";
 const QString defaultdatasocketarg = QString::fromStdString(sec::launchersocketarg);
