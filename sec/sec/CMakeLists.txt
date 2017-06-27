@@ -12,7 +12,8 @@ set(SOURCES
     synchronization.cpp
     sec.cpp
     resultscollector.cpp
-    argumentparser.cpp)
+    argumentparser.cpp
+    prompter.cpp)
 
 set(HEADERS
     commons.h
@@ -30,7 +31,8 @@ set(HEADERS
     synchronization.h
     sec.h
     resultscollector.h
-    argumentparser.h)
+    argumentparser.h
+    prompter.h)
 
 if(BUILD_GUI)
     set(CMAKE_AUTOMOC ON)

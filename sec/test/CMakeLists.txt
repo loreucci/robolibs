@@ -12,6 +12,7 @@ add_new_test(test_filesource test_filesource.cpp)
 add_new_test(test_results test_results.cpp)
 add_new_test(test_arguments test_arguments.cpp)
 add_new_test(test_synch test_synch.cpp)
+add_new_test(test_prompter test_prompter.cpp)
 
 if(BUILD_GUI)
     add_new_test(test_plot test_plot.cpp)
