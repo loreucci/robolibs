@@ -22,14 +22,14 @@ PlottingClient::~PlottingClient() {
     disconnect();
 }
 
-void PlottingClient::addConnection(NodeOut<double>* out, const QString& name, std::function<double(double)> fun) {
+void PlottingClient::addConnection(LinkSource<double>* out, const QString& name, std::function<double(double)> fun) {
 
     unsigned int id = addGraph(name);
     inputs.push_back(std::make_tuple(id, NodeIn<double>(out), fun));
 
 }
 
-void PlottingClient::addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx, std::function<double(double)> fun) {
+void PlottingClient::addVectorConnection(LinkSource<Utils::Vector>* out, const QString& name, unsigned int idx, std::function<double(double)> fun) {
 
     unsigned int id = addGraph(name);
     inputsvec.push_back(std::make_tuple(id, NodeIn<Utils::Vector>(out), idx, fun));
@@ -151,5 +151,11 @@ QString PlottingClient::readResponse() {
 }
 
 std::function<double(double)> identity_fun = [](double x){return x;};
+
+void connect(NodeOut<double>& out, PlottingClient& sink, const std::string& name, std::function<double (double)> fun) {
+
+    sink.addConnection(&out, QString(name.c_str()), fun);
+
+}
 
 }

@@ -27,8 +27,8 @@ public:
     explicit PlottingClient(double freq = 0.0, QObject *parent = 0);
     virtual ~PlottingClient();
 
-    void addConnection(NodeOut<double>* out, const QString& name, std::function<double(double)> fun);
-    void addVectorConnection(NodeOut<Utils::Vector>* out, const QString& name, unsigned int idx, std::function<double(double)> fun);
+    void addConnection(LinkSource<double>* out, const QString& name, std::function<double(double)> fun);
+    void addVectorConnection(LinkSource<Utils::Vector>* out, const QString& name, unsigned int idx, std::function<double(double)> fun);
 
     void clear();
 
@@ -67,11 +67,31 @@ protected:
 // this function has to created just once in order to avoid a linking error with the templates
 extern std::function<double(double)> identity_fun;
 
+////////////////////////////////////////
+/// New connection style
+void connect(NodeOut<double>& out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun);
 
+template <typename T, typename F>
+void connect(NodeOut<T>& out, PlottingClient& sink, const std::string& name, F fun) {
+
+    sink.addConnection(new LinkFunction<T, double>(&out, fun), QString(name.c_str()), identity_fun);
+
+}
+
+
+////////////////////////////////////////
+/// All of these will be deprecated soon
 template <class C1>
 void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun) {
 
     sink.addConnection(&(source.*out), QString(name.c_str()), fun);
+
+}
+
+template <class C1>
+void connect(C1&, NodeOut<double>* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun) {
+
+    sink.addConnection(out, QString(name.c_str()), fun);
 
 }
 

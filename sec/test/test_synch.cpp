@@ -24,7 +24,7 @@ int main(void) {
 
     sec::PlottingClient plotter(100.0);
     plotter.runOnSingleThread();
-    sec::connect(ss, &sec::SignalSource::output, plotter, "sin");
+    sec::connect(ss.output, plotter, "sin");
 
     sec::run(5.0);
 
