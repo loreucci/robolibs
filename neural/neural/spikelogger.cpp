@@ -1,6 +1,7 @@
 #include "spikelogger.h"
 
 #include <fstream>
+#include <iostream>
 
 #include <sec/commons.h>
 
@@ -62,15 +63,21 @@ void SpikeLogger::addSpikeSource(SpikeNodeOut* source) {
 
 }
 
-void SpikeLogger::logToFile() const {
+bool SpikeLogger::logToFile() const {
 
     std::ofstream file(prefix+filename);
+    if (!file.good()) {
+        std::cerr << "DataLogger: unable to create spike logfile " << prefix + filename << std::endl;
+        return false;
+    }
+
     file << "ID time" << std::endl;
     for (const Spike& sp : data) {
         file << sp.neuron_id << " " << sp.time << std::endl;
     }
 
     file.close();
+    return true;
 
 }
 
