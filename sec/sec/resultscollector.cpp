@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 
 #include <sys/stat.h>
 
@@ -96,17 +97,11 @@ void ResultsCollector::saveAll() {
         return;
 
     // create folder if needed
-    if (mode == FOLDER_MODE) {
-
-        // waiting for filesystem library to make this code standard...
-        // drwxr-xr-x
-        mkdir((basename+"-"+timestamp).c_str(), 0755);
-
-    }
+    bool ok = createFolder();
 
     // save files
     for (auto l : loggers) {
-        l.first->logToFile();
+        ok = l.first->logToFile() && ok;
     }
 
     // log results for ResultsExplorer
@@ -114,20 +109,26 @@ void ResultsCollector::saveAll() {
 
     saved = true;
 
-    std::cout << "Results saved to file." << std::endl;
+    if (ok)
+        std::cout << "Results saved to file." << std::endl;
+    else
+        std::cerr << "Error logging some files." << std::endl;
 
 }
 
-void ResultsCollector::createFolder() {
+bool ResultsCollector::createFolder() {
 
     if (folder_created)
-        return;
+        return true;
 
     if (mode == FOLDER_MODE) {
 
         // waiting for filesystem library to make this code standard...
         // drwxr-xr-x
-        mkdir((basename+"-"+timestamp).c_str(), 0755);
+        if (mkdir((basename+"-"+timestamp).c_str(), 0755) == -1) {
+            std::cerr << "ResultsCollector: error while creating the folder. " << std::strerror(errno) << std::endl;
+            return false;
+        }
 
     }
 

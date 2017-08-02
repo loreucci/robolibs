@@ -11,7 +11,7 @@ namespace sec {
 class Logger {
 
 public:
-    virtual void logToFile() const = 0;
+    virtual bool logToFile() const = 0;
 
 };
 
@@ -48,7 +48,7 @@ public:
     void saveAll();
 
     // it can be used if external results need to be saved before the end of the experiment
-    void createFolder();
+    bool createFolder();
 
 protected:
     std::string basename, timestamp;

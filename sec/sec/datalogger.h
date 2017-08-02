@@ -38,7 +38,7 @@ public:
     // maybe it's useless?
     void reset();
 
-    virtual void logToFile() const override;
+    virtual bool logToFile() const override;
 
 protected:
     std::string filename, separator, prefix;
