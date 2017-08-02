@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <chrono>
+#include <iostream>
 
 #include "commons.h"
 
@@ -57,11 +58,16 @@ void DataLogger::reset() {
     deleteall();
 }
 
-void DataLogger::logToFile() const {
+bool DataLogger::logToFile() const {
 
     std::ofstream file(prefix + filename);
+    if (!file.good()) {
+        std::cerr << "DataLogger: unable to create logfile " << prefix + filename << std::endl;
+        return false;
+    }
     toFile(file);
     file.close();
+    return true;
 
 }
 

@@ -15,9 +15,9 @@ int main(void) {
     Dummy1 d1(100.0);
     Dummy2 d2(20.0);
 
-    sec::connect(d1.output, d2.input);
+//    sec::connect(&d1.output, &d2.input);
 //    sec::connect(d2.output, d1.input, funct);
-    sec::connect(d2.output, d1.input, [](std::vector<double> x){return 10.0*x[0];});
+//    sec::connect(&d2.output, &d1.input, [](std::vector<double> x){return 10.0*x[0];});
 
     Dummy2* d3 = new Dummy2(100.0);
     Dummy2* d4 = new Dummy2(20.0);
