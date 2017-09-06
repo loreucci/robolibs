@@ -133,6 +133,7 @@ bool ResultsCollector::createFolder() {
     }
 
     folder_created = true;
+    return true;
 }
 
 void ResultsCollector::createExplorerEntry() {
