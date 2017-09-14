@@ -263,6 +263,7 @@ void Launcher::execstart(bool) {
             arglist << "--" + a.name;
             arglist << a.edit->text();
         }
+        arglist << "--seclauncher";
     }
 
     // spawn process
