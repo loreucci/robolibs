@@ -43,7 +43,8 @@ int main(int argc, char* argv[]) {
     sec::SignalSource ss(s, 100.0);
 
     sec::Printer printer(" ", 100.0);
-    sec::connect(ss, &sec::SignalSource::output, printer, " ");
+//    sec::connect(ss, &sec::SignalSource::output, printer, " ");
+    sec::connect(ss.output, printer, " ");
 
     sec::run(sec::getArgumentValue<double>("duration"));
 

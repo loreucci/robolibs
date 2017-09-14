@@ -168,6 +168,13 @@ void connect(C1& source, NodeOut<T> C1::* out, DictionaryNode<T>& sink, const st
 
 }
 
+template <typename T>
+void connect(NodeOut<T>* out, DictionaryNode<T>& sink, const std::string& in) {
+
+    sink.input(in).connect(out);
+
+}
+
 template <class C2, typename T>
 void connect(DictionaryNode<T>& source, const std::string& out, C2& sink, NodeIn<T> C2::* in) {
 

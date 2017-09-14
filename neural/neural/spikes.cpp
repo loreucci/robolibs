@@ -96,3 +96,8 @@ void sec::connect(neural::SpikeNodeOut* out, neural::SpikeNodeIn* in) {
     in->connect(out);
     out->addConnection(in);
 }
+
+void sec::connect(neural::SpikeNodeOut& out, neural::SpikeNodeIn& in) {
+    in.connect(&out);
+    out.addConnection(&in);
+}

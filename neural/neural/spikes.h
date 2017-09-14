@@ -85,6 +85,15 @@ protected:
 
 namespace sec {
 
+
+////////////////////////////////////////
+/// New connection style
+void connect(neural::SpikeNodeOut& out, neural::SpikeNodeIn& in);
+
+
+////////////////////////////////////////
+/// All of these will be deprecated soon
+
 // this will not register the connection,
 // but it may be useful if the links are not
 // in nodes
