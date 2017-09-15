@@ -15,6 +15,6 @@ set(HEADERS vector.h
 
 
 add_library(utilities SHARED ${SOURCES} ${HEADERS})
-install (TARGETS utilities DESTINATION lib)
-install (FILES ${HEADERS}
-         DESTINATION include/utilities)
+target_include_directories(utilities PUBLIC ..)
+install (TARGETS utilities DESTINATION lib COMPONENT libonly)
+install (FILES ${HEADERS} DESTINATION include/utilities COMPONENT libonly)

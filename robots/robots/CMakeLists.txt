@@ -53,6 +53,8 @@ endif(WITH_GAZEBO)
 
 add_library(robots SHARED ${SOURCES} ${HEADERS})
 
+target_include_directories(robots PUBLIC ..)
+
 target_link_libraries(robots utilities sec)
 
 # iCub dependencies
@@ -62,26 +64,21 @@ endif(WITH_ICUB)
 
 # Gazebo dependencies
 if(WITH_GAZEBO)
-    find_package(catkin REQUIRED COMPONENTS
-      roscpp
-      gazebo_ros
-    )
-    find_package(gazebo REQUIRED)
-    include_directories(${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
-    link_directories(${GAZEBO_LIBRARY_DIRS})
-    target_link_libraries(robots ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+    find_package(roscpp REQUIRED)
+    find_package(gazebo_ros REQUIRED)
+    include_directories(${roscpp_INCLUDE_DIRS} ${gazebo_ros_INCLUDE_DIRS})
+    target_link_libraries(robots ${roscpp_LIBRARIES} ${gazebo_ros_LIBRARIES})
 endif(WITH_GAZEBO)
 
-install (TARGETS robots DESTINATION lib)
-install (FILES ${COMMON_HEADERS} DESTINATION include/robots)
+install (TARGETS robots DESTINATION lib COMPONENT libonly)
+install (FILES ${COMMON_HEADERS} DESTINATION include/robots COMPONENT libonly)
 
 # iCub folder
 if(WITH_ICUB)
-    install (FILES ${ICUB_HEADERS} DESTINATION include/robots/icub)
+    install (FILES ${ICUB_HEADERS} DESTINATION include/robots/icub COMPONENT libonly)
 endif(WITH_ICUB)
 
 # Gazebo folder
 if(WITH_GAZEBO)
-    install (FILES ${GAZEBO_HEADERS} DESTINATION include/robots/gazebo)
+    install (FILES ${GAZEBO_HEADERS} DESTINATION include/robots/gazebo COMPONENT libonly)
 endif(WITH_GAZEBO)
-

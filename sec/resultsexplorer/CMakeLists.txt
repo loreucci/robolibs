@@ -12,4 +12,4 @@ set(SOURCES main.cpp
 
 add_executable(resultsexplorer ${SOURCES})
 target_link_libraries(resultsexplorer Qt5::Widgets Qt5::PrintSupport Qt5::Network Qt5::Sql)
-install (TARGETS resultsexplorer DESTINATION bin)
+install (TARGETS resultsexplorer DESTINATION bin COMPONENT libonly)

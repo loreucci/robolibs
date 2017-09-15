@@ -52,6 +52,8 @@ endif(BUILD_GUI)
 
 add_library(neural SHARED ${SOURCES} ${HEADERS})
 
+target_include_directories(neural PUBLIC ..)
+
 target_link_libraries(neural sec)
 
 # SpiNNaker dependencies
@@ -76,15 +78,15 @@ if(BUILD_GUI)
 endif(BUILD_GUI)
 
 # install
-install (TARGETS neural DESTINATION lib)
-install (FILES ${COMMON_HEADERS} DESTINATION include/neural)
+install (TARGETS neural DESTINATION lib COMPONENT libonly)
+install (FILES ${COMMON_HEADERS} DESTINATION include/neural COMPONENT libonly)
 
 # SpiNNaker folder
 if(WITH_SPINNAKER)
-    install (FILES ${SPINNAKER_HEADERS} DESTINATION include/neural/spinnaker)
+    install (FILES ${SPINNAKER_HEADERS} DESTINATION include/neural/spinnaker COMPONENT libonly)
 endif(WITH_SPINNAKER)
 
 # NEST folder
 if(WITH_NEST)
-    install (FILES ${NEST_HEADERS} DESTINATION include/neural/nest)
+    install (FILES ${NEST_HEADERS} DESTINATION include/neural/nest COMPONENT libonly)
 endif(WITH_NEST)

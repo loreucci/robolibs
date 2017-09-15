@@ -51,6 +51,8 @@ endif(BUILD_GUI)
 
 add_library(sec SHARED ${SOURCES} ${HEADERS})
 
+target_include_directories(sec PUBLIC ..)
+
 target_link_libraries(sec utilities pthread)
 
 if(BUILD_GUI)
@@ -58,5 +60,5 @@ if(BUILD_GUI)
     target_compile_definitions(sec PRIVATE HAS_GUI)
 endif(BUILD_GUI)
 
-install (TARGETS sec DESTINATION lib)
-install (FILES ${HEADERS} DESTINATION include/sec)
+install (TARGETS sec DESTINATION lib COMPONENT libonly)
+install (FILES ${HEADERS} DESTINATION include/sec COMPONENT libonly)

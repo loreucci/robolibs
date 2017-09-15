@@ -11,4 +11,4 @@ set(SOURCES main.cpp
 
 add_executable(rasterserver ${SOURCES})
 target_link_libraries(rasterserver Qt5::Widgets Qt5::PrintSupport Qt5::Network)
-install (TARGETS rasterserver DESTINATION bin)
+install (TARGETS rasterserver DESTINATION bin COMPONENT libonly)

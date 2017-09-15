@@ -11,4 +11,4 @@ set(SOURCES main.cpp
 
 add_executable(plottingserver ${SOURCES})
 target_link_libraries(plottingserver Qt5::Widgets Qt5::PrintSupport Qt5::Network)
-install (TARGETS plottingserver DESTINATION bin)
+install (TARGETS plottingserver DESTINATION bin COMPONENT libonly)

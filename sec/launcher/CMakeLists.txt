@@ -13,4 +13,4 @@ set(SOURCES main.cpp
 
 add_executable(seclauncher ${SOURCES})
 target_link_libraries(seclauncher sec Qt5::Widgets Qt5::PrintSupport Qt5::Network Qt5::Sql)
-install (TARGETS seclauncher DESTINATION bin)
+install (TARGETS seclauncher DESTINATION bin COMPONENT libonly)
