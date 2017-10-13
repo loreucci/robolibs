@@ -12,28 +12,26 @@ if (NOT CONFIGURED_ONCE)
 endif()
 
 # enable testing and documentation by default
-set(ENABLE_TEST TRUE
-    CACHE BOOL "Testing enabling flag.")
-set(ENABLE_DOC TRUE
-    CACHE BOOL "documentation enabling flag.")
+set(ENABLE_TEST TRUE CACHE BOOL "Testing enabling flag.")
+set(ENABLE_DOC TRUE CACHE BOOL "documentation enabling flag.")
 
 
 # flag for guis
-set(BUILD_GUI "ON" CACHE STRING "Build GUIs.")
+set(BUILD_GUI TRUE CACHE BOOL "Build GUIs.")
 
 
 # flags for simulators/robots
-set(WITH_ROBOTS "ON" CACHE STRING "Include support for robots library.")
+set(WITH_ROBOTS TRUE CACHE BOOL "Include support for robots library.")
 if(WITH_ROBOTS)
-	set(WITH_ICUB "ON" CACHE STRING "Include iCub support.")
-	set(WITH_GAZEBO "ON" CACHE STRING "Include Gazebo simulator support.")
+    set(WITH_ICUB TRUE CACHE BOOL "Include iCub support.")
+    set(WITH_GAZEBO TRUE CACHE BOOL "Include Gazebo simulator support.")
 endif(WITH_ROBOTS)
 
 # flags for neural simulators
-set(WITH_NEURAL "ON" CACHE STRING "Include support for neural library.")
+set(WITH_NEURAL TRUE CACHE BOOL "Include support for neural library.")
 if(WITH_NEURAL)
-	set(WITH_NEST "ON" CACHE STRING "Include NEST support.")
-	set(WITH_SPINNAKER "ON" CACHE STRING "Include SpiNNaker support.")
+    set(WITH_NEST TRUE CACHE BOOL "Include NEST support.")
+    set(WITH_SPINNAKER TRUE CACHE BOOL "Include SpiNNaker support.")
 	if(WITH_SPINNAKER)
 		if(NOT SPINNAKER_EXTERNAL_DEVICE_LIB)
 			message(FATAL_ERROR "In order to compile against SpiNNaker, the variable SPINNAKER_EXTERNAL_DEVICE_LIB must be specified." )
