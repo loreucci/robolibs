@@ -16,57 +16,6 @@ namespace Utils {
 //! Vector class
 using Vector = std::vector<double>;
 
-
-//! Plus operator between Vectors.
-/*!
-  The two operands must have the same size.
-  \param v1 first operand.
-  \param v2 second operand.
-  \return element-wise sum of v1 and v2.
-*/
-Vector operator+(const Vector& v1, const Vector& v2);
-
-//! Subtraction operator between Vectors.
-/*!
-  The two operands must have the same size.
-  \param v1 first operand.
-  \param v2 second operand.
-  \return element-wise subtraction of v2 from v1.
-*/
-Vector operator-(const Vector& v1, const Vector& v2);
-
-//! Unary minus operator on Vectors.
-/*!
-  \param v the operand.
-  \return element-wise unary minus of v.
-*/
-Vector operator-(const Vector& v);
-
-
-//! Scalar product between a double and a Vector.
-/*!
-  \param k scalar value.
-  \param v vector.
-  \return element-wise product of k and v.
-*/
-Vector operator*(double k, const Vector& v);
-
-//! Scalar product between a double and a Vector.
-/*!
-  \param v vector.
-  \param k scalar value.
-  \return element-wise product of k and v.
-*/
-Vector operator*(const Vector& v, double k);
-
-//! Scalar division between a Vector and a double.
-/*!
-  \param v vector.
-  \param k scalar value.
-  \return element-wise product of v and 1/k.
-*/
-Vector operator/(const Vector& v, double k);
-
 //! Dot product.
 /*!
   The two operands must have the same size.
@@ -177,6 +126,59 @@ Vector rangeNormalization(const Vector& v, const Vector& inmin, const Vector& in
 */
 Vector rangeNormalization(const Vector& v, double inmin, double inmax, const Vector& outmin, const Vector& outmax);
 
+}
+
+
+//! Plus operator between Vectors.
+/*!
+  The two operands must have the same size.
+  \param v1 first operand.
+  \param v2 second operand.
+  \return element-wise sum of v1 and v2.
+*/
+Utils::Vector operator+(const Utils::Vector& v1, const Utils::Vector& v2);
+
+//! Subtraction operator between Vectors.
+/*!
+  The two operands must have the same size.
+  \param v1 first operand.
+  \param v2 second operand.
+  \return element-wise subtraction of v2 from v1.
+*/
+Utils::Vector operator-(const Utils::Vector& v1, const Utils::Vector& v2);
+
+//! Unary minus operator on Vectors.
+/*!
+  \param v the operand.
+  \return element-wise unary minus of v.
+*/
+Utils::Vector operator-(const Utils::Vector& v);
+
+
+//! Scalar product between a double and a Vector.
+/*!
+  \param k scalar value.
+  \param v vector.
+  \return element-wise product of k and v.
+*/
+Utils::Vector operator*(double k, const Utils::Vector& v);
+
+//! Scalar product between a double and a Vector.
+/*!
+  \param v vector.
+  \param k scalar value.
+  \return element-wise product of k and v.
+*/
+Utils::Vector operator*(const Utils::Vector& v, double k);
+
+//! Scalar division between a Vector and a double.
+/*!
+  \param v vector.
+  \param k scalar value.
+  \return element-wise product of v and 1/k.
+*/
+Utils::Vector operator/(const Utils::Vector& v, double k);
+
 //! Insertion operator on Vectors.
 /*!
   The elements will be separated by spaces.
@@ -184,8 +186,7 @@ Vector rangeNormalization(const Vector& v, double inmin, double inmax, const Vec
   \param v Vector to be inserted into the stream.
   \return output stream.
 */
-std::ostream& operator<<(std::ostream& o, const Vector& v);
+std::ostream& operator<<(std::ostream& o, const Utils::Vector& v);
 
-}
 
 #endif // VECTOR_H
