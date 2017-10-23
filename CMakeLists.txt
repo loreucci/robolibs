@@ -15,6 +15,11 @@ endif()
 set(ENABLE_TEST TRUE CACHE BOOL "Testing enabling flag.")
 set(ENABLE_DOC TRUE CACHE BOOL "documentation enabling flag.")
 
+# this must be done at this level
+if(ENABLE_TEST)
+    enable_testing()
+endif()
+
 
 # flag for guis
 set(BUILD_GUI TRUE CACHE BOOL "Build GUIs.")

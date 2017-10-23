@@ -26,6 +26,5 @@ endif()
 
 # testing
 if(ENABLE_TEST)
-    enable_testing()
     add_subdirectory(test)
 endif()
