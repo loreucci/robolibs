@@ -51,6 +51,7 @@ public:
     virtual Utils::Vector getMaxPos() const = 0;
     virtual Utils::Vector getMinVel() const = 0;
     virtual Utils::Vector getMaxVel() const = 0;
+    virtual Utils::Vector getInitialPosition() const = 0;
 
 protected:
 
@@ -110,6 +111,20 @@ public:
 
 };
 
+class _iCubRightArm : public DriverPart {
+public:
+    virtual unsigned int dof() const override;
+
+    virtual void refresh() override;
+
+    virtual void movePos(const Utils::Vector& refs, bool wait = false);
+    virtual void moveVel(const Utils::Vector& refs, bool wait = false);
+
+private:
+    static Utils::Vector handposition;
+
+};
+
 
 //////////////////////
 /// traits
@@ -130,6 +145,18 @@ class HasTorso {
 
 public:
     _iCubTorso* torso = nullptr;
+
+    void activate(const std::string& robotname, const std::string& localname);
+    void deactivate();
+    void refresh();
+    std::string name() const;
+
+};
+
+class HasRightArm {
+
+public:
+    _iCubRightArm* rightarm = nullptr;
 
     void activate(const std::string& robotname, const std::string& localname);
     void deactivate();

@@ -389,6 +389,193 @@ std::string TorsoVelocityControl::parameters() const {
 }
 
 
+EncodersRightArm::EncodersRightArm(const HasRightArm& robot, double freq)
+    :sec::Source(freq), robot(robot) {
+    execute();
+}
+
+void EncodersRightArm::execute() {
+
+    Utils::Vector ra = robot.rightarm->encodersPos();
+
+    arm = ra;
+
+    shoulder_pitch = ra[0];
+    shoulder_roll = ra[1];
+    shoudler_yaw = ra[2];
+    elbow = ra[3];
+    wrist_prosup = ra[4];
+    wrist_pitch = ra[5];
+    wrist_yaw = ra[6];
+
+}
+
+std::string EncodersRightArm::parameters() const {
+    return "Right arm encoders of " + robot.name();
+}
+
+EncodersRightArmVel::EncodersRightArmVel(const HasRightArm& robot, double freq)
+    :EncodersRightArm(robot, freq) {
+    execute();
+}
+
+void EncodersRightArmVel::execute() {
+
+    EncodersRightArm::execute();
+
+    Utils::Vector rav = robot.rightarm->encodersVel();
+
+    armvel = rav;
+
+    shoulder_pitchvel = rav[0];
+    shoulder_rollvel = rav[1];
+    shoudler_yawvel = rav[2];
+    elbowvel = rav[3];
+    wrist_prosupvel = rav[4];
+    wrist_pitchvel = rav[5];
+    wrist_yawvel = rav[6];;
+
+}
+
+RightArmPositionControl::RightArmPositionControl(HasRightArm& robot, double freq)
+    :sec::Node(freq), robot(robot) {
+
+    robot.rightarm->setControlMode(VOCAB_CM_MIXED);
+
+    full = false;
+    joints = false;
+
+    cmd = robot.rightarm->getInitialPosition();
+
+}
+
+void RightArmPositionControl::refreshInputs() {
+
+    arm.refreshData();
+
+    shoulder_pitch.refreshData();
+    shoulder_roll.refreshData();
+    shoudler_yaw.refreshData();
+    elbow.refreshData();
+    wrist_prosup.refreshData();
+    wrist_pitch.refreshData();
+    wrist_yaw.refreshData();
+
+}
+
+bool RightArmPositionControl::connected() const {
+
+    if (arm.isConnected()) {
+        full = true;
+    }
+
+    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
+            elbow.isConnected() ||
+            wrist_prosup.isConnected() || wrist_pitch.isConnected() || wrist_yaw.isConnected()) {
+        joints = true;
+    }
+
+    if (full && joints) {
+        throw iCubException("TorsoPositionControl: too many connections.");
+    }
+
+    return full || joints;
+
+}
+
+void RightArmPositionControl::execute() {
+
+    if (full) {
+        cmd = arm;
+    } else {
+        cmd.resize(7);
+        cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
+        cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
+        cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
+        cmd[3] = elbow.isConnected() ? elbow : cmd[3];
+        cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
+        cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
+        cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
+    }
+
+    robot.rightarm->movePos(cmd);
+
+}
+
+std::string RightArmPositionControl::parameters() const {
+    return "Right arm position control of " + robot.name();
+}
+
+RightArmVelocityControl::RightArmVelocityControl(HasRightArm& robot, double freq)
+    :sec::Node(freq), robot(robot) {
+
+    robot.rightarm->setControlMode(VOCAB_CM_MIXED);
+
+    full = false;
+    joints = false;
+
+}
+
+void RightArmVelocityControl::refreshInputs() {
+
+    arm.refreshData();
+
+    shoulder_pitch.refreshData();
+    shoulder_roll.refreshData();
+    shoudler_yaw.refreshData();
+    elbow.refreshData();
+    wrist_prosup.refreshData();
+    wrist_pitch.refreshData();
+    wrist_yaw.refreshData();
+
+}
+
+bool RightArmVelocityControl::connected() const {
+
+    if (arm.isConnected()) {
+        full = true;
+    }
+
+    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
+            elbow.isConnected() ||
+            wrist_prosup.isConnected() || wrist_pitch.isConnected() || wrist_yaw.isConnected()) {
+        joints = true;
+    }
+
+    if (full && joints) {
+        throw iCubException("TorsoPositionControl: too many connections.");
+    }
+
+    return full || joints;
+
+}
+
+void RightArmVelocityControl::execute() {
+
+    Utils::Vector cmd;
+
+    if (full) {
+        cmd = arm;
+    } else {
+        cmd.resize(7);
+        cmd[0] = shoulder_pitch;
+        cmd[1] = shoulder_roll;
+        cmd[2] = shoudler_yaw;
+        cmd[3] = elbow;
+        cmd[4] = wrist_prosup;
+        cmd[5] = wrist_pitch;
+        cmd[6] = wrist_yaw;
+    }
+
+    robot.rightarm->moveVel(cmd);
+
+}
+
+std::string RightArmVelocityControl::parameters() const {
+    return "Right arm velocity control of " + robot.name();
+}
+
+
 InertialSensor::InertialSensor(const HasInertial& robot, double freq)
     :sec::Source(freq), robot(robot) {
     execute();

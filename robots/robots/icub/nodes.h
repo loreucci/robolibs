@@ -208,6 +208,108 @@ protected:
 };
 
 
+class EncodersRightArm : public sec::Source {
+
+public:
+    EncodersRightArm(const HasRightArm& robot, double freq = 0.0);
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
+
+    sec::NodeOut<Utils::Vector> arm;
+
+    sec::NodeOut<double> shoulder_pitch;
+    sec::NodeOut<double> shoulder_roll;
+    sec::NodeOut<double> shoudler_yaw;
+    sec::NodeOut<double> elbow;
+    sec::NodeOut<double> wrist_prosup;
+    sec::NodeOut<double> wrist_pitch;
+    sec::NodeOut<double> wrist_yaw;
+
+protected:
+    const HasRightArm& robot;
+
+};
+
+class EncodersRightArmVel : public EncodersRightArm {
+
+public:
+    EncodersRightArmVel(const HasRightArm& robot, double freq = 0.0);
+
+    virtual void execute() override;
+
+    sec::NodeOut<Utils::Vector> armvel;
+
+    sec::NodeOut<double> shoulder_pitchvel;
+    sec::NodeOut<double> shoulder_rollvel;
+    sec::NodeOut<double> shoudler_yawvel;
+    sec::NodeOut<double> elbowvel;
+    sec::NodeOut<double> wrist_prosupvel;
+    sec::NodeOut<double> wrist_pitchvel;
+    sec::NodeOut<double> wrist_yawvel;
+
+};
+
+class RightArmPositionControl : public sec::Node {
+
+public:
+    RightArmPositionControl(HasRightArm& robot, double freq = 0.0);
+
+    virtual void refreshInputs() override;
+
+    virtual bool connected() const override;
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
+
+    sec::NodeIn<Utils::Vector> arm;
+
+    sec::NodeIn<double> shoulder_pitch;
+    sec::NodeIn<double> shoulder_roll;
+    sec::NodeIn<double> shoudler_yaw;
+    sec::NodeIn<double> elbow;
+    sec::NodeIn<double> wrist_prosup;
+    sec::NodeIn<double> wrist_pitch;
+    sec::NodeIn<double> wrist_yaw;
+
+protected:
+    HasRightArm& robot;
+    Utils::Vector cmd;
+    mutable bool full, joints;
+
+};
+
+class RightArmVelocityControl : public sec::Node {
+
+public:
+    RightArmVelocityControl(HasRightArm& robot, double freq = 0.0);
+
+    virtual void refreshInputs() override;
+
+    virtual bool connected() const override;
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
+
+    sec::NodeIn<Utils::Vector> arm;
+
+    sec::NodeIn<double> shoulder_pitch;
+    sec::NodeIn<double> shoulder_roll;
+    sec::NodeIn<double> shoudler_yaw;
+    sec::NodeIn<double> elbow;
+    sec::NodeIn<double> wrist_prosup;
+    sec::NodeIn<double> wrist_pitch;
+    sec::NodeIn<double> wrist_yaw;
+
+protected:
+    HasRightArm& robot;
+    mutable bool full, joints;
+
+};
+
 class InertialSensor : public sec::Source {
 
 public:

@@ -17,6 +17,7 @@ extern const Utils::Vector headPosMin;
 extern const Utils::Vector headPosMax;
 extern const Utils::Vector headVelMin;
 extern const Utils::Vector headVelMax;
+extern const Utils::Vector headInitial;
 
 extern const Utils::Vector headMask;
 
@@ -42,6 +43,7 @@ public:
     virtual Utils::Vector getMaxPos() const override;
     virtual Utils::Vector getMinVel() const override;
     virtual Utils::Vector getMaxVel() const override;
+    virtual Utils::Vector getInitialPosition() const override;
 
 protected:
     VelocityObserver* obs;

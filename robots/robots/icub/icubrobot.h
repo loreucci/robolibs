@@ -31,7 +31,7 @@ public:
     void activateAll() {
         // some black magic from
         // https://stackoverflow.com/questions/30563254/how-can-i-expand-call-to-variadic-template-base-classes
-        // in C++17 should be:
+        // in C++17, it should be:
         // (Types::activate(), ...);
         // http://en.cppreference.com/w/cpp/language/fold
 

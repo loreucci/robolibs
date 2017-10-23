@@ -86,9 +86,13 @@ public:
     std::pair<Utils::Vector, Utils::Vector> neckToInertialRot(const Utils::Vector& npos, const Utils::Vector& nvel,
                                                               const Utils::Vector& tpos, const Utils::Vector& tvel) const;
 
+    Utils::Vector getLeftHandPosition(const Utils::Vector& arm_encoders) const;
+    Utils::Vector getRightHandPosition(const Utils::Vector& arm_encoders) const;
+
 protected:
     mutable iCub::iKin::iCubEye leftEye, rightEye;
     mutable iCub::iKin::iCubInertialSensor inertial;
+    mutable iCub::iKin::iCubArm leftArm, rightArm;
     yarp::sig::Matrix baseMatrix;
 
 };

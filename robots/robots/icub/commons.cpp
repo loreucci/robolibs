@@ -50,6 +50,19 @@ iCubKin::iCubKin() {
     rightEye.releaseLink(1);
     rightEye.releaseLink(2);
 
+    // inertial
+    inertial = iCub::iKin::iCubInertialSensor("v1");
+
+    // arms
+    leftArm = iCub::iKin::iCubArm("left");
+    rightArm = iCub::iKin::iCubArm("right");
+    leftArm.releaseLink(0);
+    leftArm.releaseLink(1);
+    leftArm.releaseLink(2);
+    rightArm.releaseLink(0);
+    rightArm.releaseLink(1);
+    rightArm.releaseLink(2);
+
     // set base Matrix
     baseMatrix = yarp::sig::Matrix(4, 4);
     baseMatrix.zero();
@@ -59,8 +72,6 @@ iCubKin::iCubKin() {
     baseMatrix(2, 0) = -1;
     baseMatrix(2, 3) = -0.026;
     baseMatrix(3, 3) = 1;
-
-    inertial = iCub::iKin::iCubInertialSensor("v1");
 
 }
 
@@ -327,6 +338,77 @@ std::pair<Utils::Vector, Utils::Vector> iCubKin::neckToInertialRot(const Utils::
     res2[2] = eeffvel[5];
 
     return std::make_pair(res1, res2);
+
+}
+
+Utils::Vector iCubKin::getLeftHandPosition(const Utils::Vector& arm_encoders) const {
+
+    if (arm_encoders.size() != 7) {
+        throw iCubException("iCubKin: wrong input size.");
+    }
+
+    yarp::sig::Vector ang(10);
+    ang.zero();
+
+    ang[3] = arm_encoders[0];
+    ang[4] = arm_encoders[1];
+    ang[5] = arm_encoders[2];
+    ang[6] = arm_encoders[3];
+    ang[7] = arm_encoders[4];
+    ang[8] = arm_encoders[5];
+    ang[9] = arm_encoders[6];
+    ang = Utils::PI*ang/180.0;
+
+    leftArm.setAng(ang);
+
+    yarp::sig::Vector p = rightArm.EndEffPose();
+    p.pop_back();
+    p.pop_back();
+    p.pop_back();
+    p.pop_back();
+    p.push_back(1);
+
+    p = baseMatrix*p;
+
+    p.pop_back();
+
+    return iCubUtils::convert(p);
+
+}
+
+using namespace Utils;
+
+Utils::Vector iCubKin::getRightHandPosition(const Utils::Vector& arm_encoders) const {
+
+    if (arm_encoders.size() != 7) {
+        throw iCubException("iCubKin: wrong input size.");
+    }
+
+    yarp::sig::Vector ang(10);
+    ang.zero();
+
+    ang[3] = arm_encoders[0];
+    ang[4] = arm_encoders[1];
+    ang[5] = arm_encoders[2];
+    ang[6] = arm_encoders[3];
+    ang[7] = arm_encoders[4];
+    ang[8] = arm_encoders[5];
+    ang[9] = arm_encoders[6];
+    ang = Utils::PI*ang/180.0;
+    rightArm.setAng(ang);
+
+    yarp::sig::Vector p = rightArm.EndEffPose();
+    p.pop_back();
+    p.pop_back();
+    p.pop_back();
+    p.pop_back();
+    p.push_back(1);
+
+    p = baseMatrix*p;
+
+    p.pop_back();
+
+    return iCubUtils::convert(p);
 
 }
 

@@ -5,10 +5,11 @@ namespace Sabian {
 const CameraParameters cameraParameters320 = CameraParameters{320, 240, 258.245, 257.123, 160, 120};//122.547, 113.737};
 const CameraParameters cameraParameters640 = CameraParameters{640, 480, 443.60, 444.75, 320, 240};
 
-const Utils::Vector headPosMin = {-40, -70, -55, -35, -50, 0};
-const Utils::Vector headPosMax = {30, 60, 55, 15, 52, 90};
-const Utils::Vector headVelMin = {-400, -400, -400, -400, -400, -400};
-const Utils::Vector headVelMax = {+400, +400, +400, +400, +400, +400};
+const Utils::Vector headPosMin =  { -40,  -70,  -55,  -35,  -50,    0};
+const Utils::Vector headPosMax =  {  30,   60,   55,   15,   52,   90};
+const Utils::Vector headVelMin =  {-400, -400, -400, -400, -400, -400};
+const Utils::Vector headVelMax =  {+400, +400, +400, +400, +400, +400};
+const Utils::Vector headInitial = {   0,    0,    0,    0,    0,    0};
 
 const Utils::Vector headMask = {-1, -1, -1, -1, -1,  1};
 
@@ -106,6 +107,10 @@ Utils::Vector _SabianHead::getMinVel() const {
 
 Utils::Vector _SabianHead::getMaxVel() const {
     return Sabian::headVelMax;
+}
+
+Utils::Vector _SabianHead::getInitialPosition() const {
+    return Sabian::headInitial;
 }
 
 Utils::Vector _SabianHead::applyMask(const Utils::Vector& v) {

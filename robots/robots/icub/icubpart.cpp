@@ -270,6 +270,88 @@ unsigned int _iCubTorso::dof() const {
     return 3;
 }
 
+unsigned int _iCubRightArm::dof() const {
+    return 7;
+}
+
+Utils::Vector _iCubRightArm::handposition = {59, 20, 20, 20, 10, 10, 10, 10, 10};
+
+void _iCubRightArm::refresh() {
+
+    yarp::dev::IEncoders* encs = nullptr;
+    driver.view(encs);
+    if (encs == nullptr)
+        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+    double p[dof()+9];
+    double v[dof()+9];
+    encs->getEncoders(p);
+    encs->getEncoderSpeeds(v);
+    mtx.lock();
+    for (unsigned int i = 0; i < dof(); i++) {
+        pos[i] = p[i];
+        vel[i] = v[i];
+    }
+    mtx.unlock();
+
+}
+
+void _iCubRightArm::movePos(const Utils::Vector& refs, bool wait) {
+
+    if (refs.size() != dof()) {
+        throw iCubException("iCubRobot(" + name() + "): wrong size of reference vector.");
+    }
+
+    yarp::dev::IPositionControl* pos = nullptr;
+    driver.view(pos);
+    if (pos == nullptr)
+        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+
+    auto _refs = trimToLimitsPos(refs);
+    _refs.insert(_refs.end(), handposition.begin(), handposition.end());
+
+    if (!wait) {
+        pos->positionMove(_refs.data());
+    } else {
+        Utils::Vector encs;
+        do {
+            pos->positionMove(_refs.data());
+            refresh();
+            encs = encodersPos();
+        } while (Utils::distance(encs, _refs) > 0.05);
+
+    }
+
+}
+
+void _iCubRightArm::moveVel(const Utils::Vector& refs, bool wait) {
+
+    if (refs.size() != dof()) {
+        throw iCubException("iCubRobot(" + name() + "): wrong size of reference vector.");
+    }
+
+    yarp::dev::IVelocityControl* vel = nullptr;
+    driver.view(vel);
+    if (vel == nullptr)
+        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+
+    auto _refs = trimToLimitsVel(refs);
+    for (unsigned int i = 0; i < 9; i++)
+        _refs.push_back(0.0);
+
+    if (!wait) {
+        vel->velocityMove(_refs.data());
+    } else {
+        Utils::Vector encs;
+        do {
+            vel->velocityMove(_refs.data());
+            refresh();
+            encs = encodersVel();
+        } while (Utils::distance(encs, _refs) > 0.05);
+
+    }
+
+}
+
 
 void HasHead::activate(const std::string &robotname, const std::string &localname) {
     head->activate(robotname, localname);
@@ -305,6 +387,24 @@ void HasTorso::refresh() {
 
 std::string HasTorso::name() const {
     return torso->name();
+}
+
+void HasRightArm::activate(const std::string& robotname, const std::string& localname) {
+    rightarm->activate(robotname, localname);
+}
+
+void HasRightArm::deactivate() {
+    rightarm->deactivate();
+    delete rightarm;
+    rightarm = nullptr;
+}
+
+void HasRightArm::refresh() {
+    rightarm->refresh();
+}
+
+std::string HasRightArm::name() const {
+    return rightarm->name();
 }
 
 void HasInertial::activate(const std::string& robotname, const std::string& localname) {
