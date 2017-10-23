@@ -38,13 +38,15 @@ if(WITH_GAZEBO)
         gazebo/gazeborunner.cpp
         gazebo/jointforcesender.cpp
         gazebo/jointsreader.cpp
-        gazebo/modelspawner.cpp)
+        gazebo/modelspawner.cpp
+        gazebo/jointscontroller.cpp)
 
     set(GAZEBO_HEADERS
         gazebo/gazeborunner.h
         gazebo/jointforcesender.h
         gazebo/jointsreader.h
-        gazebo/modelspawner.h)
+        gazebo/modelspawner.h
+        gazebo/jointscontroller.h)
 
     list(APPEND SOURCES ${GAZEBO_SOURCES})
     list(APPEND HEADERS ${GAZEBO_HEADERS})
@@ -64,10 +66,9 @@ endif(WITH_ICUB)
 
 # Gazebo dependencies
 if(WITH_GAZEBO)
-    find_package(roscpp REQUIRED)
-    find_package(gazebo_ros REQUIRED)
-    include_directories(${roscpp_INCLUDE_DIRS} ${gazebo_ros_INCLUDE_DIRS})
-    target_link_libraries(robots ${roscpp_LIBRARIES} ${gazebo_ros_LIBRARIES})
+    find_package(catkin REQUIRED COMPONENTS gazebo_ros)
+    target_include_directories(robots PUBLIC ${catkin_INCLUDE_DIRS})
+    target_link_libraries(robots ${catkin_LIBRARIES})
 endif(WITH_GAZEBO)
 
 install (TARGETS robots DESTINATION lib COMPONENT libonly)
