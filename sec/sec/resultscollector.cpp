@@ -58,7 +58,7 @@ void ResultsCollector::setBasename(const std::string &basename) {
     this->basename = basename;
 }
 
-void ResultsCollector::setMode(ResultsCollector::Mode mode) {
+void ResultsCollector::setMode(Mode mode) {
     this->mode = mode;
 
 //    if (mode == SINGLE_FILE_MODE && loggers.size() > 0) {
@@ -158,7 +158,7 @@ void setResultsName(const std::string &basename) {
     results_collector.setBasename(basename);
 }
 
-void setResultsMode(ResultsCollector::Mode mode) {
+void setResultsMode(Mode mode) {
     results_collector.setMode(mode);
 }
 

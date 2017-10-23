@@ -43,7 +43,7 @@ public:
 
 int main(void) {
 
-    sec::setResultsMode(sec::ResultsCollector::SINGLE_FILES_MODE);
+    sec::setResultsMode(sec::SINGLE_FILES_MODE);
 
     TestSpikeSource ss(100.0);
 

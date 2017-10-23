@@ -7,15 +7,15 @@ int main(void) {
 
     sec::setSleeper(new sec::NoSleeper());
 
-    sec::setResultsName("prova");
-//    sec::setResultsMode(sec::ResultsCollector::SINGLE_FILES_MODE);
+    sec::setResultsName("res/prova");
+    sec::setResultsMode(sec::SINGLE_FILES_MODE);
 
     auto s = Signals::sin(10.0, 2.0, 1.0, 100.0);
-    sec::SignalSource ss(s, 100.0);
+    sec::SignalSourceVector ss({s, s, s}, 100.0);
     ss.setDelay(2.0);
 
     sec::DataLogger logger;
-    sec::connect(ss, &sec::SignalSource::output, logger, "y");
+    sec::connect(ss.output, logger, "a1 a2 a3");
 
     sec::saveAllNodesParameters();
 

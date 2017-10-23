@@ -8,6 +8,11 @@
 
 namespace sec {
 
+enum Mode {
+    FOLDER_MODE = 0,
+    SINGLE_FILES_MODE
+};
+
 class Logger {
 
 public:
@@ -18,11 +23,6 @@ public:
 class ResultsCollector {
 
 public:
-
-    enum Mode {
-        FOLDER_MODE = 0,
-        SINGLE_FILES_MODE
-    };
 
     ResultsCollector(const std::string& basename = "test", Mode mode = FOLDER_MODE);
 //    ~ResultsCollector();
@@ -67,7 +67,7 @@ extern ResultsCollector results_collector;
 
 // convenience functions
 void setResultsName(const std::string& basename);
-void setResultsMode(ResultsCollector::Mode mode);
+void setResultsMode(Mode mode);
 void saveAllNodesParameters(const std::string& filename = "parameters.txt");
 
 // in order to have extra files tracked by the system
