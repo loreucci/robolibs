@@ -4,20 +4,17 @@
 #include <vector>
 #include <utility>
 
-#include <QObject>
-#include <QtNetwork/QLocalSocket>
-#include <QDataStream>
-
 #include <sec/node.h>
 #include <sec/nodelink.h>
 #include <sec/controller.h>
+#include <sec/qtclientserverbase.h>
 
 #include "spikes.h"
 
 
 namespace neural {
 
-class RasterClient : public QObject, public sec::Node {
+class RasterClient : public sec::QtClientBase, public sec::Node {
 
     Q_OBJECT
 
@@ -29,8 +26,6 @@ public:
 
     void clear();
 
-    void disconnect();
-
     virtual void refreshInputs();
 
     virtual bool connected() const;
@@ -41,15 +36,10 @@ public:
 
 protected:
     std::vector<std::pair<unsigned int, SpikeNodeIn*>> inputs;
-    QLocalSocket* socket;
 
     void changeFreq(double freq);
 
     void advance();
-
-    void write(const QString& str);
-
-    QString readResponse();
 
 //    void sendSerialized(unsigned int id, const SpikeData& data);
 

@@ -45,10 +45,12 @@ if(BUILD_GUI)
     find_package(Qt5Network REQUIRED)
     set(SOURCES ${SOURCES} plottingclient.cpp
                            socketdataexchange.cpp
-                           launcherinterface.cpp)
+                           launcherinterface.cpp
+                           qtclientserverbase.cpp)
     set(HEADERS ${HEADERS} plottingclient.h
                            socketdataexchange.h
-                           launcherinterface.h)
+                           launcherinterface.h
+                           qtclientserverbase.h)
 endif(BUILD_GUI)
 
 add_library(sec SHARED ${SOURCES} ${HEADERS})

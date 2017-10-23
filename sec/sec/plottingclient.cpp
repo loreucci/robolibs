@@ -5,12 +5,10 @@
 
 namespace sec {
 
-PlottingClient::PlottingClient(double freq, QObject *parent) :
-    QObject(parent), Node(freq) {
+PlottingClient::PlottingClient(double freq, QObject *parent)
+    :QtClientBase(parent), Node(freq) {
 
-    socket = new QLocalSocket(this);
-
-    socket->connectToServer("plotserver");
+    connectToServer("plotserver");
 
     clear();
 
@@ -36,19 +34,6 @@ void PlottingClient::addVectorConnection(LinkSource<Utils::Vector>* out, const Q
 
 }
 
-//void PlottingClient::setFrequency(double freq) {
-//    if (freq < 0) {
-//        std::invalid_argument("Controller: frequence must be non-negative.");
-//    }
-
-//    double old_freq = this->freq;
-//    this->freq = freq;
-//    main_controller.moveNode(this, old_freq);
-
-//    changeFreq(freq);
-
-//}
-
 void PlottingClient::refreshInputs() {
     for (auto& in : inputs) {
         std::get<1>(in).refreshData();
@@ -70,9 +55,9 @@ bool PlottingClient::connected() const {
 }
 
 void PlottingClient::execute() {
+
     QString newvalues = "newvalues ";
     for (auto& in : inputs) {
-//        newValue(in.first, in.second);
         newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<2>(in)(std::get<1>(in).getData())) + " ";
     }
     for (auto& in : inputsvec) {
@@ -95,13 +80,6 @@ unsigned int PlottingClient::addGraph(const QString& name) {
 
 }
 
-//void PlottingClient::newValue(unsigned int id, double val) {
-
-//    write("newvalue " + QString::number(id) + " " + QString::number(val));
-//    read();
-
-//}
-
 void PlottingClient::clear() {
     write("clearall");
     readResponse();
@@ -117,38 +95,6 @@ void PlottingClient::advance() {
     readResponse();
 }
 
-void PlottingClient::disconnect() {
-    socket->disconnectFromServer();
-}
-
-//void PlottingClient::setFrequency(double freq) {
-//    Node::setFrequency(freq);
-//    changeFreq(freq);
-//}
-
-void PlottingClient::write(const QString& str) {
-
-    QByteArray msg;
-    QDataStream out(&msg, QIODevice::WriteOnly);
-    out << str;
-
-    socket->write(msg);
-    socket->flush();
-
-}
-
-QString PlottingClient::readResponse() {
-
-    socket->waitForReadyRead();
-
-    QDataStream in(socket);
-
-    QString response;
-    in >> response;
-
-    return response;
-
-}
 
 std::function<double(double)> identity_fun = [](double x){return x;};
 

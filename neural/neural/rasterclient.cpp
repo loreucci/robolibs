@@ -7,11 +7,9 @@
 namespace neural {
 
 RasterClient::RasterClient(double freq, QObject *parent) :
-    QObject(parent), sec::Node(freq) {
+    sec::QtClientBase(parent), sec::Node(freq) {
 
-    socket = new QLocalSocket(this);
-
-    socket->connectToServer("spikeserver");
+    connectToServer("spikeserver");
 
     clear();
 
@@ -88,34 +86,6 @@ void RasterClient::changeFreq(double freq) {
 void RasterClient::advance() {
     write("advance");
     readResponse();
-}
-
-void RasterClient::disconnect() {
-    socket->disconnectFromServer();
-}
-
-void RasterClient::write(const QString& str) {
-
-    QByteArray msg;
-    QDataStream out(&msg, QIODevice::WriteOnly);
-    out << str;
-
-    socket->write(msg);
-    socket->flush();
-
-}
-
-QString RasterClient::readResponse() {
-
-    socket->waitForReadyRead();
-
-    QDataStream in(socket);
-
-    QString response;
-    in >> response;
-
-    return response;
-
 }
 
 QString RasterClient::serialize(unsigned int id, const SpikeData& data) {

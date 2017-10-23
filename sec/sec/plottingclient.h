@@ -5,21 +5,18 @@
 #include <utility>
 #include <functional>
 
-#include <QObject>
-#include <QtNetwork/QLocalSocket>
-#include <QDataStream>
-
 #include <utilities/vector.h>
 
 #include "node.h"
 #include "nodelink.h"
 #include "controller.h"
 #include "simplenodes.h"
+#include "qtclientserverbase.h"
 
 
 namespace sec {
 
-class PlottingClient : public QObject, public Node {
+class PlottingClient : public QtClientBase, public Node {
 
     Q_OBJECT
 
@@ -32,10 +29,6 @@ public:
 
     void clear();
 
-    void disconnect();
-
-//    virtual void setFrequency(double freq);
-
     virtual void refreshInputs();
 
     virtual bool connected() const;
@@ -47,19 +40,12 @@ public:
 protected:
     std::vector<std::tuple<unsigned int, NodeIn<double>, std::function<double(double)>>> inputs;
     std::vector<std::tuple<unsigned int, NodeIn<Utils::Vector>, unsigned int, std::function<double(double)>>> inputsvec;
-    QLocalSocket* socket;
 
     unsigned int addGraph(const QString& name);
-
-//    void newValue(unsigned int id, double val);
 
     void changeFreq(double freq);
 
     void advance();
-
-    void write(const QString& str);
-
-    QString readResponse();
 
 };
 

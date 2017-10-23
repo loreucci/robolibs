@@ -135,17 +135,14 @@ void SocketDataIn::readMessage() {
 
 
 SocketDataOut::SocketDataOut(const std::string& socketname, double freq)
-    :QObject(), DictionaryNode<double>({}, {}, freq), socketname(socketname) {
-
-    socket = new QLocalSocket(this);
+    :QtClientBase(), DictionaryNode<double>({}, {}, freq), socketname(socketname) {
 
 }
 
 void SocketDataOut::waitForServer() {
 
     for (unsigned int i = 0; i < 3000; i++) {
-        socket->connectToServer(QString::fromStdString(socketname));
-        if (socket->waitForConnected())
+        if (connectToServerAndWait(QString::fromStdString(socketname)))
             break;
         synchronizer.sleep(10);
     }
@@ -215,30 +212,6 @@ void SocketDataOut::execute() {
 
 std::string SocketDataOut::parameters() const {
     return "Socket data out on " + socketname;
-}
-
-void SocketDataOut::write(const QString& str) {
-
-    QByteArray msg;
-    QDataStream out(&msg, QIODevice::WriteOnly);
-    out << str;
-
-    socket->write(msg);
-    socket->flush();
-
-}
-
-QString SocketDataOut::readResponse() {
-
-    socket->waitForReadyRead();
-
-    QDataStream in(socket);
-
-    QString response;
-    in >> response;
-
-    return response;
-
 }
 
 

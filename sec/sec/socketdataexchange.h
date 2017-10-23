@@ -11,6 +11,7 @@
 
 #include "simplenodes.h"
 #include "nodelink.h"
+#include "qtclientserverbase.h"
 
 
 namespace sec {
@@ -49,7 +50,7 @@ private slots:
 };
 
 
-class SocketDataOut : public QObject, public DictionaryNode<double> {
+class SocketDataOut : public QtClientBase, public DictionaryNode<double> {
 
     Q_OBJECT
 
@@ -72,11 +73,6 @@ protected:
     std::string socketname;
     std::vector<std::string> expected;
     std::vector<double> values;
-
-    QLocalSocket* socket;
-
-    void write(const QString& str);
-    QString readResponse();
 
 };
 
