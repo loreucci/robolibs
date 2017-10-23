@@ -4,6 +4,7 @@
 #include "controller.h"
 #include "connections.h"
 #include "synchronization.h"
+#include "flags.h"
 
 namespace sec {
 

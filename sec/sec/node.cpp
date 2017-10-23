@@ -44,6 +44,22 @@ void Node::runOnSingleThread() {
     main_controller.moveNodeToSingleThread(this);
 }
 
+std::string Node::parametersShort() const {
+
+    std::string par = parameters();
+    if (par.length() <= 20) {
+        return par;
+    }
+    par.resize(17);
+    auto p = par.find('\n');
+    if (p != std::string::npos) {
+        par.resize(p);
+    }
+    par += "...";
+    return par;
+
+}
+
 void Node::setDelay(double delay) {
     this->delay = delay;
 }

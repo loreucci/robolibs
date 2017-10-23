@@ -41,6 +41,7 @@ public:
     virtual void execute() = 0;
 
     virtual std::string parameters() const = 0;
+    virtual std::string parametersShort() const final;
 
     virtual void setDelay(double delay) final;
 

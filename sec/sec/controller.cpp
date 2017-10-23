@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "resultscollector.h"
+#include "flags.h"
 
 
 namespace sec {
@@ -12,8 +13,14 @@ namespace sec {
 unsigned int escalation = 0;
 void handler(int) {
     synchronizer.quitAll();
+    if (sec::isVerbose()) {
+        std::cout << "[controller] Sending shutdown" << std::endl;
+    }
     escalation++;
     if (escalation >= 3) {
+        if (sec::isVerbose()) {
+            std::cout << "[controller] Escalating to SIGKILL" << std::endl;
+        }
         std::raise(SIGKILL);
     }
 }
@@ -55,6 +62,10 @@ void Controller::addNode(sec::Node* node) {
     nodes[node->getFrequency()].push_front(node);
     adj.insert({node, std::forward_list<Node*>()});
 
+    if (sec::isVerbose()) {
+        std::cout << "[controller] Added node " << node->ID << " @ " << node->getFrequency() << "Hz" << std::endl;
+    }
+
 }
 
 void Controller::moveNode(Node* node, double old_freq) {
@@ -66,6 +77,10 @@ void Controller::moveNode(Node* node, double old_freq) {
         (*it).first = node->getFrequency();
     } else {
         throw std::runtime_error("Node not found in list.");
+    }
+
+    if (sec::isVerbose()) {
+        std::cout << "[controller] Moving node " << node->ID << " from " << old_freq << "Hz" << std::endl;
     }
 
     addNode(node);
@@ -85,6 +100,10 @@ void Controller::removeNode(Node* node) {
     }
     auto pos = std::remove_if(singleThreadNodes.begin(), singleThreadNodes.end(), [node](std::pair<double, Node*> p){return p.second->ID == node->ID;});
     singleThreadNodes.erase(pos, singleThreadNodes.end());
+
+    if (sec::isVerbose()) {
+        std::cout << "[controller] Removing node " << node->ID << std::endl;
+    }
 
 }
 
@@ -255,6 +274,20 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
         return t1.nodes.front()->getFrequency() < t2.nodes.front()->getFrequency();
     });
 
+    // verbose output
+    if (sec::isVerbose()) {
+        std::cout << "\n[controller] About to start the following threads:" << std::endl;
+        unsigned tid = 0;
+        for (auto& t : threads) {
+            std::cout << "- thread " << tid << ":" <<std::endl;
+            for (auto n : t.nodes) {
+                std::cout << "\tID = " << n->ID << ", " << n->parametersShort() << std::endl;
+            }
+            tid++;
+            std::cout << std::endl;
+        }
+    }
+
     // check for same frequency in synchronous mode
     if (synchronizer.isSynchronous()) {
         for (unsigned int i = 0; i < threads.size()-1; i++) {
@@ -296,6 +329,10 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
 
     // save results
     results_collector.saveAll();
+
+    if (sec::isVerbose()) {
+        std::cout << "[controller] Threads ended" << std::endl;
+    }
 
 }
 

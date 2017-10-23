@@ -2,13 +2,14 @@
 
 #include <fstream>
 
+#include "flags.h"
+
 #ifdef HAS_GUI
 #include "launcherinterface.h"
 #endif
 
 
 namespace sec {
-
 
 template <>
 Any::Any(bool val) {
@@ -68,6 +69,15 @@ void ArgumentParser::parseArguments(int argc, char* argv[]) {
                 continue;
             }
 #endif
+
+            // search in defaults
+            auto itf = standard_flags.find(str);
+            if (itf != standard_flags.end()) {
+                standard_flags[str] = true;
+                continue;
+            }
+
+            // search in user args
             auto it = args.find(str);
             if (it != args.end()) {
                 i++;

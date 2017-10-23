@@ -14,7 +14,8 @@ set(SOURCES
     resultscollector.cpp
     argumentparser.cpp
     prompter.cpp
-    events.cpp)
+    events.cpp
+    flags.cpp)
 
 set(HEADERS
     commons.h
@@ -34,7 +35,8 @@ set(HEADERS
     resultscollector.h
     argumentparser.h
     prompter.h
-    events.h)
+    events.h
+    flags.h)
 
 if(BUILD_GUI)
     set(CMAKE_AUTOMOC ON)
