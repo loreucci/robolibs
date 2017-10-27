@@ -18,7 +18,7 @@ As many components of the libraries are optional, the only requirement to compil
 
 *robots* has optional dependencies in the iCub libraries and ROS + the patched gazebo_ros packages that can be found [here](https://bitbucket.org/hbpneurorobotics/gazeborospackages).
 
-*neural* has optional dependencies in NEST and SpiNNaker libraries.
+*neural* has optional dependencies in NEST and SpiNNaker libraries, plus [boost::python](http://www.boost.org/doc/libs/release/libs/python/) for the interface towards NEST.
 
 
 ## Installing and running
