@@ -17,9 +17,10 @@ ExecutionNode::ExecutionNode(const std::string& nestscript, const std::vector<Da
 
     // try to get parameters
     try {
-        py::object result = py::eval((py::str)"populations", main_namespace);
+        py::object result = py::eval("populations", main_namespace);
         populations = py::extract<py::dict>(result);
     } catch (py::error_already_set const &) {
+        PyErr_Print();
     }
 
     for (auto din : datain) {
@@ -79,7 +80,8 @@ void ExecutionNode::execute() {
 
     // run simulation
     py::object cmd = "nest.Simulate(%.1f)" % py::make_tuple(1000.0/getFrequency());
-    py::exec((py::str)cmd, main_namespace);
+    std::string cmd_str = py::extract<std::string>(cmd);  // this may be needed because of a bug of boost 1.65
+    py::exec(cmd_str.c_str(), main_namespace);
 
     for (auto dout : dataout) {
         dout->execute();
@@ -98,12 +100,16 @@ void ExecutionNode::initPythonRuntime() {
 
     auto main_module = py::import("__main__");
     main_namespace = main_module.attr("__dict__");
+
 }
 
 void ExecutionNode::suppressOutput() {
 
-    py::exec("nest.sli_run('M_WARNING setverbosity')", main_namespace);
-
+    try {
+        py::exec("nest.sli_run('M_WARNING setverbosity')", main_namespace);
+    } catch (py::error_already_set const &) {
+        PyErr_Print();
+    }
 }
 
 boost::python::tuple ExecutionNode::getPopulationGIDs(const std::string& pop) {

@@ -40,14 +40,16 @@ void StatusSetter::execute() {
     generateParams();
 
     py::object cmd = "nest.SetStatus(%s, %s)" % py::make_tuple(gids, params);
-    py::exec((py::str)cmd, main_namespace);
+    std::string cmd_str = py::extract<std::string>(cmd);  // this may be needed because of a bug of boost 1.65
+    py::exec(cmd_str.c_str(), main_namespace);
 }
 
 
 void StatusGetter::execute() {
 
     py::object cmd = "nest.GetStatus(%s)[0]" % gids;
-    py::object result = py::eval((py::str)cmd, main_namespace);
+    std::string cmd_str = py::extract<std::string>(cmd);  // this may be needed because of a bug of boost 1.65
+    py::object result = py::eval(cmd_str.c_str(), main_namespace);
 
     params = py::extract<py::dict>(result);
 

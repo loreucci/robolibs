@@ -20,7 +20,7 @@ int main() {
         nest::PoissonGeneratorSetter pg({1});
         sec::connect(&ss.output, &pg.rate);
 
-        nest::SpikeDetectorGetter sd({1});
+        nest::SpikeDetectorGetter sd({2});
 
         nest::ExecutionNode nn("test_nest.py", {&pg}, {&sd}, 100.0);
         nn.suppressOutput();
