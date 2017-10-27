@@ -4,7 +4,7 @@
 
 
 JointsReader::JointsReader(const std::string& jointtopic, const std::vector<std::string>& joints, double freq)
-    :sec::Source(freq), topic(topic), joints(joints) {
+    :sec::Source(freq), topic(jointtopic), joints(joints) {
 
     sub = n.subscribe(jointtopic, 1000, &JointsReader::jointCallback, this);
 
