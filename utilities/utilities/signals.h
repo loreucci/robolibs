@@ -25,11 +25,11 @@ public:
     //! Signal constructor.
     /*!
       Creates a new Signal with a fixed sampling frequency.
-      \param fun the signal function that will be called at each step.
+      \param fun the signal function that will be called at each step, y(t).
       \param description a description of the signal (for logging).
       \param samplingfreq the sampling frequency.
     */
-    explicit Signal(std::function<double(unsigned int, double)> fun = [](unsigned int, double){return 0.0;},
+    explicit Signal(std::function<double(double)> fun = [](double){return 0.0;},
                     const std::string& description = "[default signal (0)]",
                     double samplingfreq = 0.0);
 
@@ -63,7 +63,7 @@ public:
     /*!
       \return the signal function.
     */
-    std::function<double(unsigned int, double)> getFunction() const;
+    std::function<double(double)> getFunction() const;
 
     //! Sampling frequency getter.
     /*!
@@ -79,7 +79,7 @@ public:
 
 protected:
     unsigned int t;
-    std::function<double(unsigned int, double)> fun;
+    std::function<double(double)> fun;
     std::string description;
     double samplingfreq;
 

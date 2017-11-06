@@ -8,7 +8,7 @@
 namespace Signals {
 
 
-Signal::Signal(std::function<double (unsigned int, double)> fun, const std::string& description, double samplingfreq)
+Signal::Signal(std::function<double(double)> fun, const std::string& description, double samplingfreq)
     :fun(fun), description(description) {
 
     setSamplingFreq(samplingfreq);
@@ -22,7 +22,7 @@ double Signal::operator()() {
 }
 
 double Signal::output() {
-    return fun(t++, samplingfreq);
+    return fun(t++/samplingfreq);
 }
 
 void Signal::reset(double time) {
@@ -35,7 +35,7 @@ std::string Signal::to_string() const {
     return description;
 }
 
-std::function<double(unsigned int, double)> Signal::getFunction() const {
+std::function<double(double)> Signal::getFunction() const {
     return fun;
 }
 
@@ -51,7 +51,7 @@ void Signal::setSamplingFreq(double samplingfreq) {
 
 
 Signal constant(double c, double samplingfreq) {
-    return Signal([c](unsigned int, double) {return c;},
+    return Signal([c](double) {return c;},
                   "[constant: " + std::to_string(c) + "]",
     samplingfreq);
 }
@@ -64,8 +64,8 @@ Signal sin(double ampl, double freq, double phase, double samplingfreq) {
     str += "f=" + std::to_string(freq) + ", ";
     str += "ph=" + std::to_string(phase) + "]";
 
-    auto fun = [ampl, freq, phase] (unsigned int t, double samplingfreq) {
-        return ampl * std::sin(2*Utils::PI*freq*t/samplingfreq + phase);
+    auto fun = [ampl, freq, phase] (double t) {
+        return ampl * std::sin(2*Utils::PI*freq*t + phase);
     };
 
     return Signal(fun, str, samplingfreq);
@@ -80,12 +80,11 @@ Signal ramp(double slope, double initialvalue, double starttime, double sampling
     str += "initialvalue=" + std::to_string(initialvalue) + ", ";
     str += "starttime=" + std::to_string(starttime) + "]";
 
-    auto fun = [slope, initialvalue, starttime] (unsigned int t, double samplingfreq) {
-        double time = t / samplingfreq;
-        if (time <= starttime) {
+    auto fun = [slope, initialvalue, starttime] (double t) {
+        if (t <= starttime) {
             return initialvalue;
         }
-        return slope*(time-starttime)+initialvalue;
+        return slope*(t-starttime)+initialvalue;
     };
 
     return Signal(fun, str, samplingfreq);
@@ -100,13 +99,12 @@ Signal rampandhold(double slope, double initialvalue, double stoptime, double st
     str += "stoptime=" + std::to_string(stoptime) + ", ";
     str += "starttime=" + std::to_string(starttime) + "]";
 
-    auto fun = [slope, initialvalue, stoptime, starttime] (unsigned int t, double samplingfreq) {
-        double time = t / samplingfreq;
+    auto fun = [slope, initialvalue, stoptime, starttime] (double t) {
         static double lastvalue = initialvalue;
-        if (time <= starttime)
+        if (t <= starttime)
             lastvalue = initialvalue;
-        else if (time <= stoptime)
-            lastvalue = slope*(time-starttime)+initialvalue;
+        else if (t <= stoptime)
+            lastvalue = slope*(t-starttime)+initialvalue;
         return lastvalue;
     };
 
@@ -122,8 +120,8 @@ Signal chirp(double ampl, double f0, double k, double phase, double samplingfreq
     str += "k=" + std::to_string(k) + ", ";
     str += "phase=" + std::to_string(phase) + "]";
 
-    auto fun = [ampl, f0, k, phase] (unsigned int t, double samplingfreq) {
-        return ampl * std::sin(2*Utils::PI*(f0*t/samplingfreq + k/2*std::pow(t/samplingfreq, 2)) + phase);
+    auto fun = [ampl, f0, k, phase] (double t) {
+        return ampl * std::sin(2*Utils::PI*(f0*t + k/2*std::pow(t, 2)) + phase);
     };
 
 
@@ -144,7 +142,7 @@ Signal noise(double mean, double stddev, double samplingfreq) {
     str += "mean=" + std::to_string(mean) + ", ";
     str += "stddev=" + std::to_string(stddev) + "]";
 
-    auto fun = [d, gen] (unsigned int, double) mutable {
+    auto fun = [d, gen] (double) mutable {
         return d(gen);
     };
 
@@ -166,18 +164,18 @@ Signal Switch(Signal s1, Signal s2, double switchtime, bool shift, double sampli
 
     auto f1 = s1.getFunction();
     auto f2 = s2.getFunction();
-    auto fun = [switchtime, f1, f2, shift] (unsigned int t, double samplingfreq) {
-        double out1 = f1(t, samplingfreq);
+    auto fun = [switchtime, f1, f2, shift] (double t) {
+        double out1 = f1(t);
         double out2;
         if (!shift)
-            out2 = f2(t, samplingfreq);
+            out2 = f2(t);
 
-        if (t/samplingfreq <= switchtime) {
+        if (t <= switchtime) {
             return out1;
         }
 
         if (shift)
-            out2 = f2(t-switchtime*samplingfreq, samplingfreq);
+            out2 = f2(t-switchtime);
         return out2;
     };
 
@@ -198,8 +196,8 @@ Signal BinaryOperation(Signal s1, Signal s2, std::function<double (double, doubl
 
     auto f1 = s1.getFunction();
     auto f2 = s2.getFunction();
-    auto fun = [op, f1, f2] (unsigned int t, double samplingfreq) {
-        return op(f1(t, samplingfreq), f2(t, samplingfreq));
+    auto fun = [op, f1, f2] (double t) {
+        return op(f1(t), f2(t));
     };
 
     return Signal(fun, str, samplingfreq);
