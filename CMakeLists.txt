@@ -44,6 +44,8 @@ if(WITH_NEURAL)
 	endif(WITH_SPINNAKER)
 endif(WITH_NEURAL)
 
+# third party included libraries
+set(THIRD_PARTY ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 
 # subdirectories
 add_subdirectory(utilities)

@@ -6,7 +6,7 @@
 #include <QtNetwork/QLocalServer>
 #include <QColor>
 
-#include "qcustomplot.h"
+#include <qcustomplot/qcustomplot.h>
 
 class RasterServer : public QObject {
 
