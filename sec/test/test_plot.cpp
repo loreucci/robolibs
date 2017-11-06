@@ -5,6 +5,9 @@
 #include <sec/connections.h>
 
 #include <utilities/vector.h>
+#include <utilities/signals.h>
+
+#include <cmath>
 
 
 class TestVecNode : public sec::Node {
@@ -41,26 +44,33 @@ public:
 
 int main(void) {
 
-    TestVecNode tvn(30.0);
+    Signals::Signal testsig([](double t) { return t == 0.0 ? 1.0 : 10*std::sin(3.14*2*t)/t;}, "[sin(x)/x]", 50.0);
 
-//    sec::SinusoidalSource source(10.0, 1.0, 0.0, 0.0, 30.0);
-    sec::PlottingClient plots(30.0);
+    sec::SignalSource ss(testsig, 50.0);
+
+
+//    TestVecNode tvn(30.0);
+
+    sec::SinusoidalSource source(1.0, 1.0, 0.0, 0.0, 50.0);
+    sec::PlottingClient plots(50.0);
 
 //    sec::SinusoidalSource source2(5.0, 2.0, 0.0, 5.0, 30.0);
 
 //    sec::Logger logger;
 //    logger.toggleLogging();
 
-    sec::connect(tvn, &TestVecNode::output, {0, 2}, plots, {"a", "c"}, {[](double x){return x+2;}, [](double x){return x-1;}});
+    sec::connect(ss.output, plots, "test1");
+
+//    sec::connect(tvn, &TestVecNode::output, {0, 2}, plots, {"a", "c"}, {[](double x){return x-2;}, [](double x){return x-1;}});
 
 //    sec::connect(source2, &sec::SinusoidalSource::output, plots, "test2", [](double x){return x+5.0;});
-//    sec::connect(source, &sec::SinusoidalSource::output, plots, "test");
+    sec::connect(source, &sec::SinusoidalSource::output, plots, "test2");
 
 //    sec::connect(source, &sec::SinusoidalSource::output, logger, "test");
 //    sec::connect(source2, &sec::SinusoidalSource::output, logger, "test2");
 
 //    logger.logNodes(sec::main_controller.getAllNodes());
 
-    sec::main_controller.run(3.0);
+    sec::main_controller.run();
 
 }

@@ -1,6 +1,8 @@
 #ifndef PLOTTINGSERVER_H
 #define PLOTTINGSERVER_H
 
+#include <deque>
+
 #include <QObject>
 #include <QtNetwork/QLocalSocket>
 #include <QtNetwork/QLocalServer>
@@ -29,6 +31,7 @@ protected:
     QLocalServer* server;
     QLocalSocket* socket;
     QCustomPlot* plot;
+    std::deque<double> maxq, minq;
 
     void newplot();
     void response(const QString& response);

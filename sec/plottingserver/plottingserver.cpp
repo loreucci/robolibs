@@ -1,5 +1,7 @@
 #include "plottingserver.h"
 
+#include <algorithm>
+
 #include <QApplication>
 
 PlottingServer::PlottingServer(QObject* parent)
@@ -68,29 +70,15 @@ void PlottingServer::readMessage() {
 
         for (unsigned int i = 1; i < cmd.size(); i+=2){
             int id = cmd[i].toInt();
-            plot->graph(id)->addData(t, cmd[i+1].toDouble());
-//            plot->graph(id)->rescaleValueAxis();
+            double val = cmd[i+1].toDouble();
+            plot->graph(id)->addData(t, val);
+            if (val > maxq.back())
+                maxq.back() = val;
+            if (val < minq.back())
+                minq.back() = val;
         }
-        plot->rescaleAxes();
 
-
-
-
-    }/*else if (cmd[0] == "newvalue") {      // add new value to a plot
-
-        if (cmd.size() < 3) {
-            response("ERROR");
-            return;
-        }
-        response("OK");
-
-        int id = cmd[1].toInt();
-
-        plot->graph(id)->addData(t, cmd[2].toDouble());
-        plot->graph(id)->rescaleValueAxis();
-
-
-    }*/ else if (cmd[0] == "clearall") {      // reset plot
+    } else if (cmd[0] == "clearall") {      // reset plot
 
         response("OK");
 
@@ -115,6 +103,18 @@ void PlottingServer::readMessage() {
         response("OK");
 
         plot->xAxis->setRange(t, 5, Qt::AlignRight);
+
+        // compute y limits
+        double maxy = *std::max_element(maxq.begin(), maxq.end());
+        double miny = *std::min_element(minq.begin(), minq.end());
+        plot->yAxis->setRange((maxy+miny)/2.0, (maxy-miny)*1.1, Qt::AlignCenter);
+        maxq.push_back(0.0);
+        minq.push_back(0.0);
+        if (maxq.size() > 5/dt) {
+            maxq.pop_front();
+            minq.pop_front();
+        }
+
         t += dt;
         emit replot();
 
@@ -135,6 +135,12 @@ void PlottingServer::newplot() {
     t = 0;
     dt = 0.01;
     count = 0;
+
+    // reset axes
+    minq.clear();
+    minq.push_back(0.1);
+    maxq.clear();
+    maxq.push_back(0.1);
 
     this->plot = new QCustomPlot();
     this->plot->resize(800, 600);
