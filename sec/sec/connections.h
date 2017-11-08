@@ -6,7 +6,6 @@
 #include <utilities/utilities.h>
 
 #include "nodelink.h"
-#include "controller.h"
 
 
 namespace sec {
@@ -50,7 +49,6 @@ template <class C1, class C2>
 void connect(C1& source, C2& sink) {
 
     sink.input.connect(&(source.output));
-    main_controller.registerConnection(&source, &sink);
 
 }
 
@@ -59,7 +57,6 @@ template <class C1, class C2, typename T>
 void connect(C1& source, NodeOut<T>* out, C2& sink, NodeIn<T>* in) {
 
     in->connect(out);
-    main_controller.registerConnection(&source, &sink);
 
 }
 
@@ -68,7 +65,6 @@ template <class C1, class C2, typename T>
 void connect(C1& source, NodeOut<T> C1::* out, C2& sink, NodeIn<T> C2::* in) {
 
     (sink.*in).connect(&(source.*out));
-    main_controller.registerConnection(&source, &sink);
 
 }
 
@@ -77,7 +73,6 @@ template <class C1, class C2, typename T>
 void connect(C1& source, NodeOut<T> C1::* out, C2& sink, NodeIn<T> C2::* in, std::function<T(T)> fun) {
 
     (sink.*in).connect(new LinkFunction<T, T>(&(source.*out), fun));
-    main_controller.registerConnection(&source, &sink);
 
 }
 
@@ -87,7 +82,6 @@ template <class C1, class C2, typename T1, typename T2>
 void connect(C1& source, NodeOut<T1> C1::* out, C2& sink, NodeIn<T2> C2::* in) {
 
     (sink.*in).connect(new LinkConverter<T1, T2>(&(source.*out)));
-    main_controller.registerConnection(&source, &sink);
 
 }
 
@@ -96,7 +90,6 @@ template <class C1, class C2, typename T1, typename T2>
 void connect(C1& source, NodeOut<T1> C1::* out, C2& sink, NodeIn<T2> C2::* in, std::function<T2(T1)> fun) {
 
     (sink.*in).connect(new LinkFunction<T1, T2>(&(source.*out), fun));
-    main_controller.registerConnection(&source, &sink);
 
 }
 

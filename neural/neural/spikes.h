@@ -104,7 +104,6 @@ void connect(C1& source, neural::SpikeNodeOut C1::* out, C2& sink, neural::Spike
 
     (sink.*in).connect(&(source.*out));
     (source.*out).addConnection(&(sink.*in));
-    main_controller.registerConnection(&source, &sink);
 
 }
 

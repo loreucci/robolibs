@@ -60,7 +60,6 @@ void Controller::addNode(sec::Node* node) {
         maxfreq = node->getFrequency();
 
     nodes[node->getFrequency()].push_front(node);
-    adj.insert({node, std::forward_list<Node*>()});
 
     if (sec::isVerbose()) {
         std::cout << "[controller] Added node " << node->ID << " @ " << node->getFrequency() << "Hz" << std::endl;
@@ -84,13 +83,6 @@ void Controller::moveNode(Node* node, double old_freq) {
     }
 
     addNode(node);
-}
-
-void Controller::registerConnection(Node* source, Node* sink) {
-
-    adj[source].push_front(sink);
-    adj[sink].push_front(source);
-
 }
 
 void Controller::removeNode(Node* node) {
@@ -137,39 +129,6 @@ std::pair<bool, std::vector<Node*>> Controller::checkConnections() const {
             disc.push_back(n.second);
     }
     return std::make_pair(disc.empty(), disc);
-}
-
-void Controller::adjustFrequencies() {
-
-    if (maxfreq == 0.0)
-        throw std::runtime_error("Controller: at least one node must have a frequency > 0.0.");
-
-    bool done = false;
-
-    while (!done) {
-
-        done = true;
-
-        for (const auto& it : adj) {
-
-            if (it.first->getFrequency() == 0.0) {
-                if (it.second.empty()) {
-                    it.first->setFrequency(maxfreq);
-                } else {
-                    for (const auto n : it.second) {
-                        if (n->getFrequency() != 0.0) {
-                            it.first->setFrequency(n->getFrequency());
-                        }
-                    }
-                }
-            }
-            if (it.first->getFrequency() == 0.0) {
-                done = false;
-            }
-
-        }
-    }
-
 }
 
 void Controller::moveNodeToSingleThread(Node* node) {
@@ -243,8 +202,7 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
         throw std::runtime_error("Controller: some nodes are not connected:\n\n"+disc);
     }
 
-
-    adjustFrequencies();
+    // sort nodes to the order of creation
     sortNodes();
 
     // create thread specs
@@ -355,18 +313,6 @@ void Controller::printNodes() const {
     }
 
     std::cout << std::endl;
-
-}
-
-void Controller::printAdj() const {
-
-    for (const auto& it : adj) {
-        std::cout << it.first->ID << ": ";
-        for (const auto n : it.second) {
-            std::cout << n->ID << " ";
-        }
-        std::cout << std::endl;
-    }
 
 }
 

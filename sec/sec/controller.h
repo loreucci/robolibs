@@ -29,12 +29,10 @@ public:
 
     void addNode(Node* node);
     void moveNode(Node* node, double old_freq);
-    void registerConnection(Node* source, Node* sink);
     void removeNode(Node* node);
 
 
     std::pair<bool, std::vector<Node*>> checkConnections() const;
-    void adjustFrequencies();
 
     void moveNodeToSingleThread(Node* node);
 
@@ -47,14 +45,12 @@ public:
 
     // DEBUG ONLY
     void printNodes() const;
-    void printAdj() const;
 
     // TODO: make an iterator
     std::vector<Node*> getAllNodes();
 
 protected:
     std::unordered_map<double, std::forward_list<Node*>> nodes;
-    std::unordered_map<Node*, std::forward_list<Node*>> adj;
     std::vector<std::pair<double, Node*>> singleThreadNodes;
     double maxfreq;
 
