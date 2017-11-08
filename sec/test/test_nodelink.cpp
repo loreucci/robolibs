@@ -26,6 +26,8 @@ int main(void) {
     d5->runOnSingleThread();
     d6.runOnSingleThread();
 
+    sec::connect(3.0, d1.input);
+
     return 0;
 
 }

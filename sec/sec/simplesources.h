@@ -29,6 +29,10 @@ public:
         return "ConstantSource of value" + Utils::make_string(value, " ") + ".";
     }
 
+    void changeValue(const T& newvalue) {
+        value = newvalue;
+    }
+
     NodeOut<T> output;
 
 protected:
