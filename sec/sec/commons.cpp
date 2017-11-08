@@ -29,7 +29,7 @@ std::string getUniqueTimeStamp() {
 }
 
 
-double defaultfreq = -1.0;
+double defaultfreq = 0.0;
 
 void setDefaultFrequency(double freq) {
 
@@ -42,10 +42,6 @@ void setDefaultFrequency(double freq) {
 }
 
 double getDefaultFrequency() {
-
-    if (defaultfreq < 0.0) {
-        throw std::runtime_error("Default frequency must be set with sec::setDefaultFrequency.");
-    }
 
     return defaultfreq;
 

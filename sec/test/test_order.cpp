@@ -44,10 +44,12 @@ int main(void) {
     TestNode n4(4);
 
     n4.setFrequency(20.0);
-//    n3.setFrequency(50.0);
+//    n3.setFrequency(20.0);
     n2.setFrequency(20.0);
-//    n1.setFrequency(50.0);
+//    n1.setFrequency(20.0);
     n0.setFrequency(20.0);
+
+//    sec::setDefaultFrequency(50.0);
 
     sec::run(0.1);
 

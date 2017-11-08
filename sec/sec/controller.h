@@ -31,15 +31,7 @@ public:
     void moveNode(Node* node, double old_freq);
     void removeNode(Node* node);
 
-
-    std::pair<bool, std::vector<Node*>> checkConnections() const;
-
     void moveNodeToSingleThread(Node* node);
-
-    void sortNodes();
-
-    void executeThread(ExecThread* et);
-    void executeFreq(double freq);
 
     void run(double time = 0.0, std::vector<std::function<bool(void)>> endconditions = {});
 
@@ -53,6 +45,14 @@ protected:
     std::unordered_map<double, std::forward_list<Node*>> nodes;
     std::vector<std::pair<double, Node*>> singleThreadNodes;
     double maxfreq;
+
+    std::pair<bool, std::vector<Node*>> checkConnections() const;
+
+    void sortNodes();
+
+    void executeThread(ExecThread* et);
+
+    void promoteNodesToDefault();
 
 };
 

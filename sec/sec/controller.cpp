@@ -6,6 +6,7 @@
 
 #include "resultscollector.h"
 #include "flags.h"
+#include "commons.h"
 
 
 namespace sec {
@@ -187,6 +188,29 @@ void Controller::executeThread(ExecThread* et) {
 
 }
 
+void Controller::promoteNodesToDefault() {
+
+    // check if there is something to do
+    if (nodes[0.0].empty())
+        return;
+
+    // if no default frequency was specified die
+    double freq = getDefaultFrequency();
+    if (freq == 0.0) {
+        std::string disc;
+        for (const auto& n : nodes[0.0])
+            disc += n->parametersShort() + "\n";
+        throw std::runtime_error("Controller: no frequency was specified for the following nodes:\n\n" + disc);
+    }
+
+    // otherwise se the nodes to default frequency
+    // it is not an infinite loop because setFrequency actually removes the node from the list
+    while (!nodes[0.0].empty()) {
+        nodes[0.0].front()->setFrequency(freq);
+    }
+
+}
+
 void Controller::run(double time, std::vector<std::function<bool(void)>> endconditions) {
 
     // register signal handlers
@@ -198,9 +222,12 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     if (!connected.first) {
         std::string disc;
         for (const auto& n : connected.second)
-            disc += n->parameters() + "\n";
-        throw std::runtime_error("Controller: some nodes are not connected:\n\n"+disc);
+            disc += n->parametersShort() + "\n";
+        throw std::runtime_error("Controller: some nodes are not connected:\n\n" + disc);
     }
+
+    // promote nodes with 0.0 to default frequency
+    promoteNodesToDefault();
 
     // sort nodes to the order of creation
     sortNodes();
