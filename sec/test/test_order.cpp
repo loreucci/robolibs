@@ -6,7 +6,7 @@
 class TestNode : public sec::Node {
 
 public:
-    TestNode(int i, double freq = 100.0)
+    TestNode(int i, double freq = 0.0)
         :sec::Node(freq), i(i) {}
 
     virtual void refreshInputs() override {}
@@ -33,6 +33,8 @@ int main(void) {
 
     sec::setVerbose();
 
+    sec::setDefaultFrequency(50.0);
+
 //    std::cout << sec::isVerbose() << std::endl;
 
     TestNode n0(0);
@@ -42,9 +44,9 @@ int main(void) {
     TestNode n4(4);
 
     n4.setFrequency(20.0);
-    n3.setFrequency(50.0);
+//    n3.setFrequency(50.0);
     n2.setFrequency(20.0);
-    n1.setFrequency(50.0);
+//    n1.setFrequency(50.0);
     n0.setFrequency(20.0);
 
     sec::run(0.1);

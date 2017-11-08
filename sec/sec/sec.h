@@ -1,6 +1,7 @@
 #ifndef SEC_H
 #define SEC_H
 
+#include "commons.h"
 #include "controller.h"
 #include "connections.h"
 #include "synchronization.h"

@@ -1,6 +1,7 @@
 #include "node.h"
 
 #include "controller.h"
+#include "commons.h"
 
 namespace sec {
 
@@ -12,7 +13,11 @@ Node::Node(double freq)
     if (freq < 0) {
         std::invalid_argument("Controller: frequence must be non-negative.");
     }
-    this->freq = freq;
+
+    if (freq == 0.0)
+        this->freq = getDefaultFrequency();
+    else
+        this->freq = freq;
 
     main_controller.addNode(this);
 
@@ -31,7 +36,10 @@ void Node::setFrequency(double freq) {
     }
 
     double old_freq = this->freq;
-    this->freq = freq;
+    if (freq == 0.0)
+        this->freq = getDefaultFrequency();
+    else
+        this->freq = freq;
     main_controller.moveNode(this, old_freq);
 
 }

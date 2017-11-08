@@ -10,6 +10,11 @@ namespace sec {
 std::string getUniqueTimeStamp();
 
 
+void setDefaultFrequency(double freq);
+
+double getDefaultFrequency();
+
+
 }
 
 #endif // COMMONS_H

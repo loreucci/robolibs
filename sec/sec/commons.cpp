@@ -1,6 +1,8 @@
 #include "commons.h"
 
 #include <chrono>
+#include <stdexcept>
+
 
 namespace sec {
 
@@ -23,6 +25,29 @@ std::string getUniqueTimeStamp() {
     }
 
     return timestamp;
+
+}
+
+
+double defaultfreq = -1.0;
+
+void setDefaultFrequency(double freq) {
+
+    if (freq <= 0.0) {
+        throw std::invalid_argument("Default frequency of the controller must be positive.");
+    }
+
+    defaultfreq = freq;
+
+}
+
+double getDefaultFrequency() {
+
+    if (defaultfreq < 0.0) {
+        throw std::runtime_error("Default frequency must be set with sec::setDefaultFrequency.");
+    }
+
+    return defaultfreq;
 
 }
 
