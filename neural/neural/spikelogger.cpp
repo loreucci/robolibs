@@ -9,8 +9,8 @@
 namespace neural {
 
 
-SpikeLogger::SpikeLogger(const std::string& filename)
-    :Node(0.0), filename(filename) {
+SpikeLogger::SpikeLogger(const std::string& filename, double freq)
+    :Node(freq), filename(filename) {
 
     listeners.clear();
 

@@ -13,7 +13,7 @@ namespace sec {
 class DataLogger : public Node, public Logger {
 
 public:
-    DataLogger(const std::string& separator = " ", const std::string& filename = "data.txt");
+    DataLogger(const std::string& separator = " ", const std::string& filename = "data.txt", double freq = 0.0);
 
     virtual ~DataLogger();
 

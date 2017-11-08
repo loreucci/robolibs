@@ -8,8 +8,8 @@
 
 namespace sec {
 
-DataLogger::DataLogger(const std::string& separator, const std::string& filename)
-    :Node(0.0), filename(filename), separator(separator) {
+DataLogger::DataLogger(const std::string& separator, const std::string& filename, double freq)
+    :Node(freq), filename(filename), separator(separator) {
 
     counter = 0;
 

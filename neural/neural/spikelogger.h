@@ -13,7 +13,7 @@ namespace neural {
 class SpikeLogger : public sec::Node, public sec::Logger {
 
 public:
-    SpikeLogger(const std::string& filename = "spikes.txt");
+    SpikeLogger(const std::string& filename = "spikes.txt", double freq = 0.0);
 
     virtual ~SpikeLogger();
 
