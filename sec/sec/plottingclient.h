@@ -53,31 +53,13 @@ protected:
 // this function has to created just once in order to avoid a linking error with the templates
 extern std::function<double(double)> identity_fun;
 
-////////////////////////////////////////
-/// New connection style
+// connections
 void connect(NodeOut<double>& out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun);
 
 template <typename T, typename F>
 void connect(NodeOut<T>& out, PlottingClient& sink, const std::string& name, F fun) {
 
     sink.addConnection(new LinkFunction<T, double>(&out, fun), QString(name.c_str()), identity_fun);
-
-}
-
-
-////////////////////////////////////////
-/// All of these will be deprecated soon
-template <class C1>
-void connect(C1& source, NodeOut<double> C1::* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun) {
-
-    sink.addConnection(&(source.*out), QString(name.c_str()), fun);
-
-}
-
-template <class C1>
-void connect(C1&, NodeOut<double>* out, PlottingClient& sink, const std::string& name, std::function<double(double)> fun = identity_fun) {
-
-    sink.addConnection(out, QString(name.c_str()), fun);
 
 }
 
@@ -88,26 +70,7 @@ void connect(DictionaryNode<T>& source, const std::string& out, PlottingClient& 
 
 }
 
-template <typename C1>
-void connect(C1& source, NodeOut<Utils::Vector> C1::* out, const std::vector<unsigned int>& indexes, PlottingClient& sink, const std::vector<std::string>& names, std::vector<std::function<double(double)>> funs = {}) {
-
-    if (indexes.size() != names.size()) {
-        throw std::runtime_error("Plottingserver::connect: indexes and names lenght do not match.");
-    }
-
-    if (funs.size() == 0) {
-        funs.resize(indexes.size(), identity_fun);
-    }
-
-    if (indexes.size() != funs.size()) {
-        throw std::runtime_error("Plottingserver::connect: indexes and transformation functions lenght do not match.");
-    }
-
-    for (unsigned int i = 0; i < names.size(); i++) {
-        sink.addVectorConnection(&(source.*out), QString(names[i].c_str()), indexes[i], funs[i]);
-    }
-
-}
+void connect(NodeOut<Utils::Vector>& out, const std::vector<unsigned int>& indexes, PlottingClient& sink, const std::vector<std::string>& names, std::vector<std::function<double(double)>> funs = {});
 
 }
 

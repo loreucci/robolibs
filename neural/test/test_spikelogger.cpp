@@ -49,8 +49,8 @@ int main(void) {
 
     neural::SpikeLogger logger;
 
-    sec::connect(ss, &TestSpikeSource::output1, logger);
-    sec::connect(ss, &TestSpikeSource::output2, logger);
+    sec::connect(ss.output1, logger);
+    sec::connect(ss.output2, logger);
 
     sec::main_controller.run(2.0);
 

@@ -21,7 +21,7 @@ int main(void) {
     // move object
     sec::SinusoidalSource ss(0.5, 1.0, 0.0, 0.0, 100.0);
     iCubSimObjectMover mover(world, obj, true);
-    sec::connect(ss, &sec::SinusoidalSource::output, mover, &iCubSimObjectMover::x);
+    sec::connect(ss.output, mover.x);
 
     sec::main_controller.run(5.0);
 

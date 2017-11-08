@@ -18,7 +18,7 @@ int main() {
         sec::SignalSource ss(rah, 100.0);
 
         nest::PoissonGeneratorSetter pg({1});
-        sec::connect(&ss.output, &pg.rate);
+        sec::connect(ss.output, pg.rate);
 
         nest::SpikeDetectorGetter sd({2});
 
@@ -27,7 +27,7 @@ int main() {
         nn.runOnSingleThread();
 
         neural::SpikeLogger logger;
-        sec::connect(&sd.spikes, logger);
+        sec::connect(sd.spikes, logger);
 
         sec::main_controller.run(3.0);
 

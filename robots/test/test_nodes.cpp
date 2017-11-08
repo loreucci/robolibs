@@ -19,7 +19,7 @@ int main(void) {
 
     EncodersHeadVel he(sim, 100.0);
     sec::Printer printer("");
-    sec::connect(he, &EncodersHeadVel::eyesversionvel, printer, " ");
+    sec::connect(he.eyesversionvel, printer, " ");
 
     auto s = Signals::sin(20.0, 0.5, 0.0, 100.0);
     sec::SignalSource ss(s, 100.0);

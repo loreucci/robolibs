@@ -52,8 +52,6 @@ protected:
 };
 
 // connections
-////////////////////////////////////////
-/// New connection style
 template <typename T>
 void connect(NodeOut<T>& out, DataLogger& logger, const std::string& name) {
 
@@ -67,17 +65,6 @@ template <typename T1, typename T2, typename F>
 void connect(NodeOut<T1>& out, DataLogger& logger, const std::string& name, F fun) {
 
     DataListener* l = new NodeListener<T2>(name, new LinkFunction<T1, T2>(&out, fun));
-
-    logger.addListener(l);
-
-}
-
-////////////////////////////////////////
-/// All of these will be deprecated soon
-template <class C1, typename T>
-void connect(C1& source, NodeOut<T> C1::* out, DataLogger& logger, const std::string& name) {
-
-    DataListener* l = new NodeListener<T>(name, &(source.*out));
 
     logger.addListener(l);
 

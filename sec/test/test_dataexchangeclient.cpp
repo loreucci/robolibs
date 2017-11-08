@@ -14,7 +14,7 @@ int main(void) {
     auto s = Signals::sin(2.0, 1.0, 0.0, 100.0);
     sec::SignalSource ss(s, 100.0);
 
-    sec::connect(ss, &sec::SignalSource::output, dataout, "e1");
+    sec::connect(ss.output, dataout.input("e1"));
 
     dataout.sendStart();
 

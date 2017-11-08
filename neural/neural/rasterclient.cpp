@@ -107,8 +107,8 @@ QString RasterClient::serialize(unsigned int id, const SpikeData& data) {
 
 }
 
-void sec::connect(neural::SpikeNodeOut* out, neural::RasterClient& sink, const std::__cxx11::string& name) {
+void sec::connect(neural::SpikeNodeOut& out, neural::RasterClient& sink, const std::__cxx11::string& name) {
 
-    sink.addConnection(out, name);
+    sink.addConnection(&out, name);
 
 }

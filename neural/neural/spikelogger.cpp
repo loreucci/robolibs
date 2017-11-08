@@ -84,6 +84,6 @@ bool SpikeLogger::logToFile() const {
 
 }
 
-void sec::connect(neural::SpikeNodeOut* out, neural::SpikeLogger& sink) {
-    sink.addSpikeSource(out);
+void sec::connect(neural::SpikeNodeOut& out, neural::SpikeLogger& sink) {
+    sink.addSpikeSource(&out);
 }

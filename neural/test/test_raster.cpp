@@ -96,11 +96,11 @@ int main() {
 
 //    TestSpikeSource tss(200.0);
 
-//    sec::connect(tss, &TestSpikeSource::output1, rclient, "pop1");
-//    sec::connect(tss, &TestSpikeSource::output2, rclient, "pop2");
+//    sec::connect(tss.output1, rclient, "pop1");
+//    sec::connect(tss.output2, rclient, "pop2");
 
     SpikeGenerator sg(10, 400.0, 100.0);
-    sec::connect(sg, &SpikeGenerator::output, rclient, "pop");
+    sec::connect(sg.output, rclient, "pop");
 
     sec::main_controller.run();
 

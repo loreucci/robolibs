@@ -104,4 +104,24 @@ void connect(NodeOut<double>& out, PlottingClient& sink, const std::string& name
 
 }
 
+void connect(NodeOut<Utils::Vector>& out, const std::vector<unsigned int>& indexes, PlottingClient& sink, const std::vector<std::string>& names, std::vector<std::function<double(double)> > funs) {
+
+    if (indexes.size() != names.size()) {
+        throw std::runtime_error("Plottingserver::connect: indexes and names lenght do not match.");
+    }
+
+    if (funs.size() == 0) {
+        funs.resize(indexes.size(), identity_fun);
+    }
+
+    if (indexes.size() != funs.size()) {
+        throw std::runtime_error("Plottingserver::connect: indexes and transformation functions lenght do not match.");
+    }
+
+    for (unsigned int i = 0; i < names.size(); i++) {
+        sink.addVectorConnection(&out, QString(names[i].c_str()), indexes[i], funs[i]);
+    }
+
+}
+
 }

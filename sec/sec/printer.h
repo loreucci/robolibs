@@ -37,26 +37,12 @@ protected:
 };
 
 
-////////////////////////////////////////
-/// New connection style
+//connections
 template <typename T>
 void connect(NodeOut<T>& out, Printer& printer, const std::string& sep = "") {
 
     auto fun = [&out, sep] () {
         return Utils::make_string(out.getData().first, sep);
-    };
-
-    printer.addFun(fun);
-
-}
-
-////////////////////////////////////////
-/// All of these will be deprecated soon
-template <class C1, typename T>
-void connect(C1& source, NodeOut<T> C1::* out, Printer& printer, const std::string& sep = "") {
-
-    auto fun = [&source, out, sep] () {
-        return Utils::make_string((source.*out).getData().first, sep);
     };
 
     printer.addFun(fun);

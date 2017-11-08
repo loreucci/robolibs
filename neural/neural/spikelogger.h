@@ -42,14 +42,7 @@ protected:
 
 namespace sec {
 
-void connect(neural::SpikeNodeOut* out, neural::SpikeLogger& sink);
-
-template <class C1>
-void connect(C1& source, neural::SpikeNodeOut C1::* out, neural::SpikeLogger& sink) {
-
-    sink.addSpikeSource(&(source.*out));
-
-}
+void connect(neural::SpikeNodeOut& out, neural::SpikeLogger& sink);
 
 }
 

@@ -51,28 +51,7 @@ protected:
 
 namespace sec {
 
-void connect(neural::SpikeNodeOut* out, neural::RasterClient& sink, const std::string& name);
-
-template <class C1>
-void connect(C1& source, neural::SpikeNodeOut C1::* out, neural::RasterClient& sink, const std::string& name) {
-
-    sink.addConnection(&(source.*out), name);
-
-}
-
-
-//template <typename C1>
-//void connect(C1& source, NodeOut<Utils::Vector> C1::* out, const std::vector<unsigned int>& indexes, RasterClient& sink, const std::vector<std::string>& names) {
-
-//    if (indexes.size() != names.size()) {
-//        throw std::runtime_error("Plottingserver::connect: indexes and names lenght do not match.");
-//    }
-
-//    for (unsigned int i = 0; i < names.size(); i++) {
-//        sink.addVectorConnection(&(source.*out), QString(names[i].c_str()), indexes[i]);
-//    }
-
-//}
+void connect(neural::SpikeNodeOut& out, neural::RasterClient& sink, const std::string& name);
 
 }
 
