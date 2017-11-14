@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include "python_commons.h"
+
 namespace py = boost::python;
 
 namespace nest {
@@ -39,30 +41,17 @@ void StatusSetter::execute() {
 
     generateParams();
 
-    py::object cmd = "nest.SetStatus(%s, %s)" % py::make_tuple(gids, params);
-    std::string cmd_str = py::extract<std::string>(cmd);  // this may be needed because of a bug of boost 1.65
-    py::exec(cmd_str.c_str(), main_namespace);
+    py_exec("nest.SetStatus(%s, %s)" % py::make_tuple(gids, params));
+
 }
 
 
 void StatusGetter::execute() {
 
-    py::object cmd = "nest.GetStatus(%s)[0]" % gids;
-    std::string cmd_str = py::extract<std::string>(cmd);  // this may be needed because of a bug of boost 1.65
-    py::object result = py::eval(cmd_str.c_str(), main_namespace);
-
-    params = py::extract<py::dict>(result);
+    params = py_eval<py::dict>("nest.GetStatus(%s)[0]" % gids);
 
     consumeParams();
 
-}
-
-void DataInjector::setNamespace(const boost::python::api::object& main_namespace) {
-    this->main_namespace = main_namespace;
-}
-
-void DataReceiver::setNamespace(const boost::python::api::object& main_namespace) {
-    this->main_namespace = main_namespace;
 }
 
 }

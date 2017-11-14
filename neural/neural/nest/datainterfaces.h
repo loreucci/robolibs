@@ -15,16 +15,11 @@ namespace nest {
 class DataInjector {
 
 public:
-    virtual void setNamespace(const boost::python::object& main_namespace) final;
-
     virtual bool connected() const = 0;
 
     virtual void refreshInputs() = 0;
 
     virtual void execute() = 0;
-
-protected:
-    boost::python::object main_namespace;
 
 };
 
@@ -35,12 +30,7 @@ protected:
 class DataReceiver {
 
 public:
-    virtual void setNamespace(const boost::python::object& main_namespace) final;
-
     virtual void execute() = 0;
-
-protected:
-    boost::python::object main_namespace;
 
 };
 

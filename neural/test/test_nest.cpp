@@ -6,29 +6,30 @@
 #include <sec/simplesources.h>
 #include <sec/controller.h>
 #include <sec/connections.h>
+#include <sec/sec.h>
 
 
 int main() {
 
     try {
-        nest::ExecutionNode::initPythonRuntime();
-
 
         auto rah = Signals::rampandhold(100, 50, 2.0, 1.0, 100.0);
-        sec::SignalSource ss(rah, 100.0);
+        sec::SignalSource ss(rah);
 
         nest::PoissonGeneratorSetter pg({1});
         sec::connect(ss.output, pg.rate);
 
-        nest::SpikeDetectorGetter sd({2});
-
-        nest::ExecutionNode nn("test_nest.py", {&pg}, {&sd}, 100.0);
+        nest::ExecutionNode nn("test_nest.py", {&pg}, {});
         nn.suppressOutput();
         nn.runOnSingleThread();
 
-        neural::SpikeLogger logger;
-        sec::connect(sd.spikes, logger);
+        nest::SpikeDetectorGetter sd(nn.getPopulationGIDs("sd"));
+        nn.addDataOut({&sd});
 
+//        neural::SpikeLogger logger;
+//        sec::connect(sd.spikes, logger);
+
+        sec::setDefaultFrequency(100.0);
         sec::main_controller.run(3.0);
 
         sd.generatePyplot();

@@ -22,8 +22,6 @@ public:
     void addDataIn(const std::vector<DataInjector*>& datain);
     void addDataOut(const std::vector<DataReceiver*>& dataout);
 
-//    virtual ~ExecutionNode();
-
     virtual void refreshInputs() override;
 
     virtual bool connected() const override;
@@ -31,8 +29,6 @@ public:
     virtual void execute() override;
 
     virtual std::string parameters() const override;
-
-    static void initPythonRuntime();
 
     void suppressOutput();
 
@@ -43,8 +39,9 @@ protected:
     std::vector<DataInjector*> datain;
     std::vector<DataReceiver*> dataout;
     boost::python::dict populations;
+    bool popinit;
 
-    static boost::python::object main_namespace;
+    void retrievePopulations();
 
 };
 

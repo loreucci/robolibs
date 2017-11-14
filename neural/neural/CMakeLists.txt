@@ -29,12 +29,14 @@ if(WITH_NEST)
     set(NEST_SOURCES
         nest/datainterfaces.cpp
         nest/execnode.cpp
-        nest/commondevices.cpp)
+        nest/commondevices.cpp
+        nest/python_commons.cpp)
 
     set(NEST_HEADERS
         nest/datainterfaces.h
         nest/execnode.h
-        nest/commondevices.h)
+        nest/commondevices.h
+        nest/python_commons.h)
 
     list(APPEND SOURCES ${NEST_SOURCES})
     list(APPEND HEADERS ${NEST_HEADERS})

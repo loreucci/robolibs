@@ -1,5 +1,7 @@
 #include "commondevices.h"
 
+#include "python_commons.h"
+
 #include <boost/python.hpp>
 namespace py = boost::python;
 
@@ -21,11 +23,9 @@ void PoissonGeneratorSetter::generateParams() {
 
 void SpikeDetectorGetter::generatePyplot() {
 
-    py::exec("from nest import raster_plot", main_namespace);
-    py::object cmd = "raster_plot.from_device(%s)" % gids;
-    std::string cmd_str = py::extract<std::string>(cmd);  // this may be needed because of a bug of boost 1.65
-    py::exec(cmd_str.c_str(), main_namespace);
-    py::exec("raster_plot.show()", main_namespace);
+    py_exec("from nest import raster_plot");
+    py_exec("raster_plot.from_device(%s)" % gids);
+    py_exec("raster_plot.show()");
 
 }
 
