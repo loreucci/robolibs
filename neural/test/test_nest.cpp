@@ -23,7 +23,8 @@ int main() {
         nn.suppressOutput();
         nn.runOnSingleThread();
 
-        nest::SpikeDetectorGetter sd(nn.getPopulationGIDs("sd"));
+        nest::SpikeDetectorGetter sd = nest::createSpikeDetectorGetter(nn.getPopulationGIDs("pg"));
+//        nest::SpikeDetectorGetter sd(nn.getPopulationGIDs("sd"));
         nn.addDataOut({&sd});
 
 //        neural::SpikeLogger logger;

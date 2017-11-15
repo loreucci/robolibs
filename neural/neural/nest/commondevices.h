@@ -41,6 +41,8 @@ protected:
 
 };
 
+SpikeDetectorGetter createSpikeDetectorGetter(const boost::python::tuple& gids);
+
 }
 
 #endif // NESTCOMMONDEVICES_H

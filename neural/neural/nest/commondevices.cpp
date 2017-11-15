@@ -47,4 +47,13 @@ void SpikeDetectorGetter::consumeParams() {
 
 }
 
+SpikeDetectorGetter createSpikeDetectorGetter(const boost::python::tuple& gids) {
+
+    py::tuple d = py_eval<py::tuple>("nest.Create('spike_detector', 1)");
+    py_exec("nest.Connect(%s, %s)" % py::make_tuple(gids, d));
+
+    return SpikeDetectorGetter(d);
+
+}
+
 }
