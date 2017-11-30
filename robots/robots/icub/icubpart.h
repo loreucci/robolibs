@@ -45,19 +45,22 @@ public:
     virtual void movePosJoint(unsigned int joint, double ref, bool wait = false);
     virtual void moveVelJoint(unsigned int joint, double ref, bool wait = false);
     void setControlMode(const int mode);
+    void home();
 
     // limits
     virtual Utils::Vector getMinPos() const = 0;
     virtual Utils::Vector getMaxPos() const = 0;
     virtual Utils::Vector getMinVel() const = 0;
     virtual Utils::Vector getMaxVel() const = 0;
-    virtual Utils::Vector getInitialPosition() const = 0;
+    Utils::Vector getInitialPosition() const;
+    void setInitialPosition(const Utils::Vector& initpos);
 
 protected:
 
     // stored encoders
     Utils::Vector pos;
     Utils::Vector vel;
+    Utils::Vector initpos;
     mutable std::mutex mtx;
 
     yarp::dev::PolyDriver driver;

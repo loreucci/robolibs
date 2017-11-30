@@ -173,6 +173,21 @@ void DriverPart::setControlMode(const int mode) {
 
 }
 
+void DriverPart::home() {
+    movePos(getInitialPosition(), true);
+}
+
+Utils::Vector DriverPart::getInitialPosition() const {
+    return initpos;
+}
+
+void DriverPart::setInitialPosition(const Utils::Vector& initpos) {
+    if (initpos.size() != dof()) {
+        throw iCubException("iCubRobot(" + name() + "): wrong size of initial position vector.");
+    }
+    this->initpos = initpos;
+}
+
 Utils::Vector DriverPart::trimToLimitsPos(const Utils::Vector& refs) const {
     return trim(refs, getMinPos(), getMaxPos());
 }

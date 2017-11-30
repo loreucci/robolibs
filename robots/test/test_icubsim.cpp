@@ -7,17 +7,21 @@ int main(void) {
 
     std::cout << sim.parameters() << std::endl;
 
-//    sim.head->movePos({0, -70, 0, 0, 0, 0}, true);
-//    sim.head->movePos({0, 0, 0, 0, 0, 0}, true);
+    sim.head->home();
+    sim.head->setInitialPosition({10., 10., 10., 10., 10., 10.});
+    sim.head->home();
 
-//    sim.head->movePosJoint(1, -70, true);
-//    sim.head->movePosJoint(1, 0, true);
+    sim.head->movePos({0, -70, 0, 0, 0, 0}, true);
+    sim.head->movePos({0, 0, 0, 0, 0, 0}, true);
 
-//    sim.torso->movePos({0, -20, 0}, true);
-//    sim.torso->movePos({0, 0, 0}, true);
+    sim.head->movePosJoint(1, -70, true);
+    sim.head->movePosJoint(1, 0, true);
 
-//    sim.torso->movePosJoint(1, -20, true);
-//    sim.torso->movePosJoint(1, 0, true);
+    sim.torso->movePos({0, -20, 0}, true);
+    sim.torso->movePos({0, 0, 0}, true);
+
+    sim.torso->movePosJoint(1, -20, true);
+    sim.torso->movePosJoint(1, 0, true);
 
     return 0;
 

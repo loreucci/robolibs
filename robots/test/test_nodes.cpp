@@ -18,12 +18,12 @@ int main(void) {
     iCubRobot<iCubSimHead> sim("icubSim");
 
     EncodersHeadVel he(sim, 100.0);
-    sec::Printer printer("");
+    sec::Printer printer("", 100.0);
     sec::connect(he.eyesversionvel, printer, " ");
 
     auto s = Signals::sin(20.0, 0.5, 0.0, 100.0);
     sec::SignalSource ss(s, 100.0);
-    HeadVelocityControl mv(sim, 100.0);
+    HeadPositionControl mv(sim, 100.0);
     sec::connect(ss.output, mv.version);
 //    sec::connect(ss.output, printer, " ");
 

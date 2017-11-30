@@ -35,6 +35,10 @@ const Utils::Vector leftarmInitial = { -25,    20,    0,   50,    0,    0,    0}
 
 }
 
+_iCubSimHead::_iCubSimHead() {
+    initpos = iCubSim::headInitial;
+}
+
 void _iCubSimHead::activate(const std::string& robotname, const std::string& localname) {
 
     _iCubHead::activate(robotname, localname);
@@ -78,10 +82,10 @@ Utils::Vector _iCubSimHead::getMaxVel() const {
     return iCubSim::headVelMax;
 }
 
-Utils::Vector _iCubSimHead::getInitialPosition() const {
-    return iCubSim::headInitial;
-}
 
+_iCubSimTorso::_iCubSimTorso() {
+    initpos = iCubSim::torsoInitial;
+}
 
 void _iCubSimTorso::activate(const std::string& robotname, const std::string& localname) {
 
@@ -126,8 +130,9 @@ Utils::Vector _iCubSimTorso::getMaxVel() const {
     return iCubSim::torsoVelMax;
 }
 
-Utils::Vector _iCubSimTorso::getInitialPosition() const {
-    return iCubSim::torsoInitial;
+
+_iCubSimRightArm::_iCubSimRightArm() {
+    initpos = iCubSim::rightarmInitial;
 }
 
 void _iCubSimRightArm::activate(const std::string& robotname, const std::string& localname) {
@@ -173,9 +178,6 @@ Utils::Vector _iCubSimRightArm::getMaxVel() const {
     return iCubSim::rightarmVelMax;
 }
 
-Utils::Vector _iCubSimRightArm::getInitialPosition() const {
-    return iCubSim::rightarmInitial;
-}
 
 std::string _iCubSimInertial::name() {
     return "iCubSimInertial";

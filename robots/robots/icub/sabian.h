@@ -27,6 +27,8 @@ extern const Utils::Vector headMask;
 class _SabianHead : public _iCubHead {
 
 public:
+    _SabianHead();
+
     virtual void activate(const std::string& robotname, const std::string& localname) override;
     virtual void deactivate() override;
 
@@ -43,7 +45,6 @@ public:
     virtual Utils::Vector getMaxPos() const override;
     virtual Utils::Vector getMinVel() const override;
     virtual Utils::Vector getMaxVel() const override;
-    virtual Utils::Vector getInitialPosition() const override;
 
 protected:
     VelocityObserver* obs;

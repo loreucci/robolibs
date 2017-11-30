@@ -17,6 +17,10 @@ const Utils::Vector headMask = {-1, -1, -1, -1, -1,  1};
 
 
 
+_SabianHead::_SabianHead() {
+    initpos = Sabian::headInitial;
+}
+
 void _SabianHead::activate(const std::string& robotname, const std::string& localname) {
 
     _iCubHead::activate(robotname, localname);
@@ -107,10 +111,6 @@ Utils::Vector _SabianHead::getMinVel() const {
 
 Utils::Vector _SabianHead::getMaxVel() const {
     return Sabian::headVelMax;
-}
-
-Utils::Vector _SabianHead::getInitialPosition() const {
-    return Sabian::headInitial;
 }
 
 Utils::Vector _SabianHead::applyMask(const Utils::Vector& v) {
