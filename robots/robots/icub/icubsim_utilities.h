@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cmath>
+#include <unordered_map>
 
 #include <yarp/os/BufferedPort.h>
 
@@ -46,12 +47,20 @@ public:
     iCubSimWorld(const std::string& simulatorName = "icubSim");
     ~iCubSimWorld();
 
-    iCubSimObject createSphere(double radius,
-                               double x, double y, double z,  //position
-                               double r, double g, double b,  //color
+    iCubSimObject createSphere(double ra,                     // radius
+                               double x, double y, double z,  // position
+                               double r, double g, double b,  // color
                                bool stat = true);
-    // iCubSimObject createBox(...);
-    // iCubSimObject createCylinder(...);
+
+    iCubSimObject createBox(double h, double w, double d,  // size
+                            double x, double y, double z,  // position
+                            double r, double g, double b,  // color
+                            bool stat = true);
+
+    iCubSimObject createCylinder(double ra, double l,           // radius, length
+                                 double x, double y, double z,  // position
+                                 double r, double g, double b,  // color
+                                 bool stat = true);
 
     void moveObject(const iCubSimObject& obj, double x, double y, double z);
     void resetObject(const iCubSimObject& obj);
@@ -60,7 +69,7 @@ public:
 
 protected:
     yarp::os::BufferedPort<yarp::os::Bottle> world_port;
-    unsigned int count;
+    std::unordered_map<std::string, unsigned int> counts;
 
 };
 

@@ -42,7 +42,14 @@ iCubSimWorld::iCubSimWorld(const std::string& simulatorName) {
         throw iCubException("iCubSimBalls: unable to connect to /"+simulatorName+"/world.");
     }
 
-    count = 0;
+    counts = {
+        {"sph", 1},
+        {"ssph", 1},
+        {"box", 1},
+        {"sbox", 1},
+        {"cyl", 1},
+        {"scyl", 1},
+    };
 
 }
 
@@ -50,31 +57,71 @@ iCubSimWorld::~iCubSimWorld() {
     world_port.close();
 }
 
-iCubSimObject iCubSimWorld::createSphere(double radius, double x, double y, double z, double r, double g, double b, bool stat) {
-
-    count++;
+iCubSimObject iCubSimWorld::createSphere(double ra, double x, double y, double z, double r, double g, double b, bool stat) {
 
     iCubSimObject obj;
     obj.type = stat ? "ssph" : "sph";
-    obj.id = count;
+    obj.id = counts[obj.type]++;
     obj.x = x;
     obj.y = y;
     obj.z = z;
 
     std::string str = "world mk " + obj.type + " ";
-    str += std::to_string(radius);
+    str += std::to_string(ra);
     str += " ";
-    str += std::to_string(x);
+    str += std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z);
     str += " ";
-    str += std::to_string(y);
+    str += std::to_string(r) + " " + std::to_string(g) + " " + std::to_string(b);
+
+    yarp::os::Bottle& btl = world_port.prepare();
+    btl.clear();
+    btl.fromString(str.c_str());
+    world_port.write();
+
+    return obj;
+
+}
+
+iCubSimObject iCubSimWorld::createBox(double h, double w, double d, double x, double y, double z, double r, double g, double b, bool stat) {
+
+    iCubSimObject obj;
+    obj.type = stat ? "sbox" : "box";
+    obj.id = counts[obj.type]++;
+    obj.x = x;
+    obj.y = y;
+    obj.z = z;
+
+    std::string str = "world mk " + obj.type + " ";
+    str += std::to_string(h) + " " + std::to_string(w) + " " + std::to_string(d);
     str += " ";
-    str += std::to_string(z);
+    str += std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z);
     str += " ";
-    str += std::to_string(r);
+    str += std::to_string(r) + " " + std::to_string(g) + " " + std::to_string(b);
+
+    yarp::os::Bottle& btl = world_port.prepare();
+    btl.clear();
+    btl.fromString(str.c_str());
+    world_port.write();
+
+    return obj;
+
+}
+
+iCubSimObject iCubSimWorld::createCylinder(double ra, double l, double x, double y, double z, double r, double g, double b, bool stat) {
+
+    iCubSimObject obj;
+    obj.type = stat ? "scyl" : "cyl";
+    obj.id = counts[obj.type]++;
+    obj.x = x;
+    obj.y = y;
+    obj.z = z;
+
+    std::string str = "world mk " + obj.type + " ";
+    str += std::to_string(ra) + " " + std::to_string(l);
     str += " ";
-    str += std::to_string(g);
+    str += std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z);
     str += " ";
-    str += std::to_string(b);
+    str += std::to_string(r) + " " + std::to_string(g) + " " + std::to_string(b);
 
     yarp::os::Bottle& btl = world_port.prepare();
     btl.clear();
@@ -87,7 +134,7 @@ iCubSimObject iCubSimWorld::createSphere(double radius, double x, double y, doub
 
 void iCubSimWorld::moveObject(const iCubSimObject& obj, double x, double y, double z) {
 
-    if (obj.id > count || obj.id == 0){
+    if (obj.id > counts[obj.type] || obj.id == 0){
         throw iCubException("iCubSimWorld: wrong object index.");
     }
 
@@ -116,7 +163,6 @@ void iCubSimWorld::clearAll() {
     yarp::os::Bottle& btl = world_port.prepare();
     btl.clear();
     btl.fromString("world del all");
-
     world_port.write();
 
 }
