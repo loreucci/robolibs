@@ -51,10 +51,12 @@ int main(void) {
 
     TestVecNode tvn(30.0);
 
-    sec::SinusoidalSource source(1.0, 1.0, 0.0, 0.0, 50.0);
+    auto ssource = Signals::sin(1.0, 1.0, 0.0, 50.0);
+    sec::SignalSource source(ssource, 50.0);
     sec::PlottingClient plots(50.0);
 
-    sec::SinusoidalSource source2(5.0, 2.0, 0.0, 5.0, 30.0);
+    auto ssource2 = Signals::sin(5.0, 2.0, 0.0, 50.0) + 5.0;
+    sec::SignalSource source2(ssource2, 30.0);
 
     sec::connect(ss.output, plots, "test1");
 

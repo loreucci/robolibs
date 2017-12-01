@@ -40,25 +40,6 @@ protected:
 
 };
 
-
-class [[deprecated("Replaced by SignalSource.")]] SinusoidalSource : public Source {
-
-public:
-    SinusoidalSource(double ampl, double freq, double phase = 0.0, double mean = 0.0, double samplingfreq = 0.0);
-
-    virtual void execute() override;
-
-    virtual std::string parameters() const override;
-
-    NodeOut<double> output;
-
-protected:
-    double ampl, freq, phase, mean;
-    unsigned int step;
-
-};
-
-
 class SignalSource : public Source {
 
 public:

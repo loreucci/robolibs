@@ -1,12 +1,14 @@
 #include "robots/icub/commons.h"
 
+#include <utilities/signals.h>
 #include <sec/simplesources.h>
 #include <sec/synchronization.h>
 
 
 int main(void) {
 
-    sec::SinusoidalSource ss(5.0, 2.0, 0.0, 0.0, 100.0);
+    auto s = Signals::sin(5.0, 2.0, 0.0, 100.0);
+    sec::SignalSource ss(s, 100.0);
 
     VelocityObserver obs("obj/Vel", "signalder", 2.0, 10);
 
