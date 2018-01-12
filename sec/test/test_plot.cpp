@@ -3,6 +3,7 @@
 #include <sec/simplesources.h>
 #include <sec/datalogger.h>
 #include <sec/connections.h>
+#include <sec/sec.h>
 
 #include <utilities/vector.h>
 #include <utilities/signals.h>
@@ -15,7 +16,13 @@ class TestVecNode : public sec::Node {
 public:
 
     TestVecNode(double freq = 0.0)
-        :sec::Node(freq) {}
+        :sec::Node(freq) {
+        Utils::Vector ret(3);
+        ret[0] = -1;
+        ret[1] = 2;
+        ret[2] = 5;
+        output = ret;
+    }
 
     virtual void refreshInputs() override {}
 
@@ -44,6 +51,8 @@ public:
 
 int main(void) {
 
+    sec::setVerbose();
+
     Signals::Signal testsig([](double t) { return t == 0.0 ? 1.0 : 10*std::sin(3.14*2*t)/t;}, "[sin(x)/x]", 50.0);
 
     sec::SignalSource ss(testsig, 50.0);
@@ -65,6 +74,6 @@ int main(void) {
     sec::connect(source2.output, plots, "test2", [](double x){return x+5.0;});
     sec::connect(source.output, plots, "test2");
 
-    sec::main_controller.run();
+    sec::main_controller.run(4.0);
 
 }

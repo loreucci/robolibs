@@ -19,6 +19,8 @@ int main(void) {
 
     sec::saveAllNodesParameters();
 
+    sec::setDefaultFrequency(100.0);
+
     sec::run(5.0);
 
     return 0;

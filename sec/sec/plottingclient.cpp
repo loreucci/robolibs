@@ -58,10 +58,14 @@ void PlottingClient::execute() {
 
     QString newvalues = "newvalues ";
     for (auto& in : inputs) {
-        newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<2>(in)(std::get<1>(in).getData())) + " ";
+        newvalues += QString::number(std::get<0>(in)) + " ";
+        // this is f(dataIn)
+        newvalues += QString::number(std::get<2>(in)(std::get<1>(in).getData())) + " ";
     }
     for (auto& in : inputsvec) {
-        newvalues += QString::number(std::get<0>(in)) + " " + QString::number(std::get<3>(in)(std::get<1>(in).getData()[std::get<2>(in)])) + " ";
+        newvalues += QString::number(std::get<0>(in)) + " ";
+        // this is f(dataIn[idx])
+        newvalues += QString::number(std::get<3>(in)(std::get<1>(in).getData()[std::get<2>(in)])) + " ";
     }
     newvalues.chop(1);
     write(newvalues);
