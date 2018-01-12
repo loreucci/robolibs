@@ -64,6 +64,8 @@ public:
 
     Semaphore addItem(double time);
 
+    void removeAllItems();
+
     SemaphoreQueueItem advance();
 
     void wakeAll();
@@ -90,6 +92,8 @@ public:
     bool isSynchronous();
 
     Semaphore registerSignal(double frequency);
+
+    void unregisterAll();
 
     void wakeAll();
     void quitAll();

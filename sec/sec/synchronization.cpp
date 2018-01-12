@@ -105,6 +105,10 @@ Semaphore SemaphoreQueue::addItem(double time) {
 
 }
 
+void SemaphoreQueue::removeAllItems() {
+    queue.clear();
+}
+
 
 SemaphoreQueueItem SemaphoreQueue::advance() {
 
@@ -211,6 +215,12 @@ Semaphore Synchronizer::registerSignal(double frequency) {
 
 }
 
+void Synchronizer::unregisterAll() {
+    mtx.lock();
+    sq.removeAllItems();
+    mtx.unlock();
+}
+
 void Synchronizer::wakeAll() {
     sq.wakeAll();
 }
@@ -224,14 +234,19 @@ void Synchronizer::start() {
     if (started)
         return;
 
+    stop_flag = false;
     t = new std::thread(&Synchronizer::run, this);
     started = true;
-
 
 }
 
 void Synchronizer::stop() {
+    if (!started)
+        return;
     stop_flag = true;
+    t->join();
+    t = nullptr;
+    started = false;
 }
 
 void Synchronizer::run() {

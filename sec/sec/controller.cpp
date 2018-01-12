@@ -305,6 +305,7 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     executeThread(&threads.back());
     synchronizer.stop();
     synchronizer.quitAll();
+    synchronizer.unregisterAll();
 
     // join all
     for (auto& th : threads) {
@@ -318,6 +319,10 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
     if (sec::isVerbose()) {
         std::cout << "[controller] Threads ended" << std::endl;
     }
+
+    // unregister signal handlers
+    std::signal(SIGINT, SIG_DFL);
+    std::signal(SIGTERM, SIG_DFL);
 
 }
 
