@@ -1,7 +1,7 @@
 #include "synchronization.h"
 
 #include <thread>
-
+#include <chrono>
 
 namespace sec {
 
@@ -12,14 +12,15 @@ Semaphore::Semaphore()
       completion_cv(new std::condition_variable()),
       end(new std::atomic_bool(false)),
       wakeup_flag(new std::atomic_bool(false)),
-      completion_flag(new std::atomic_bool(false)) {
+      completion_flag(new std::atomic_bool(false)),
+      finalized(new std::atomic_bool(false)) {
 
 }
 
 void Semaphore::wait() {
     std::unique_lock<std::mutex> lk(*mtx);
     while(!*wakeup_flag)
-        cv->wait(lk);
+        cv->wait_for(lk, std::chrono::microseconds(100));
     *wakeup_flag = false;
     lk.unlock();
 }
@@ -41,21 +42,22 @@ void Semaphore::sendquit() {
 
     *end = true;
     wakeup();
-    completion_notify();
+    completion_notify(true);
 
 }
 
-void Semaphore::completion_wait() {
+bool Semaphore::completion_wait() {
     std::unique_lock<std::mutex> lk(*completion_mtx);
     while (!*completion_flag)
-        completion_cv->wait(lk);
+        completion_cv->wait_for(lk, std::chrono::microseconds(100));
     *completion_flag = false;
-    lk.unlock();
+    return *finalized;
 }
 
-void Semaphore::completion_notify() {
+void Semaphore::completion_notify(bool finalize) {
     std::unique_lock<std::mutex> lk(*completion_mtx);
     *completion_flag = true;
+    *finalized = finalize;
     lk.unlock();
     completion_cv->notify_one();
 }
@@ -152,10 +154,12 @@ double SemaphoreQueue::getTotalTime() {
     return time;
 }
 
-void SemaphoreQueue::waitForAllCompletion() {
+bool SemaphoreQueue::waitForAllCompletion() {
+    bool finalized = false;
     for (auto& sqi : queue) {
-        sqi.getSemaphore().completion_wait();
+        finalized = finalized || sqi.getSemaphore().completion_wait();
     }
+    return finalized;
 }
 
 void SemaphoreQueue::insert(SemaphoreQueueItem& sqi) {
@@ -256,8 +260,11 @@ void Synchronizer::run() {
         while (!stop_flag) {
             sq.wakeAll();
             time += sq.getTotalTime();
-            sq.waitForAllCompletion();
+            if (sq.waitForAllCompletion()) {
+                break;
+            }
         }
+        quitAll();
 
     } else {
         // REALTIME MODE

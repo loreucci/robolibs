@@ -23,13 +23,13 @@ public:
     bool shouldquit();
     void sendquit();
 
-    void completion_wait();
-    void completion_notify();
+    bool completion_wait();
+    void completion_notify(bool finalize);
 
 protected:
     std::shared_ptr<std::mutex> mtx, completion_mtx;
     std::shared_ptr<std::condition_variable> cv, completion_cv;
-    std::shared_ptr<std::atomic_bool> end, wakeup_flag, completion_flag;
+    std::shared_ptr<std::atomic_bool> end, wakeup_flag, completion_flag, finalized;
 
 };
 
@@ -72,7 +72,7 @@ public:
     void quitAll();
 
     double getTotalTime();
-    void waitForAllCompletion();
+    bool waitForAllCompletion();
 
 protected:
     std::deque<SemaphoreQueueItem> queue;

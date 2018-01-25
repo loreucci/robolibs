@@ -168,7 +168,7 @@ void Controller::executeThread(ExecThread* et) {
                 endcond = true;
 
         if (synchronizer.isSynchronous()) {
-            et->sem.completion_notify();
+            et->sem.completion_notify(false);
         } else {
             // check if the thread execution time exceeded max
             std::chrono::duration<double> diff = std::chrono::system_clock::now()-start;
@@ -183,7 +183,7 @@ void Controller::executeThread(ExecThread* et) {
     }
 
     if (synchronizer.isSynchronous()) {
-        et->sem.completion_notify();
+        et->sem.completion_notify(true);
     }
 
 }
