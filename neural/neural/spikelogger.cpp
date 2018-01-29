@@ -67,7 +67,7 @@ bool SpikeLogger::logToFile() const {
 
     std::ofstream file(prefix+filename);
     if (!file.good()) {
-        std::cerr << "DataLogger: unable to create spike logfile " << prefix + filename << std::endl;
+        std::cerr << "[SpikeLogger] unable to create spike logfile " << prefix + filename << std::endl;
         return false;
     }
 

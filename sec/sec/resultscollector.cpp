@@ -31,7 +31,7 @@ ResultsCollector::ResultsCollector(const std::string &basename, Mode mode)
 
 void ResultsCollector::registerLogger(const Logger *logger, const std::string &filename) {
 //    if (mode == SINGLE_FILE_MODE && loggers.size() > 0) {
-//        throw std::runtime_error("ResultsCollector: trying to register more than one logger in SINGLE_FILE_MODE.");
+//        throw std::runtime_error("[ResultsCollector] Trying to register more than one logger in SINGLE_FILE_MODE.");
 //    }
 
     loggers.push_back(std::make_pair(logger, filename));
@@ -49,7 +49,7 @@ std::string ResultsCollector::getFilenamePrefix() {
     case SINGLE_FILES_MODE:
         return basename+"-"+timestamp+"_";
     default:
-        throw std::runtime_error("ResultsCollector: unkown mode.");
+        throw std::runtime_error("[ResultsCollector] Unkown mode.");
     }
 
 }
@@ -62,7 +62,7 @@ void ResultsCollector::setMode(Mode mode) {
     this->mode = mode;
 
 //    if (mode == SINGLE_FILE_MODE && loggers.size() > 0) {
-//        throw std::runtime_error("ResultsCollector: trying to register more than one logger in SINGLE_FILE_MODE.");
+//        throw std::runtime_error("[ResultsCollector] Trying to register more than one logger in SINGLE_FILE_MODE.");
 //    }
 }
 
@@ -110,9 +110,9 @@ void ResultsCollector::saveAll() {
     saved = true;
 
     if (ok)
-        std::cout << "Results saved to file." << std::endl;
+        std::cerr << "[ResultsCollector] Results saved to file." << std::endl;
     else
-        std::cerr << "Error logging some files." << std::endl;
+        std::cerr << "[ResultsCollector] Error logging some files." << std::endl;
 
 }
 
@@ -126,7 +126,7 @@ bool ResultsCollector::createFolder() {
         // waiting for filesystem library to make this code standard...
         // drwxr-xr-x
         if (mkdir((basename+"-"+timestamp).c_str(), 0755) == -1) {
-            std::cerr << "ResultsCollector: error while creating the folder. " << std::strerror(errno) << std::endl;
+            std::cerr << "[ResultsCollector] Error while creating the folder. " << std::strerror(errno) << std::endl;
             return false;
         }
 

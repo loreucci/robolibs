@@ -1,6 +1,7 @@
 #include "execnode.h"
 #include <sys/wait.h>
 #include <unistd.h>
+#include <sec/flags.h>
 
 #include <iostream>
 
@@ -51,12 +52,13 @@ ExecutionNode::ExecutionNode(const std::string& pynnscript, std::vector<DataInje
     //    child = 0;
     child = fork();
     if (child == -1) {
-        throw std::runtime_error("Unable to fork.");
+        throw std::runtime_error("[SpiNNaker::ExecutionNode] Unable to fork.");
     } else if (child == 0){
         execl("/usr/bin/python2", "python", pynnscript.c_str(), nullptr);
     }
 
-    std::cout << "\n\n\nSTARING...\n\n\n" << std::endl;
+    if (sec::isVerbose())
+        std::cerr << "[SpiNNaker::ExecutionNode] Starting simulation" << std::endl;
 
 }
 
@@ -105,7 +107,8 @@ bool ExecutionNode::isStarted() const {
 }
 
 void ExecutionNode::spikes_start(char* label, SpynnakerLiveSpikesConnection*) {
-    std::cout << "\n\n\nSTARING...\n\n\n" << std::endl;
+    if (sec::isVerbose())
+        std::cerr << "[SpiNNaker::ExecutionNode] Starting simulation" << std::endl;
     started_mutex.lock();
     started = true;
     started_mutex.unlock();

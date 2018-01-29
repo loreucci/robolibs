@@ -6,14 +6,14 @@ iCubSimSleeper::iCubSimSleeper(const std::string& simulatorName, double step_siz
     :step_size(step_size) {
 
     if (step_size <= 0) {
-        throw iCubException("iCubSimSleeper: step_size must be positive.");
+        throw iCubException("[iCubSimSleeper] Step size must be positive.");
     }
 
     yarp::os::Network yarp;
 
     step_port.open("/local/step");
     if (!yarp.connect("/"+simulatorName+"/step", "/local/step")) {
-        throw iCubException("Unable to connect to /"+simulatorName+"/step.");
+        throw iCubException("[iCubSimSleeper] Unable to connect to /"+simulatorName+"/step.");
     }
 
 }
@@ -39,7 +39,7 @@ iCubSimWorld::iCubSimWorld(const std::string& simulatorName) {
     yarp::os::Network yarp;
     world_port.open("/local/world");
     if (!yarp.connect("/local/world", "/"+simulatorName+"/world")) {
-        throw iCubException("iCubSimBalls: unable to connect to /"+simulatorName+"/world.");
+        throw iCubException("[iCubSimWorld] Unable to connect to /"+simulatorName+"/world.");
     }
 
     counts = {
@@ -135,7 +135,7 @@ iCubSimObject iCubSimWorld::createCylinder(double ra, double l, double x, double
 void iCubSimWorld::moveObject(const iCubSimObject& obj, double x, double y, double z) {
 
     if (obj.id > counts[obj.type] || obj.id == 0){
-        throw iCubException("iCubSimWorld: wrong object index.");
+        throw iCubException("[iCubSimWorld] Wrong object index.");
     }
 
     std::string str = "world set " + obj.type + " ";
@@ -194,7 +194,7 @@ bool iCubSimObjectMover::connected() const {
     bool coordconn = x.isConnected() || y.isConnected() || z.isConnected();
 
     if (pointconn && coordconn)
-        throw iCubException("iCubSimObjectMover: too many connections.");
+        throw iCubException("[iCubSimObjectMover] Too many connections.");
 
     return pointconn || coordconn;
 
@@ -213,7 +213,7 @@ void iCubSimObjectMover::execute() {
     if (point.isConnected()) {
         auto p = point.getData();
         if (p.size() != 3)
-            throw iCubException("iCubSimObjectMover: wrong input point.");
+            throw iCubException("[iCubSimObjectMover] Wrong input point.");
         _x += p[0];
         _y += p[1];
         _z += p[2];

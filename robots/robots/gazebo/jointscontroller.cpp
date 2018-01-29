@@ -32,7 +32,7 @@ void JointsController::execute() {
         auto cmd = commands.getData();
 
         if (cmd.size() != publishers.size()) {
-            std::cerr << "JointsController: wrong input size, not sending commands." << std::endl;
+            std::cerr << "[JointsController] Wrong input size, not sending commands." << std::endl;
         }
 
         for (unsigned int i = 0; i < cmd.size(); i++) {

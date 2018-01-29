@@ -22,7 +22,7 @@ void DriverPart::refresh() {
     yarp::dev::IEncoders* encs = nullptr;
     driver.view(encs);
     if (encs == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
     double p[dof()];
     double v[dof()];
     encs->getEncoders(p);
@@ -59,13 +59,13 @@ Utils::Vector DriverPart::encodersVel() const {
 void DriverPart::movePos(const Utils::Vector& refs, bool wait) {
 
     if (refs.size() != dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong size of reference vector.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
     yarp::dev::IPositionControl* pos = nullptr;
     driver.view(pos);
     if (pos == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
 
     auto _refs = trimToLimitsPos(refs);
 
@@ -86,13 +86,13 @@ void DriverPart::movePos(const Utils::Vector& refs, bool wait) {
 void DriverPart::moveVel(const Utils::Vector& refs, bool wait) {
 
     if (refs.size() != dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong size of reference vector.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
     yarp::dev::IVelocityControl* vel = nullptr;
     driver.view(vel);
     if (vel == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
 
     auto _refs = trimToLimitsVel(refs);
 
@@ -113,13 +113,13 @@ void DriverPart::moveVel(const Utils::Vector& refs, bool wait) {
 void DriverPart::movePosJoint(unsigned int joint, double ref, bool wait) {
 
     if (joint >= dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong joint index.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong joint index.");
     }
 
     yarp::dev::IPositionControl* pos = nullptr;
     driver.view(pos);
     if (pos == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
 
     double _ref = trimToLimitsPosJoint(joint, ref);
 
@@ -140,13 +140,13 @@ void DriverPart::movePosJoint(unsigned int joint, double ref, bool wait) {
 void DriverPart::moveVelJoint(unsigned int joint, double ref, bool wait) {
 
     if (joint >= dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong joint index.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong joint index.");
     }
 
     yarp::dev::IVelocityControl* vel = nullptr;
     driver.view(vel);
     if (vel == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
 
     double _ref = trimToLimitsVelJoint(joint, ref);
 
@@ -183,7 +183,7 @@ Utils::Vector DriverPart::getInitialPosition() const {
 
 void DriverPart::setInitialPosition(const Utils::Vector& initpos) {
     if (initpos.size() != dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong size of initial position vector.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of initial position vector.");
     }
     this->initpos = initpos;
 }
@@ -234,7 +234,7 @@ void _Inertial::activate(const std::string& robotname, const std::string& localn
 
     port.open("/"+localname+"/inertial");
     if (!yarp.connect("/"+robotname+"/inertial", "/"+localname+"/inertial")) {
-        throw iCubException("Unable to connect to /"+robotname+"/inertial");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to connect to /"+robotname+"/inertial");
     }
 
 
@@ -296,7 +296,7 @@ void _iCubRightArm::refresh() {
     yarp::dev::IEncoders* encs = nullptr;
     driver.view(encs);
     if (encs == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
     double p[dof()+9];
     double v[dof()+9];
     encs->getEncoders(p);
@@ -313,13 +313,13 @@ void _iCubRightArm::refresh() {
 void _iCubRightArm::movePos(const Utils::Vector& refs, bool wait) {
 
     if (refs.size() != dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong size of reference vector.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
     yarp::dev::IPositionControl* pos = nullptr;
     driver.view(pos);
     if (pos == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
 
     auto _refs = trimToLimitsPos(refs);
     _refs.insert(_refs.end(), handposition.begin(), handposition.end());
@@ -341,13 +341,13 @@ void _iCubRightArm::movePos(const Utils::Vector& refs, bool wait) {
 void _iCubRightArm::moveVel(const Utils::Vector& refs, bool wait) {
 
     if (refs.size() != dof()) {
-        throw iCubException("iCubRobot(" + name() + "): wrong size of reference vector.");
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
     yarp::dev::IVelocityControl* vel = nullptr;
     driver.view(vel);
     if (vel == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
 
     auto _refs = trimToLimitsVel(refs);
     for (unsigned int i = 0; i < 9; i++)

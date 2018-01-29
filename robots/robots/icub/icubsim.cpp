@@ -51,7 +51,7 @@ void _iCubSimHead::activate(const std::string& robotname, const std::string& loc
     options.put("local", "/"+localname+"/" + name());
     options.put("remote", "/"+robotname+"/head");
     if (!driver.open(options)) {
-        throw iCubException("iCubRobot: unable to create " + name() + " device.");
+        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
     }
 
     yarp::dev::IPositionControl* p;
@@ -99,7 +99,7 @@ void _iCubSimTorso::activate(const std::string& robotname, const std::string& lo
     options.put("local", "/"+localname+"/" + name());
     options.put("remote", "/"+robotname+"/torso");
     if (!driver.open(options)) {
-        throw iCubException("iCubRobot: unable to create " + name() + " device.");
+        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
     }
 
     yarp::dev::IPositionControl* p;
@@ -147,7 +147,7 @@ void _iCubSimRightArm::activate(const std::string& robotname, const std::string&
     options.put("local", "/"+localname+"/" + name());
     options.put("remote", "/"+robotname+"/right_arm");
     if (!driver.open(options)) {
-        throw iCubException("iCubRobot: unable to create " + name() + " device.");
+        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
     }
 
     yarp::dev::IPositionControl* p;

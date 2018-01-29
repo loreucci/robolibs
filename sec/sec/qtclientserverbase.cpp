@@ -21,7 +21,7 @@ bool QtClientBase::connectToServer(QString socketname) {
     socket->connectToServer(socketname);
 
     if (!socket->isValid()) {
-        std::cerr << "QtClientBase: unable to connect to server socket." << std::endl;
+        std::cerr << "[QtClientBase] Unable to connect to server socket." << std::endl;
         return false;
     }
 

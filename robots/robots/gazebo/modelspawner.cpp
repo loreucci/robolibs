@@ -41,13 +41,13 @@ bool ModelSpawner::spawnModel(const std::string& name, const std::string& filena
         spawn.call(sp);
 
         if (!sp.response.success ) {
-            std::cerr << "GazeboSpawner: unable to spawn model " << filename << std::endl;
+            std::cerr << "[GazeboSpawner] unable to spawn model " << filename << std::endl;
             std::cerr << "\t" << sp.response.status_message << std::endl;
             return false;
         }
 
     } else {
-        std::cerr << "GazeboSpawner: unable to open file " << filename << std::endl;
+        std::cerr << "[GazeboSpawner] unable to open file " << filename << std::endl;
         return false;
     }
 
@@ -86,7 +86,7 @@ bool ModelSpawner::deleteOnly(const std::string& name) {
     del.call(d);
 
     if (!d.response.success) {
-        std::cerr << "GazeboSpawner: unable to delete model " << name << std::endl;
+        std::cerr << "[GazeboSpawner] unable to delete model " << name << std::endl;
         std::cerr << "\t" << d.response.status_message << std::endl;
         return false;
     }

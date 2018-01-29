@@ -45,7 +45,7 @@ double Signal::getSamplingFreq() const {
 
 void Signal::setSamplingFreq(double samplingfreq) {
     if (samplingfreq < 0.0)
-        throw std::invalid_argument("Signal: sampling frequency must be non-negative.");
+        throw std::invalid_argument("[Signal] Sampling frequency must be non-negative.");
     this->samplingfreq = samplingfreq;
 }
 

@@ -115,7 +115,7 @@ void SemaphoreQueue::removeAllItems() {
 SemaphoreQueueItem SemaphoreQueue::advance() {
 
     if (queue.empty()) {
-        throw std::runtime_error("SemaphoreQueue is empty.");
+        throw std::runtime_error("[SemaphoreQueue] Queue is empty.");
     }
 
     SemaphoreQueueItem top = queue.front();
@@ -180,7 +180,7 @@ Synchronizer::Synchronizer(Sleeper* sleeper)
     :sleeper(sleeper) {
 
     if (sleeper == nullptr)
-        throw std::runtime_error("Sleeper can't be null.");
+        throw std::runtime_error("[Synchronizer] Sleeper can't be null.");
 
     stop_flag = false;
     started = false;
@@ -198,7 +198,7 @@ Synchronizer::~Synchronizer() {
 void Synchronizer::setSleeper(Sleeper* sleeper) {
 
     if (sleeper == nullptr)
-        throw std::runtime_error("Sleeper can't be null.");
+        throw std::runtime_error("[Synchronizer] Sleeper can't be null.");
 
     this->sleeper = std::shared_ptr<Sleeper>(sleeper);
 }

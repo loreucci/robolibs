@@ -12,7 +12,7 @@ namespace Utils {
 double dot(const Vector& v1, const Vector& v2) {
 
     if (v1.size() != v2.size())
-        throw std::invalid_argument("Vector sizes mismatch.");
+        throw std::invalid_argument("[Vector::dot] Sizes mismatch.");
 
     return std::inner_product(v1.begin(), v1.end(), v2.begin(), 0.0);;
 
@@ -78,7 +78,7 @@ Vector rangeNormalization(const Vector& v, double outmin, double outmax) {
 Vector rangeNormalization(const Vector& v, const Vector& inmin, const Vector& inmax, double outmin, double outmax) {
 
     if ((v.size() != inmin.size()) || (v.size() != inmax.size()))
-        throw std::invalid_argument("Vector sizes mismatch.");
+        throw std::invalid_argument("[Vector::rangeNormalization] Sizes mismatch.");
 
     Vector ret = v;
     for (unsigned int i = 0; i < v.size(); i++) {
@@ -92,7 +92,7 @@ Vector rangeNormalization(const Vector& v, const Vector& inmin, const Vector& in
 Vector rangeNormalization(const Vector& v, double inmin, double inmax, const Vector& outmin, const Vector& outmax) {
 
     if ((v.size() != outmin.size()) || (v.size() != outmax.size()))
-        throw std::invalid_argument("Vector sizes mismatch.");
+        throw std::invalid_argument("[Vector::rangeNormalization] Sizes mismatch.");
 
     Vector ret = v;
     for (unsigned int i = 0; i < v.size(); i++) {
@@ -110,7 +110,7 @@ Vector rangeNormalization(const Vector& v, double inmin, double inmax, const Vec
 Utils::Vector operator+(const Utils::Vector& v1, const Utils::Vector& v2) {
 
     if (v1.size() != v2.size())
-        throw std::invalid_argument("Vector sizes mismatch.");
+        throw std::invalid_argument("[Vector::operator+] Sizes mismatch.");
 
     unsigned int sz = v1.size();
     Utils::Vector ret(sz);
@@ -124,7 +124,7 @@ Utils::Vector operator+(const Utils::Vector& v1, const Utils::Vector& v2) {
 Utils::Vector operator-(const Utils::Vector& v1, const Utils::Vector& v2) {
 
     if (v1.size() != v2.size())
-        throw std::invalid_argument("Vector sizes mismatch.");
+        throw std::invalid_argument("[Vector::operator-] Sizes mismatch.");
 
     unsigned int sz = v1.size();
     Utils::Vector ret(sz);

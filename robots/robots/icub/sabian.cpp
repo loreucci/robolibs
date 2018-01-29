@@ -33,7 +33,7 @@ void _SabianHead::activate(const std::string& robotname, const std::string& loca
     options.put("local", "/"+localname+"/" + name());
     options.put("remote", "/"+robotname+"/head");
     if (!driver.open(options)) {
-        throw iCubException("iCubRobot: unable to create " + name() + " device.");
+        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
     }
 
     obs = new VelocityObserver("joint/Vel", "encspeeds", 2.0, 10);
@@ -59,7 +59,7 @@ void _SabianHead::refresh() {
     yarp::dev::IEncoders* encs = nullptr;
     driver.view(encs);
     if (encs == nullptr)
-        throw iCubException("iCubRobot(" + name() + "): unable to use driver.");
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
     double p[dof()];
     encs->getEncoders(p);
     Utils::Vector _pos(dof());

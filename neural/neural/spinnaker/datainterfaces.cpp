@@ -20,7 +20,7 @@ void DataInjector::spikes_start(char* label, SpynnakerLiveSpikesConnection* conn
 
     // check that we are in the right thread
     if (std::string(label) != population_name)
-        throw std::runtime_error("SpinnakerDataInjector: expected label " + population_name + ", got " + label);
+        throw std::runtime_error("[SpiNNaker::DataInjector] Expected label " + population_name + ", got " + label);
 
     while (true) {
         // wait for the signal to send data
@@ -51,7 +51,7 @@ void DataReceiver::receive_spikes(char* label, int time, int n_spikes, int* spik
 
     // check that we are in the right thread
     if (std::string(label) != population_name)
-        throw std::runtime_error("SpinnakerDataReceiver: expected label " + population_name + ", got " + label);
+        throw std::runtime_error("[SpiNNaker::DataReceiver] Expected label " + population_name + ", got " + label);
 
     neural::SpikeData newdata;
     for (int spike = 0;  spike < n_spikes; spike++) {

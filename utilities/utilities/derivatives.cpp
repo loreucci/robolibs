@@ -30,7 +30,7 @@ int binomialcoeff(int n, int k) {
         return 0;
 
     if (n < k)
-        throw std::invalid_argument("binomialcoeff: n must be >= k.");
+        throw std::invalid_argument("[binomialcoeff] n must be >= k.");
 
     double ret = 1;
 
@@ -47,7 +47,7 @@ SmoothDerivative::SmoothDerivative(unsigned int N, double freq)
     :Derivative(freq) {
 
     if (N % 2 != 1 || N < 5)
-        throw std::invalid_argument("SmoothDerivative: N must be odd and >= 5.");
+        throw std::invalid_argument("[SmoothDerivative] N must be odd and >= 5.");
 
     M = (N-1) / 2;
     m = (N-3) / 2;

@@ -79,7 +79,7 @@ iCubKin::iCubKin() {
 Utils::Vector iCubKin::getGFP(const Utils::Vector& head_encoders) const {
 
     if (head_encoders.size() != 6) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     //    iCub::iKin::iCubEye leftEye("left_v1"), rightEye("right_v1");
@@ -124,7 +124,7 @@ Utils::Vector iCubKin::getGFP(const Utils::Vector& head_encoders) const {
     double qty3=qty1*qty1-1.0;
 
     if (std::fabs(qty3)<1e-6) {
-        throw iCubException("getGFP: unable to find gfp.");
+        throw iCubException("[iCubKin] Unable to find gfp.");
         return ret;
     }
 
@@ -157,7 +157,7 @@ Utils::Vector iCubKin::getGFP(const Utils::Vector& neck_encoders, const Utils::V
 Utils::Vector iCubKin::eyeToRoot(const Utils::Vector& head_encoders, const Utils::Vector& point, bool left) const {
 
     if (head_encoders.size() != 6 || point.size() != 3) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     yarp::sig::Vector p = iCubUtils::convert(point);
@@ -199,7 +199,7 @@ Utils::Vector iCubKin::eyeToRoot(const Utils::Vector& head_encoders, const Utils
 Utils::Vector iCubKin::rootToEye(const Utils::Vector& head_encoders, const Utils::Vector& point, bool left) const {
 
     if (head_encoders.size() != 6 || point.size() != 3) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     yarp::sig::Vector p = iCubUtils::convert(point);
@@ -239,7 +239,7 @@ Utils::Vector iCubKin::rootToEye(const Utils::Vector& head_encoders, const Utils
 Utils::Vector iCubKin::headToInertialRot(const Utils::Vector& head_encoders, const Utils::Vector& torso_encoders) const {
 
     if (head_encoders.size() != 6) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     Utils::Vector neck_encoders(6);
@@ -252,7 +252,7 @@ Utils::Vector iCubKin::headToInertialRot(const Utils::Vector& head_encoders, con
 Utils::Vector iCubKin::neckToInertialRot(const Utils::Vector& neck_encoders, const Utils::Vector& torso_encoders) const {
 
     if (neck_encoders.size() != 3) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
 
@@ -281,7 +281,7 @@ Utils::Vector iCubKin::neckToInertialRot(const Utils::Vector& neck_encoders, con
 std::pair<Utils::Vector, Utils::Vector> iCubKin::headToInertialRot(const Utils::Vector& hpos, const Utils::Vector& hvel, const Utils::Vector& tpos, const Utils::Vector& tvel) const {
 
     if (hpos.size() != 6 || hvel.size() != 6) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     Utils::Vector npos(3);
@@ -300,7 +300,7 @@ std::pair<Utils::Vector, Utils::Vector> iCubKin::headToInertialRot(const Utils::
 std::pair<Utils::Vector, Utils::Vector> iCubKin::neckToInertialRot(const Utils::Vector& npos, const Utils::Vector& nvel, const Utils::Vector& tpos, const Utils::Vector& tvel) const {
 
     if (npos.size() != 3 || nvel.size() != 3) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     yarp::sig::Vector vec(6);
@@ -344,7 +344,7 @@ std::pair<Utils::Vector, Utils::Vector> iCubKin::neckToInertialRot(const Utils::
 Utils::Vector iCubKin::getLeftHandPosition(const Utils::Vector& arm_encoders) const {
 
     if (arm_encoders.size() != 7) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     yarp::sig::Vector ang(10);
@@ -381,7 +381,7 @@ using namespace Utils;
 Utils::Vector iCubKin::getRightHandPosition(const Utils::Vector& arm_encoders) const {
 
     if (arm_encoders.size() != 7) {
-        throw iCubException("iCubKin: wrong input size.");
+        throw iCubException("[iCubKin] Wrong input size.");
     }
 
     yarp::sig::Vector ang(10);
@@ -433,7 +433,7 @@ VelocityObserver::VelocityObserver(const std::string& basename, const std::strin
                nullptr);
 
     } else if (obspid < 0) {
-        throw iCubException("VelocityObserver: failed to fork.");
+        throw iCubException("[VelocityObserver] Failed to fork.");
     }
 
 
@@ -442,11 +442,11 @@ VelocityObserver::VelocityObserver(const std::string& basename, const std::strin
     yarp.sync("/"+basename+"/pos:i", false);
     send_port.open("/" + local + "/out");
     if (!yarp.connect("/" + local + "/out","/"+basename+"/pos:i"))
-        throw iCubException("VelocityObserver: unable to connect to /"+basename+"/pos:i");
+        throw iCubException("[VelocityObserver] Unable to connect to /"+basename+"/pos:i");
 
     receive_port.open("/" + local + "/in");
     if (!yarp.connect("/"+basename+"/vel:o","/" + local + "/in"))
-        throw iCubException("VelocityObserver: unable to connect to /" + local + "/in");
+        throw iCubException("[VelocityObserver] Unable to connect to /" + local + "/in");
 
     last.clear();
 

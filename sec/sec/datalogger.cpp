@@ -62,7 +62,7 @@ bool DataLogger::logToFile() const {
 
     std::ofstream file(prefix + filename);
     if (!file.good()) {
-        std::cerr << "DataLogger: unable to create logfile " << prefix + filename << std::endl;
+        std::cerr << "[DataLogger] Unable to create logfile " << prefix + filename << std::endl;
         return false;
     }
     toFile(file);

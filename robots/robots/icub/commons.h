@@ -116,7 +116,7 @@ public:
         portSourceInstanceCount++;
         port.open(local);
         if (!yarp.connect(portname, local)) {
-            throw iCubException("Unable to connect to " + portname + ".");
+            throw iCubException("[PortSource] Unable to connect to " + portname + ".");
         }
         newvalue = false;
     }

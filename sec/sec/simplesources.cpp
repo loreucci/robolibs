@@ -14,7 +14,7 @@ FileSource::FileSource(const std::string& filename, unsigned int ignorelines, bo
 
     file.open(filename);
     if (!file.good())
-        throw std::runtime_error("FileSource: unable to open file " + filename);
+        throw std::runtime_error("[FileSource] Unable to open file " + filename);
 
     skiplines();
 
@@ -41,7 +41,7 @@ SignalSourceVector::SignalSourceVector(const std::vector<Signals::Signal>& signa
     :Source(samplingfreq), signalvec(signalvec) {
 
     if (signalvec.empty())
-        throw std::invalid_argument("SignalSourceVector: signalvector must not be empty.");
+        throw std::invalid_argument("[SignalSourceVector] Signalvector must not be empty.");
 
     output = Utils::Vector(signalvec.size());
 

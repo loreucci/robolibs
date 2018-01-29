@@ -102,7 +102,7 @@ bool HeadPositionControl::connected() const {
     }
 
     if ((full && sub) || ((full || sub) && joints)) {
-        throw iCubException("HeadPositionControl: too many connections.");
+        throw iCubException("[HeadPositionControl] Too many connections.");
     }
 
     return full || sub || joints;
@@ -186,7 +186,7 @@ bool HeadVelocityControl::connected() const {
     }
 
     if ((full && sub) || ((full || sub) && joints)) {
-        throw iCubException("HeadPositionControl: too many connections.");
+        throw iCubException("[HeadPositionControl] Too many connections.");
     }
 
     return full || sub || joints;
@@ -300,7 +300,7 @@ bool TorsoPositionControl::connected() const {
     }
 
     if (full && joints) {
-        throw iCubException("TorsoPositionControl: too many connections.");
+        throw iCubException("[TorsoPositionControl] Too many connections.");
     }
 
     return full || joints;
@@ -360,7 +360,7 @@ bool TorsoVelocityControl::connected() const {
     }
 
     if (full && joints) {
-        throw iCubException("TorsoPositionControl: too many connections.");
+        throw iCubException("[TorsoPositionControl] Too many connections.");
     }
 
     return full || joints;
@@ -476,7 +476,7 @@ bool RightArmPositionControl::connected() const {
     }
 
     if (full && joints) {
-        throw iCubException("TorsoPositionControl: too many connections.");
+        throw iCubException("[TorsoPositionControl] Too many connections.");
     }
 
     return full || joints;
@@ -543,7 +543,7 @@ bool RightArmVelocityControl::connected() const {
     }
 
     if (full && joints) {
-        throw iCubException("TorsoPositionControl: too many connections.");
+        throw iCubException("[TorsoPositionControl] Too many connections.");
     }
 
     return full || joints;

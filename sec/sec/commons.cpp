@@ -34,7 +34,7 @@ double defaultfreq = 0.0;
 void setDefaultFrequency(double freq) {
 
     if (freq <= 0.0) {
-        throw std::invalid_argument("Default frequency of the controller must be positive.");
+        throw std::invalid_argument("[Controller] Default frequency of the controller must be positive.");
     }
 
     defaultfreq = freq;

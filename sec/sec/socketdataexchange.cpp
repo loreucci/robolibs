@@ -13,7 +13,7 @@ SocketDataIn::SocketDataIn(const std::string& socketname, const std::vector<std:
 
     // set dictionary
     if (expected.size() != values.size()) {
-        throw  std::invalid_argument("SocketDataIn: expected names and values sizes must agree.");
+        throw  std::invalid_argument("[SocketDataIn] Expected names and values sizes must agree.");
     }
 
     for (unsigned int i = 0; i < expected.size(); i++) {
@@ -27,7 +27,7 @@ SocketDataIn::SocketDataIn(const std::string& socketname, const std::vector<std:
     server = new QLocalServer(this);
 
     if (!server->listen(socketname.c_str())) {
-        throw  std::runtime_error("SocketDataIn: unable to run server: " + server->errorString().toStdString());
+        throw  std::runtime_error("[SocketDataIn] Unable to run server: " + server->errorString().toStdString());
     }
 
     connect(server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
@@ -125,7 +125,7 @@ void SocketDataIn::readMessage() {
 
     } else {
 
-        std::cerr << "SocketDataIn: unrecognized command\n";
+        std::cerr << "[SocketDataIn] Unrecognized command" << std::endl;
 
         response("ERROR");
 
@@ -162,7 +162,7 @@ void SocketDataOut::waitForServer() {
         }
 
     } else {
-        throw std::runtime_error("SocketDataIn: received wrong string.");
+        throw std::runtime_error("[SocketDataIn] Received wrong string.");
     }
 
 }
