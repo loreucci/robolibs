@@ -106,6 +106,28 @@ Signal constant(double c, double samplingfreq = 0.0);
 */
 Signal sin(double ampl, double freq, double phase = 0.0, double samplingfreq = 100.0);
 
+//! Trangular signal.
+/*!
+  Creates a new triangular signal.
+  \param ampl amplitude.
+  \param freq frequency.
+  \param phase phase.
+  \param samplingfreq the sampling frequency.
+  \return the triangular Signal.
+*/
+Signal triangle(double ampl, double freq, double phase, double samplingfreq = 100.0);
+
+//! Trapezoidal signal.
+/*!
+  Creates a new trapezoidal signal, the four phases of the wave are equally long.
+  \param ampl amplitude.
+  \param freq frequency.
+  \param phase phase.
+  \param samplingfreq the sampling frequency.
+  \return the trapezoidal Signal.
+*/
+Signal trapezoid(double ampl, double freq, double phase, double samplingfreq = 100.0);
+
 //! Ramp signal.
 /*!
   Creates a new ramp signal.

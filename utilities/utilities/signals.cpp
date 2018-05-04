@@ -56,7 +56,6 @@ Signal constant(double c, double samplingfreq) {
     samplingfreq);
 }
 
-
 Signal sin(double ampl, double freq, double phase, double samplingfreq) {
 
     std::string str = "[sin: ";
@@ -72,6 +71,45 @@ Signal sin(double ampl, double freq, double phase, double samplingfreq) {
 
 }
 
+Signal triangle(double ampl, double freq, double phase, double samplingfreq) {
+
+    std::string str = "[triangle: ";
+    str += "a=" + std::to_string(ampl) + ", ";
+    str += "f=" + std::to_string(freq) + ", ";
+    str += "ph=" + std::to_string(phase) + "]";
+
+    auto fun = [ampl, freq, phase] (double t) {
+        t += phase/freq/(2*Utils::PI);  // phase
+        return ampl*4*freq*(t-std::floor(2*t*freq+1.0/2.0)/(2.0*freq))*std::pow(-1, std::floor(2*t*freq+1.0/2.0));
+    };
+
+    return Signals::Signal(fun, str, samplingfreq);
+
+}
+
+Signal trapezoid(double ampl, double freq, double phase, double samplingfreq) {
+
+    std::string str = "[trapezoid: ";
+    str += "a=" + std::to_string(ampl) + ", ";
+    str += "f=" + std::to_string(freq) + ", ";
+    str += "ph=" + std::to_string(phase) + "]";
+
+    auto fun = [ampl, freq, phase] (double t) {
+        t += phase/freq/(2*Utils::PI);  // phase
+        t = t - std::floor(t*freq)/freq;
+        if (t <= 1.0/4.0/freq)
+            return -ampl;
+        else if (t < 1.0/2.0/freq) {
+            return 8*ampl*t*freq-3*ampl;
+        } else if (t < 3.0/4/freq) {
+            return ampl;
+        }
+        return -8*ampl*t*freq+7*ampl;
+    };
+
+    return Signals::Signal(fun, str, samplingfreq);
+
+}
 
 Signal ramp(double slope, double initialvalue, double starttime, double samplingfreq) {
 
@@ -149,7 +187,6 @@ Signal noise(double mean, double stddev, double samplingfreq) {
     return Signal(fun, str, samplingfreq);
 
 }
-
 
 Signal Switch(Signal s1, Signal s2, double switchtime, bool shift, double samplingfreq) {
 
