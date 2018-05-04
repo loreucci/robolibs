@@ -52,9 +52,6 @@ void RasterClient::execute() {
     bool tosend = false;
 
     for (auto& in : inputs) {
-//        newValue(in.first, in.second);
-//        auto ser = serialize(in.getData());
-//        std::cout << ser.toStdString() << std::endl;
         if (in.second->isNew()) {
             newvalues += serialize(in.first, in.second->getData());
             tosend = true;
@@ -91,14 +88,9 @@ void RasterClient::advance() {
 QString RasterClient::serialize(unsigned int id, const SpikeData& data) {
 
     QString ret;
-//    QDataStream serial(&ret, QIODevice::WriteOnly);
 
     for (const Spike& s : data) {
-//        serial << id << s.neuron_id << s.time;
         ret += QString::number(id) + " " + QString::number(s.neuron_id) + " " + QString::number(s.time) + " ";
-//        ret += " ";
-//        ret += s.time;
-//        ret += " ";
     }
 
     return ret;
@@ -107,7 +99,7 @@ QString RasterClient::serialize(unsigned int id, const SpikeData& data) {
 
 }
 
-void sec::connect(neural::SpikeNodeOut& out, neural::RasterClient& sink, const std::__cxx11::string& name) {
+void sec::connect(neural::SpikeNodeOut& out, neural::RasterClient& sink, const std::string& name) {
 
     sink.addConnection(&out, name);
 

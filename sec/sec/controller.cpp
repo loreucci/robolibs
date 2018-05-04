@@ -326,28 +326,6 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
 
 }
 
-void Controller::printNodes() const {
-
-    for (const auto& it : nodes) {
-        std::cerr << it.first << ":\n  ";
-        for (const auto n : it.second) {
-            std::cerr << n->ID << "\n  ";
-        }
-        std::cerr << std::endl;
-    }
-
-    if (singleThreadNodes.size() > 0) {
-        std::cerr << "single thread nodes:\n";
-        for (auto& it : singleThreadNodes) {
-            std::cerr << it.first << ": " << it.second << std::endl;
-        }
-        std::cerr << std::endl;
-    }
-
-    std::cerr << std::endl;
-
-}
-
 std::vector<Node*> Controller::getAllNodes() {
     std::vector<Node*> ret;
     for (const auto& it : nodes) {

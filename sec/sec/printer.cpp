@@ -23,7 +23,7 @@ bool Printer::connected() const {
 void Printer::execute() {
 
     if (funs.empty())
-        std::cout << "No input connection to printer.";
+        return;
 
     for (unsigned i = 0; i < funs.size()-1; i++) {
         std::cout << funs[i]() << sep;

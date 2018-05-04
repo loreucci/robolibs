@@ -35,9 +35,6 @@ public:
 
     void run(double time = 0.0, std::vector<std::function<bool(void)>> endconditions = {});
 
-    // DEBUG ONLY
-    void printNodes() const;
-
     // TODO: make an iterator
     std::vector<Node*> getAllNodes();
 

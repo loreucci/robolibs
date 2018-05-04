@@ -25,14 +25,7 @@ ResultsCollector::ResultsCollector(const std::string &basename, Mode mode)
 
 }
 
-//ResultsCollector::~ResultsCollector() {
-//    saveAll();
-//}
-
 void ResultsCollector::registerLogger(const Logger *logger, const std::string &filename) {
-//    if (mode == SINGLE_FILE_MODE && loggers.size() > 0) {
-//        throw std::runtime_error("[ResultsCollector] Trying to register more than one logger in SINGLE_FILE_MODE.");
-//    }
 
     loggers.push_back(std::make_pair(logger, filename));
 }
@@ -60,10 +53,6 @@ void ResultsCollector::setBasename(const std::string &basename) {
 
 void ResultsCollector::setMode(Mode mode) {
     this->mode = mode;
-
-//    if (mode == SINGLE_FILE_MODE && loggers.size() > 0) {
-//        throw std::runtime_error("[ResultsCollector] Trying to register more than one logger in SINGLE_FILE_MODE.");
-//    }
 }
 
 void ResultsCollector::saveNodesParameters(std::vector<Node *> nodes, const std::string &filename) {

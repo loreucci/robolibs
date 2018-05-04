@@ -41,36 +41,12 @@ void RasterServer::readMessage() {
 
     QDataStream in(socket);
 
-//    char* rawmsg = nullptr;
-//    uint l;
-
-//    in.readBytes(rawmsg, l);
-//    qDebug(rawmsg);
-
     QString nextMsg;
     in >> nextMsg;
-//    qDebug() << "msg = " << nextMsg;
-
-//    response("OK");
 
     QStringList cmd = nextMsg.split(" ");
 
-//    QDataStream msg(nextMsg);
-//    QString cmd;
-//    QChar c;
-//    msg >> c;
-//    msg >> c;
-//    msg >> cmd;
-
-//    while (!msg.atEnd()) {
-//        msg >> c;
-//        qDebug() << "cmd = " << c;
-//    }
-
     if (cmd[0] == "addgraph") {             // add new graph
-
-////        QString name;
-////        msg >> name;
 
         if (cmd.size() < 2) {
             response("ERROR");
@@ -180,7 +156,6 @@ void RasterServer::newplot() {
     // make left and bottom axes always transfer their ranges to right and top axes:
     connect(this->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this->plot->xAxis2, SLOT(setRange(QCPRange)));
     connect(this->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this->plot->yAxis2, SLOT(setRange(QCPRange)));
-    //        app.connect(this, SIGNAL(advance_sig()), this, SLOT(advance_slot()));
 
     // asynchronous replot
     connect(this, SIGNAL(replot()), plot, SLOT(replot()));

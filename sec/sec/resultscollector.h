@@ -25,7 +25,6 @@ class ResultsCollector {
 public:
 
     ResultsCollector(const std::string& basename = "test", Mode mode = FOLDER_MODE);
-//    ~ResultsCollector();
 
     // this should be called by the logger with the filename without the prefix
     void registerLogger(const Logger* logger, const std::string& filename);
