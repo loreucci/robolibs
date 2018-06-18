@@ -62,6 +62,7 @@ struct ExportableEntry {
     unsigned int mode;
     QString basename;
     QString timestamp;
+    QString trial;
     QString filelist;
     QString exportname;
 

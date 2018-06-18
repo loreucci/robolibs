@@ -15,6 +15,8 @@ add_new_test(test_synch test_synch.cpp)
 add_new_test(test_prompter test_prompter.cpp)
 add_new_test(test_events test_events.cpp)
 add_new_test(test_order test_order.cpp)
+add_new_test(test_clock test_clock.cpp)
+add_new_test(test_trial test_trials.cpp)
 
 if(BUILD_GUI)
     add_new_test(test_plot test_plot.cpp)

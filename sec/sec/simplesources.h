@@ -49,6 +49,8 @@ public:
 
     virtual std::string parameters() const override;
 
+    virtual void reset() override;
+
     NodeOut<double> output;
 
 protected:
@@ -64,6 +66,8 @@ public:
     virtual void execute() override;
 
     virtual std::string parameters() const override;
+
+    virtual void reset() override;
 
     NodeOut<Utils::Vector> output;
 
@@ -82,6 +86,8 @@ public:
 
     virtual std::string parameters() const override;
 
+    virtual void reset() override;
+
     bool valid() const;
 
     NodeOut<std::vector<double>> output;
@@ -93,6 +99,26 @@ protected:
     std::ifstream file;
 
     void skiplines();
+
+};
+
+class AbsoluteClock : public Source {
+
+public:
+    // Format must be specified according to std::strftime specifications.
+    // See http://en.cppreference.com/w/cpp/chrono/c/strftime
+    AbsoluteClock(const std::string& format, double freq = 100.0);
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
+
+    NodeOut<double> epoch;
+    NodeOut<std::string> formatted;
+    NodeOut<std::chrono::time_point<std::chrono::system_clock>> clock;
+
+private:
+    std::string format;
 
 };
 

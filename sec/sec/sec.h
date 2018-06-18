@@ -15,6 +15,12 @@ void setSleeper(Sleeper* sleeper);
 
 void sleep(double ms);
 
+void runTrials(unsigned int N,
+               std::vector<std::function<void(void)>> pre = {},
+               std::vector<std::function<void(void)>> post = {},
+               double time = 0.0,
+               std::vector<std::function<bool(void)>> endconditions = {});
+
 }
 
 #endif // SEC_H

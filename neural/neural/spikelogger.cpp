@@ -81,6 +81,14 @@ bool SpikeLogger::logToFile() const {
 
 }
 
+void SpikeLogger::reset() {
+    data.clear();
+}
+
+void SpikeLogger::setPrefix(const std::string& prefix) {
+    this->prefix = prefix;
+}
+
 
 }
 

@@ -87,7 +87,9 @@ public:
 
     virtual std::string parameters() const override;
 
-    void reset();
+    virtual void reset() override;
+
+    void resetObject();
 
     sec::NodeIn<Utils::Vector> point;
 

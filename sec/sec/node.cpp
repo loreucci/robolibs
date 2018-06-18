@@ -76,4 +76,6 @@ double Node::getDelay() const {
     return delay;
 }
 
+void Node::reset() {}
+
 }

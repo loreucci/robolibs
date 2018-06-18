@@ -233,3 +233,11 @@ void iCubSimObjectMover::execute() {
 std::string iCubSimObjectMover::parameters() const {
     return "Object mover node (type=" + obj.type + ",id=" + std::to_string(obj.id) + ").";
 }
+
+void iCubSimObjectMover::reset() {
+    resetObject();
+}
+
+void iCubSimObjectMover::resetObject() {
+    world.moveObject(obj, obj.x, obj.y, obj.z);
+}

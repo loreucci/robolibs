@@ -35,10 +35,11 @@ public:
     void setFilename(const std::string& filename);
     void setSeparator(const std::string& separator);
 
-    // maybe it's useless?
-    void reset();
-
     virtual bool logToFile() const override;
+
+    virtual void reset() override;
+
+    virtual void setPrefix(const std::string& prefix) override;
 
 protected:
     std::string filename, separator, prefix;

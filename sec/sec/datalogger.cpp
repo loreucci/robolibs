@@ -55,7 +55,17 @@ void DataLogger::setSeparator(const std::string& separator) {
 }
 
 void DataLogger::reset() {
-    deleteall();
+
+    for (auto& l : listeners) {
+        l->reset();
+    }
+
+    counter = 0;
+
+}
+
+void DataLogger::setPrefix(const std::string& prefix) {
+    this->prefix = prefix;
 }
 
 bool DataLogger::logToFile() const {

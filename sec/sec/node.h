@@ -47,6 +47,8 @@ public:
 
     virtual double getDelay() const final;
 
+    virtual void reset();
+
     const unsigned int ID;
 
 protected:

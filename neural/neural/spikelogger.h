@@ -27,7 +27,11 @@ public:
 
     void addSpikeSource(SpikeNodeOut* source);
 
-    bool logToFile() const override;
+    virtual bool logToFile() const override;
+
+    virtual void reset() override;
+
+    virtual void setPrefix(const std::string& prefix) override;
 
 protected:
     std::string filename, prefix;

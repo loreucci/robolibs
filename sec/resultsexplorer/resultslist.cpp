@@ -63,8 +63,9 @@ QList<ExportableEntry> ResultsList::getSelectedList() {
             entry.mode = data->data(data->index(r, 1)).toInt();
             entry.basename = data->data(data->index(r, 2)).toString();
             entry.timestamp = data->data(data->index(r, 3)).toString();
-            entry.filelist = data->data(data->index(r, 4)).toString();
-            entry.exportname = data->data(data->index(r, 6)).toString();
+            entry.trial = data->data(data->index(r, 4)).toString();
+            entry.filelist = data->data(data->index(r, 5)).toString();
+            entry.exportname = data->data(data->index(r, 7)).toString();
             ret.append(entry);
         }
     }
@@ -204,9 +205,10 @@ void ResultsList::loadFromFile() {
     data->setHeaderData(1, Qt::Horizontal, "M");
     data->setHeaderData(2, Qt::Horizontal, "Name");
     data->setHeaderData(3, Qt::Horizontal, "Timestamp");
-    data->setHeaderData(4, Qt::Horizontal, "Files");
-    data->setHeaderData(5, Qt::Horizontal, "Comment");
-    data->setHeaderData(6, Qt::Horizontal, "ExportName");
+    data->setHeaderData(4, Qt::Horizontal, "T");
+    data->setHeaderData(5, Qt::Horizontal, "Files");
+    data->setHeaderData(6, Qt::Horizontal, "Comment");
+    data->setHeaderData(7, Qt::Horizontal, "ExportName");
 
     file.close();
 

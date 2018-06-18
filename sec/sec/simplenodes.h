@@ -75,7 +75,7 @@ class Delay : public Node {
 
 public:
     Delay(double delay, double freq = 0.0)
-        :Node(freq), delay(delay) {
+        :Node(freq), tdelay(delay) {
         mem = std::deque<double>();
     }
 
@@ -90,7 +90,7 @@ public:
     virtual void execute() override {
 
         if (mem.empty()) {
-            unsigned int memsize = delay*getFrequency();
+            unsigned int memsize = tdelay*getFrequency();
             mem.resize(memsize, T());
         }
 
@@ -100,14 +100,14 @@ public:
     }
 
     virtual std::string parameters() const override {
-        return "Delay of " + std::to_string(delay) + "s.";
+        return "Delay of " + std::to_string(tdelay) + "s.";
     }
 
     NodeIn<T> input;
     NodeOut<T> output;
 
 protected:
-    double delay;
+    double tdelay;
     std::deque<double> mem;
 
 };

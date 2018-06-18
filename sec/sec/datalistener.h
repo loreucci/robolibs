@@ -28,6 +28,8 @@ public:
         return name;
     }
 
+    virtual void reset() = 0;
+
 protected:
     std::string name;
 
@@ -47,6 +49,10 @@ public:
 
     virtual std::string getLine(unsigned int line, const std::string& separator) {
         return Utils::make_string(values[line], separator);
+    }
+
+    virtual void reset() override {
+        values.clear();
     }
 
 protected:
@@ -69,6 +75,10 @@ public:
 
     virtual std::string getLine(unsigned int line, const std::string& separator) {
         return Utils::make_string(values[line], separator);
+    }
+
+    virtual void reset() override {
+        values.clear();
     }
 
 protected:
@@ -94,6 +104,10 @@ public:
 
     virtual std::string getLine(unsigned int line, const std::string& separator) {
         return Utils::make_string(values[line], separator);
+    }
+
+    virtual void reset() override {
+        values.clear();
     }
 
 protected:

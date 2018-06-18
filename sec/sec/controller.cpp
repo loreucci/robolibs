@@ -326,6 +326,19 @@ void Controller::run(double time, std::vector<std::function<bool(void)>> endcond
 
 }
 
+void Controller::resetAllNodes() {
+
+    if (sec::isVerbose()) {
+        std::cerr << "[Controller] Resetting nodes" << std::endl;
+    }
+
+    for (auto& it : nodes) {
+        for (const auto n : it.second) {
+            n->reset();
+        }
+    }
+}
+
 std::vector<Node*> Controller::getAllNodes() {
     std::vector<Node*> ret;
     for (const auto& it : nodes) {

@@ -4,11 +4,13 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <cmath>
 
 #include <sys/stat.h>
 
 #include "commons.h"
 #include "controller.h"
+#include "flags.h"
 
 
 namespace sec {
@@ -25,7 +27,7 @@ ResultsCollector::ResultsCollector(const std::string &basename, Mode mode)
 
 }
 
-void ResultsCollector::registerLogger(const Logger *logger, const std::string &filename) {
+void ResultsCollector::registerLogger(Logger* logger, const std::string &filename) {
 
     loggers.push_back(std::make_pair(logger, filename));
 }
@@ -41,6 +43,10 @@ std::string ResultsCollector::getFilenamePrefix() {
         return basename+"-"+timestamp+"/";
     case SINGLE_FILES_MODE:
         return basename+"-"+timestamp+"_";
+    case FOLDER_MODE_TRIALS:
+        return basename+"-"+timestamp+"/trial_"+paddedTrial()+"/";
+    case SINGLE_FILES_MODE_TRIALS:
+        return basename+"-"+timestamp+"/trial_"+paddedTrial()+"_";
     default:
         throw std::runtime_error("[ResultsCollector] Unkown mode.");
     }
@@ -98,9 +104,10 @@ void ResultsCollector::saveAll() {
 
     saved = true;
 
-    if (ok)
-        std::cerr << "[ResultsCollector] Results saved to file." << std::endl;
-    else
+    if (ok) {
+        if (sec::isVerbose())
+            std::cerr << "[ResultsCollector] Results saved to file." << std::endl;
+    } else
         std::cerr << "[ResultsCollector] Error logging some files." << std::endl;
 
 }
@@ -121,22 +128,86 @@ bool ResultsCollector::createFolder() {
 
     }
 
+    if (mode == FOLDER_MODE_TRIALS) {
+
+        if (mkdir((basename+"-"+timestamp+"/trial_"+paddedTrial()).c_str(), 0755) == -1) {
+            std::cerr << "[ResultsCollector] Error while creating the folder. " << std::strerror(errno) << std::endl;
+            return false;
+        }
+
+    }
+
     folder_created = true;
     return true;
 }
 
+void ResultsCollector::setTrials(unsigned int numtrials) {
+
+    // padding for filenames
+    padding = std::floor(std::log10(numtrials));
+
+    // change mode
+    if (mode == FOLDER_MODE)
+        mode = FOLDER_MODE_TRIALS;
+    if (mode == SINGLE_FILES_MODE)
+        mode = SINGLE_FILES_MODE_TRIALS;
+
+    if (loggers.empty() && extrafiles.empty())
+        return;
+
+    // create folder for trials
+    if (mkdir((basename+"-"+timestamp).c_str(), 0755) == -1) {
+        std::cerr << "[ResultsCollector] Error while creating the trials folder. " << std::strerror(errno) << std::endl;
+    }
+
+
+}
+
+void ResultsCollector::setCurrentTrial(unsigned int currentTrial) {
+
+    this->currentTrial = currentTrial;
+
+    for (auto& l : loggers) {
+        l.first->setPrefix(getFilenamePrefix());
+    }
+
+    if (mode == FOLDER_MODE_TRIALS)
+        folder_created = false;
+
+    saved = false;
+
+}
+
 void ResultsCollector::createExplorerEntry() {
 
-    std::ofstream logs("logs.txt", std::ios_base::app);
+    std::ofstream logs(logfilename, std::ios_base::app);
     logs << mode << ";" << basename << ";" << timestamp << ";";
+    if (mode == FOLDER_MODE_TRIALS || mode == SINGLE_FILES_MODE_TRIALS)
+        logs << paddedTrial() << ";";
+    else
+        logs << "-;";
     std::string names = "";
     for (auto l : loggers)
         names += l.second + ",";
     for (auto ef : extrafiles)
         names += ef + ",";
     names.resize(names.length()-1);
-    logs << names << ";;\n";
+    logs << names;
+    logs << ";;"; // empty comment and exportname
+    logs << "\n";
     logs.close();
+
+}
+
+std::string ResultsCollector::paddedTrial() {
+
+    unsigned int len = std::floor(std::log10(currentTrial));
+
+    std::string ret = "";
+    for (unsigned int i = 0; i < padding - len; i++)
+        ret += "0";
+
+    return ret + std::to_string(currentTrial);
 
 }
 
