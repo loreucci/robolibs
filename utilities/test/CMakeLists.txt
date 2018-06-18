@@ -7,7 +7,6 @@ function(add_new_test target)
 endfunction()
 
 add_new_test(test_vectors test_vectors.cpp)
-add_new_test(test_message test_message.cpp)
 add_new_test(test_signals test_signals.cpp)
 add_new_test(test_derivatives test_derivatives.cpp)
 add_new_test(test_integrals test_integrals.cpp)

@@ -7,7 +7,6 @@ set(SOURCES vector.cpp
 
 set(HEADERS vector.h
             utilities.h
-            message.h
             derivatives.h
             integrals.h
             signals.h
