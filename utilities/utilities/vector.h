@@ -91,6 +91,16 @@ double squaredDistance(const Vector& v1, const Vector& v2);
 */
 Vector subvector(const Vector& v, unsigned int start, unsigned int end);
 
+//! Vector join.
+/*!
+  Create a new Vector that is the join of two Vectors.
+  The second one will be appended at the end of the first.
+  \param v1 first Vector.
+  \param v2 second Vector.
+  \return joined vectors.
+*/
+Vector joinVectors(const Vector& v1, const Vector& v2);
+
 
 //! Vector range normalization
 /*!

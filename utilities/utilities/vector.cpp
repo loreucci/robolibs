@@ -61,6 +61,16 @@ Vector subvector(const Vector& v, unsigned int start, unsigned int end) {
     return ret;
 }
 
+Vector joinVectors(const Vector& v1, const Vector& v2) {
+
+    Vector ret = v1;
+
+    ret.insert(ret.end(), v2.begin(), v2.end());
+
+    return ret;
+
+}
+
 Vector rangeNormalization(const Vector& v, double outmin, double outmax) {
 
     double inmax = *std::max_element(v.begin(), v.end());
