@@ -4,12 +4,18 @@
 #include <vector>
 #include <unistd.h>
 
+#include <yarp/os/Network.h>
 #include <yarp/sig/Vector.h>
 #include <iCub/iKin/iKinFwd.h>
 
 #include <utilities/vector.h>
 #include <sec/node.h>
 
+
+/////////////////////
+/// global network instance
+///
+extern yarp::os::Network yarpnetwork;
 
 ////////////////////
 /// Legacy stuff, deprecated

@@ -21,17 +21,17 @@ const Utils::Vector torsoVelMin =  {-400, -400, -400};
 const Utils::Vector torsoVelMax =  {+400, +400, +400};
 const Utils::Vector torsoInitial = {   0,    0,    0};
 
-const Utils::Vector rightarmPosMin =  { -95,     0,  -37, 15.5,  -90,  -90,  -20};
-const Utils::Vector rightarmPosMax =  {  10, 160.8,   80,  106,   90,    0,   40};
-const Utils::Vector rightarmVelMin =  {-400,  -400, -400, -400, -400, -400, -400};
-const Utils::Vector rightarmVelMax =  {+400,  +400, +400, +400, +400, +400, +400};
-const Utils::Vector rightarmInitial = { -25,    20,    0,   50,    0,    0,    0};
+const Utils::Vector rightarmPosMin =  { -95,     0,  -37, 15.5,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector rightarmPosMax =  {  10, 160.8,   80,  106,   90,    0,   40,   60,   90,   90,  180,   90,  180,   90,  180,  270};
+const Utils::Vector rightarmVelMin =  {-100,  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
+const Utils::Vector rightarmVelMax =  {+100,  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
+const Utils::Vector rightarmInitial = { -25,    20,    0,   50,    0,    0,    0,   60,   20,   20,   20,   10,   10,   10,   10,   10};
 
-const Utils::Vector leftarmPosMin =  { -95,     0,  -37, 15.5,  -90,  -90,  -20};
-const Utils::Vector leftarmPosMax =  {  10, 160.8,   80,  106,   90,    0,   40};
-const Utils::Vector leftarmVelMin =  {-400,  -400, -400, -400, -400, -400, -400};
-const Utils::Vector leftarmVelMax =  {+400,  +400, +400, +400, +400, +400, +400};
-const Utils::Vector leftarmInitial = { -25,    20,    0,   50,    0,    0,    0};
+const Utils::Vector leftarmPosMin =  { -94.5,    0,  -36,   19,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector leftarmPosMax =  {   9.5,  161,   80,  106,   90,    0,   40,   60,   90,   90,  180,   90,  180,   90,  180,  270};
+const Utils::Vector leftarmVelMin =  {  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
+const Utils::Vector leftarmVelMax =  {  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
+const Utils::Vector leftarmInitial = {   -25,   20,    0,   50,    0,    0,    0,   60,   20,   20,   20,   10,   10,   10,   10,   10};
 
 }
 
@@ -41,9 +41,9 @@ _iCubSimHead::_iCubSimHead() {
 
 void _iCubSimHead::activate(const std::string& robotname, const std::string& localname) {
 
-    _iCubHead::activate(robotname, localname);
+    _Head::activate(robotname, localname);
 
-    yarp::os::Network yarp;
+//    yarp::os::Network yarp;
 
     // motor drivers
     yarp::os::Property options;
@@ -89,7 +89,7 @@ _iCubSimTorso::_iCubSimTorso() {
 
 void _iCubSimTorso::activate(const std::string& robotname, const std::string& localname) {
 
-    _iCubTorso::activate(robotname, localname);
+    _Torso::activate(robotname, localname);
 
     yarp::os::Network yarp;
 
@@ -137,7 +137,7 @@ _iCubSimRightArm::_iCubSimRightArm() {
 
 void _iCubSimRightArm::activate(const std::string& robotname, const std::string& localname) {
 
-    _iCubRightArm::activate(robotname, localname);
+    _RightArm::activate(robotname, localname);
 
     yarp::os::Network yarp;
 
@@ -152,7 +152,7 @@ void _iCubSimRightArm::activate(const std::string& robotname, const std::string&
 
     yarp::dev::IPositionControl* p;
     driver.view(p);
-    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
+    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
     p->setRefSpeeds(d);
     p->setRefAccelerations(d);
 
@@ -178,6 +178,52 @@ Utils::Vector _iCubSimRightArm::getMaxVel() const {
     return iCubSim::rightarmVelMax;
 }
 
+_iCubSimLeftArm::_iCubSimLeftArm() {
+    initpos = iCubSim::leftarmInitial;
+}
+
+void _iCubSimLeftArm::activate(const std::string& robotname, const std::string& localname) {
+
+    _LeftArm::activate(robotname, localname);
+
+    yarp::os::Network yarp;
+
+    // motor drivers
+    yarp::os::Property options;
+    options.put("device", "remote_controlboard");
+    options.put("local", "/"+localname+"/" + name());
+    options.put("remote", "/"+robotname+"/left_arm");
+    if (!driver.open(options)) {
+        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
+    }
+
+    yarp::dev::IPositionControl* p;
+    driver.view(p);
+    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
+    p->setRefSpeeds(d);
+    p->setRefAccelerations(d);
+
+}
+
+std::string _iCubSimLeftArm::name() {
+    return "iCubSimLeftArm";
+}
+
+Utils::Vector _iCubSimLeftArm::getMinPos() const {
+    return iCubSim::leftarmPosMin;
+}
+
+Utils::Vector _iCubSimLeftArm::getMaxPos() const {
+    return iCubSim::leftarmPosMax;
+}
+
+Utils::Vector _iCubSimLeftArm::getMinVel() const {
+    return iCubSim::leftarmVelMin;
+}
+
+Utils::Vector _iCubSimLeftArm::getMaxVel() const {
+    return iCubSim::leftarmVelMax;
+}
 
 std::string _iCubSimInertial::name() {
     return "iCubSimInertial";
@@ -196,6 +242,11 @@ iCubSimRightArm::iCubSimRightArm() {
     rightarm = new _iCubSimRightArm();
 }
 
+iCubSimLeftArm::iCubSimLeftArm() {
+    leftarm = new _iCubSimLeftArm();
+}
+
 iCubSimInertial::iCubSimInertial() {
     inertial = new _iCubSimInertial();
 }
+

@@ -9,6 +9,8 @@
 // operation with vectors
 using namespace yarp::math;
 
+yarp::os::Network yarpnetwork;
+
 ////////////////////
 ///
 ///

@@ -61,8 +61,6 @@ void EncodersHeadVel::execute() {
 HeadPositionControl::HeadPositionControl(HasHead& robot, double freq)
     :sec::Node(freq), robot(robot) {
 
-    robot.head->setControlMode(VOCAB_CM_MIXED);
-
     full = false;
     sub = false;
     joints = false;
@@ -111,26 +109,19 @@ bool HeadPositionControl::connected() const {
 
 void HeadPositionControl::execute() {
 
-    Utils::Vector cmd;
+    Utils::Vector cmd = robot.head->encodersPos();
 
     if (full) {
         cmd = head;
     } else if (sub) {
-        cmd.resize(6);
-        cmd[0] = neck.getData()[0];
-        cmd[1] = neck.getData()[1];
-        cmd[2] = neck.getData()[2];
-        cmd[3] = eyes.getData()[0];
-        cmd[4] = eyes.getData()[1];
-        cmd[5] = eyes.getData()[2];
+        cmd = Utils::joinVectors(neck, eyes);
     } else {
-        cmd.resize(6);
-        cmd[0] = pitch;
-        cmd[1] = roll;
-        cmd[2] = yaw;
-        cmd[3] = tilt;
-        cmd[4] = version;
-        cmd[5] = vergence;
+        cmd[0] = pitch.isConnected() ? pitch : cmd[0];
+        cmd[1] = roll.isConnected() ? roll : cmd[1];
+        cmd[2] = yaw.isConnected() ? yaw : cmd[2];
+        cmd[3] = tilt.isConnected() ? tilt : cmd[3];
+        cmd[4] = version.isConnected() ? version : cmd[4];
+        cmd[5] = vergence.isConnected() ? vergence : cmd[5];
     }
 
     robot.head->movePos(cmd);
@@ -144,8 +135,6 @@ std::string HeadPositionControl::parameters() const {
 
 HeadVelocityControl::HeadVelocityControl(HasHead& robot, double freq)
     :sec::Node(freq), robot(robot) {
-
-    robot.head->setControlMode(VOCAB_CM_MIXED);
 
     full = false;
     sub = false;
@@ -195,26 +184,19 @@ bool HeadVelocityControl::connected() const {
 
 void HeadVelocityControl::execute() {
 
-    Utils::Vector cmd;
+    Utils::Vector cmd = robot.head->encodersVel();
 
     if (full) {
         cmd = head;
     } else if (sub) {
-        cmd.resize(6);
-        cmd[0] = neck.getData()[0];
-        cmd[1] = neck.getData()[1];
-        cmd[2] = neck.getData()[2];
-        cmd[3] = eyes.getData()[0];
-        cmd[4] = eyes.getData()[1];
-        cmd[5] = eyes.getData()[2];
+        cmd = Utils::joinVectors(neck, eyes);
     } else {
-        cmd.resize(6);
-        cmd[0] = pitch;
-        cmd[1] = roll;
-        cmd[2] = yaw;
-        cmd[3] = tilt;
-        cmd[4] = version;
-        cmd[5] = vergence;
+        cmd[0] = pitch.isConnected() ? pitch : cmd[0];
+        cmd[1] = roll.isConnected() ? roll : cmd[1];
+        cmd[2] = yaw.isConnected() ? yaw : cmd[2];
+        cmd[3] = tilt.isConnected() ? tilt : cmd[3];
+        cmd[4] = version.isConnected() ? version : cmd[4];
+        cmd[5] = vergence.isConnected() ? vergence : cmd[5];
     }
 
     robot.head->moveVel(cmd);
@@ -272,8 +254,6 @@ void EncodersTorsoVel::execute() {
 TorsoPositionControl::TorsoPositionControl(HasTorso& robot, double freq)
     :sec::Node(freq), robot(robot) {
 
-    robot.torso->setControlMode(VOCAB_CM_MIXED);
-
     full = false;
     joints = false;
 
@@ -309,15 +289,14 @@ bool TorsoPositionControl::connected() const {
 
 void TorsoPositionControl::execute() {
 
-    Utils::Vector cmd;
+    Utils::Vector cmd = robot.torso->encodersPos();
 
     if (full) {
         cmd = torso;
     } else {
-        cmd.resize(3);
-        cmd[2] = pitch;
-        cmd[1] = roll;
-        cmd[0] = yaw;
+        cmd[2] = pitch.isConnected() ? pitch : cmd[2];
+        cmd[1] = roll.isConnected() ? roll : cmd[1];
+        cmd[0] = yaw.isConnected() ? yaw : cmd[0];
     }
 
     robot.torso->movePos(cmd);
@@ -331,8 +310,6 @@ std::string TorsoPositionControl::parameters() const {
 
 TorsoVelocityControl::TorsoVelocityControl(HasTorso& robot, double freq)
     :sec::Node(freq), robot(robot){
-
-    robot.torso->setControlMode(VOCAB_CM_MIXED);
 
     full = false;
     joints = false;
@@ -369,15 +346,14 @@ bool TorsoVelocityControl::connected() const {
 
 void TorsoVelocityControl::execute() {
 
-    Utils::Vector cmd;
+    Utils::Vector cmd = robot.torso->encodersVel();
 
     if (full) {
         cmd = torso;
     } else {
-        cmd.resize(3);
-        cmd[2] = pitch;
-        cmd[1] = roll;
-        cmd[0] = yaw;
+        cmd[2] = pitch.isConnected() ? pitch : cmd[2];
+        cmd[1] = roll.isConnected() ? roll : cmd[1];
+        cmd[0] = yaw.isConnected() ? yaw : cmd[0];
     }
 
     robot.torso->moveVel(cmd);
@@ -433,25 +409,25 @@ void EncodersRightArmVel::execute() {
     elbowvel = rav[3];
     wrist_prosupvel = rav[4];
     wrist_pitchvel = rav[5];
-    wrist_yawvel = rav[6];;
+    wrist_yawvel = rav[6];
 
 }
 
 RightArmPositionControl::RightArmPositionControl(HasRightArm& robot, double freq)
     :sec::Node(freq), robot(robot) {
 
-    robot.rightarm->setControlMode(VOCAB_CM_MIXED);
-
     full = false;
+    sub = false;
     joints = false;
-
-    cmd = robot.rightarm->getInitialPosition();
 
 }
 
 void RightArmPositionControl::refreshInputs() {
 
+    fullarm.refreshData();
+
     arm.refreshData();
+    hand.refreshData();
 
     shoulder_pitch.refreshData();
     shoulder_roll.refreshData();
@@ -460,35 +436,54 @@ void RightArmPositionControl::refreshInputs() {
     wrist_prosup.refreshData();
     wrist_pitch.refreshData();
     wrist_yaw.refreshData();
+    hand_finger.refreshData();
+    thumb_oppose.refreshData();
+    thumb_proximal.refreshData();
+    thumb_distal.refreshData();
+    index_proximal.refreshData();
+    index_distal.refreshData();
+    middle_proximal.refreshData();
+    middle_distal.refreshData();
+    pinky.refreshData();
 
 }
 
 bool RightArmPositionControl::connected() const {
 
-    if (arm.isConnected()) {
+    if (fullarm.isConnected()) {
         full = true;
     }
 
+    if (arm.isConnected() || hand.isConnected()) {
+        sub = true;
+    }
+
     if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
-            elbow.isConnected() ||
-            wrist_prosup.isConnected() || wrist_pitch.isConnected() || wrist_yaw.isConnected()) {
+        elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
+        wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
+        thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
+        index_distal.isConnected() || middle_proximal.isConnected() || middle_distal.isConnected() ||
+        pinky.isConnected()) {
         joints = true;
     }
 
-    if (full && joints) {
-        throw iCubException("[TorsoPositionControl] Too many connections.");
+    if ((full && sub) || ((full || sub) && joints)) {
+        throw iCubException("[RightArmPositionControl] Too many connections.");
     }
 
-    return full || joints;
+    return full || sub || joints;
 
 }
 
 void RightArmPositionControl::execute() {
 
+    Utils::Vector cmd = robot.rightarm->encodersPos();
+
     if (full) {
-        cmd = arm;
+        cmd = fullarm;
+    } else if (sub) {
+        cmd = Utils::joinVectors(arm, hand);
     } else {
-        cmd.resize(7);
         cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
         cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
         cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
@@ -496,6 +491,15 @@ void RightArmPositionControl::execute() {
         cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
         cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
         cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
+        cmd[7] = hand_finger.isConnected() ? hand_finger : cmd[7];
+        cmd[8] = thumb_oppose.isConnected() ? thumb_oppose : cmd[8];
+        cmd[9] = thumb_proximal.isConnected() ? thumb_proximal : cmd[9];
+        cmd[10] = thumb_distal.isConnected() ? thumb_distal : cmd[10];
+        cmd[11] = index_proximal.isConnected() ? index_proximal : cmd[11];
+        cmd[12] = index_distal.isConnected() ? index_distal : cmd[12];
+        cmd[13] = middle_proximal.isConnected() ? middle_proximal : cmd[13];
+        cmd[14] = middle_distal.isConnected() ? middle_distal : cmd[14];
+        cmd[15] = pinky.isConnected() ? pinky : cmd[15];
     }
 
     robot.rightarm->movePos(cmd);
@@ -509,16 +513,18 @@ std::string RightArmPositionControl::parameters() const {
 RightArmVelocityControl::RightArmVelocityControl(HasRightArm& robot, double freq)
     :sec::Node(freq), robot(robot) {
 
-    robot.rightarm->setControlMode(VOCAB_CM_MIXED);
-
     full = false;
+    sub = false;
     joints = false;
 
 }
 
 void RightArmVelocityControl::refreshInputs() {
 
+    fullarm.refreshData();
+
     arm.refreshData();
+    hand.refreshData();
 
     shoulder_pitch.refreshData();
     shoulder_roll.refreshData();
@@ -527,44 +533,70 @@ void RightArmVelocityControl::refreshInputs() {
     wrist_prosup.refreshData();
     wrist_pitch.refreshData();
     wrist_yaw.refreshData();
+    hand_finger.refreshData();
+    thumb_oppose.refreshData();
+    thumb_proximal.refreshData();
+    thumb_distal.refreshData();
+    index_proximal.refreshData();
+    index_distal.refreshData();
+    middle_proximal.refreshData();
+    middle_distal.refreshData();
+    pinky.refreshData();
 
 }
 
 bool RightArmVelocityControl::connected() const {
 
-    if (arm.isConnected()) {
+    if (fullarm.isConnected()) {
         full = true;
     }
 
+    if (arm.isConnected() || hand.isConnected()) {
+        sub = true;
+    }
+
     if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
-            elbow.isConnected() ||
-            wrist_prosup.isConnected() || wrist_pitch.isConnected() || wrist_yaw.isConnected()) {
+        elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
+        wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
+        thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
+        index_distal.isConnected() || middle_proximal.isConnected() || middle_distal.isConnected() ||
+        pinky.isConnected()) {
         joints = true;
     }
 
-    if (full && joints) {
-        throw iCubException("[TorsoPositionControl] Too many connections.");
+    if ((full && sub) || ((full || sub) && joints)) {
+        throw iCubException("[LeftArmPositionControl] Too many connections.");
     }
 
-    return full || joints;
+    return full || sub || joints;
 
 }
 
 void RightArmVelocityControl::execute() {
 
-    Utils::Vector cmd;
+    Utils::Vector cmd = robot.rightarm->encodersVel();
 
     if (full) {
-        cmd = arm;
+        cmd = fullarm;
+    } else if (sub) {
+        cmd = Utils::joinVectors(arm, hand);
     } else {
-        cmd.resize(7);
-        cmd[0] = shoulder_pitch;
-        cmd[1] = shoulder_roll;
-        cmd[2] = shoudler_yaw;
-        cmd[3] = elbow;
-        cmd[4] = wrist_prosup;
-        cmd[5] = wrist_pitch;
-        cmd[6] = wrist_yaw;
+        cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
+        cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
+        cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
+        cmd[3] = elbow.isConnected() ? elbow : cmd[3];
+        cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
+        cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
+        cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
+        cmd[7] = hand_finger.isConnected() ? hand_finger : cmd[7];
+        cmd[8] = thumb_oppose.isConnected() ? thumb_oppose : cmd[8];
+        cmd[9] = thumb_proximal.isConnected() ? thumb_proximal : cmd[9];
+        cmd[10] = thumb_distal.isConnected() ? thumb_distal : cmd[10];
+        cmd[11] = index_proximal.isConnected() ? index_proximal : cmd[11];
+        cmd[12] = index_distal.isConnected() ? index_distal : cmd[12];
+        cmd[13] = middle_proximal.isConnected() ? middle_proximal : cmd[13];
+        cmd[14] = middle_distal.isConnected() ? middle_distal : cmd[14];
+        cmd[15] = pinky.isConnected() ? pinky : cmd[15];
     }
 
     robot.rightarm->moveVel(cmd);
@@ -573,6 +605,273 @@ void RightArmVelocityControl::execute() {
 
 std::string RightArmVelocityControl::parameters() const {
     return "Right arm velocity control of " + robot.name();
+}
+
+
+EncodersLeftArm::EncodersLeftArm(const HasLeftArm& robot, double freq)
+    :sec::Source(freq), robot(robot) {
+    execute();
+}
+
+void EncodersLeftArm::execute() {
+
+    Utils::Vector la = robot.leftarm->encodersPos();
+
+    fullarm = la;
+
+    arm = Utils::subvector(la, 0, 7);
+    hand = Utils::subvector(la, 7, 16);
+
+    shoulder_pitch = la[0];
+    shoulder_roll = la[1];
+    shoudler_yaw = la[2];
+    elbow = la[3];
+    wrist_prosup = la[4];
+    wrist_pitch = la[5];
+    wrist_yaw = la[6];
+
+    hand_finger = la[7];
+    thumb_oppose = la[8];
+    thumb_proximal = la[9];
+    thumb_distal = la[10];
+    index_proximal = la[11];
+    index_distal = la[12];
+    middle_proximal = la[13];
+    middle_distal = la[14];
+    pinky = la[15];
+
+}
+
+std::string EncodersLeftArm::parameters() const {
+    return "Left arm encoders of " + robot.name();
+}
+
+EncodersLeftArmVel::EncodersLeftArmVel(const HasLeftArm& robot, double freq)
+    :EncodersLeftArm(robot, freq) {
+    execute();
+}
+
+void EncodersLeftArmVel::execute() {
+
+    EncodersLeftArm::execute();
+
+    Utils::Vector lav = robot.leftarm->encodersVel();
+
+    armvel = lav;
+
+    shoulder_pitchvel = lav[0];
+    shoulder_rollvel = lav[1];
+    shoudler_yawvel = lav[2];
+    elbowvel = lav[3];
+    wrist_prosupvel = lav[4];
+    wrist_pitchvel = lav[5];
+    wrist_yawvel = lav[6];
+
+    hand_fingervel = lav[7];
+    thumb_opposevel = lav[8];
+    thumb_proximalvel = lav[9];
+    thumb_distalvel = lav[10];
+    index_proximalvel = lav[11];
+    index_distalvel = lav[12];
+    middle_proximalvel = lav[13];
+    middle_distalvel = lav[14];
+    pinkyvel = lav[15];
+
+}
+
+
+LeftArmPositionControl::LeftArmPositionControl(HasLeftArm& robot, double freq)
+    :sec::Node(freq), robot(robot) {
+
+    full = false;
+    sub = false;
+    joints = false;
+
+}
+
+void LeftArmPositionControl::refreshInputs() {
+
+    fullarm.refreshData();
+
+    arm.refreshData();
+    hand.refreshData();
+
+    shoulder_pitch.refreshData();
+    shoulder_roll.refreshData();
+    shoudler_yaw.refreshData();
+    elbow.refreshData();
+    wrist_prosup.refreshData();
+    wrist_pitch.refreshData();
+    wrist_yaw.refreshData();
+    hand_finger.refreshData();
+    thumb_oppose.refreshData();
+    thumb_proximal.refreshData();
+    thumb_distal.refreshData();
+    index_proximal.refreshData();
+    index_distal.refreshData();
+    middle_proximal.refreshData();
+    middle_distal.refreshData();
+    pinky.refreshData();
+
+}
+
+bool LeftArmPositionControl::connected() const {
+
+    if (fullarm.isConnected()) {
+        full = true;
+    }
+
+    if (arm.isConnected() || hand.isConnected()) {
+        sub = true;
+    }
+
+    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
+        elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
+        wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
+        thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
+        index_distal.isConnected() || middle_proximal.isConnected() || middle_distal.isConnected() ||
+        pinky.isConnected()) {
+        joints = true;
+    }
+
+    if ((full && sub) || ((full || sub) && joints)) {
+        throw iCubException("[LeftArmPositionControl] Too many connections.");
+    }
+
+    return full || sub || joints;
+
+}
+
+void LeftArmPositionControl::execute() {
+
+    Utils::Vector cmd = robot.leftarm->encodersPos();
+
+    if (full) {
+        cmd = fullarm;
+    } else if (sub) {
+        cmd = Utils::joinVectors(arm, hand);
+    } else {
+        cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
+        cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
+        cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
+        cmd[3] = elbow.isConnected() ? elbow : cmd[3];
+        cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
+        cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
+        cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
+        cmd[7] = hand_finger.isConnected() ? hand_finger : cmd[7];
+        cmd[8] = thumb_oppose.isConnected() ? thumb_oppose : cmd[8];
+        cmd[9] = thumb_proximal.isConnected() ? thumb_proximal : cmd[9];
+        cmd[10] = thumb_distal.isConnected() ? thumb_distal : cmd[10];
+        cmd[11] = index_proximal.isConnected() ? index_proximal : cmd[11];
+        cmd[12] = index_distal.isConnected() ? index_distal : cmd[12];
+        cmd[13] = middle_proximal.isConnected() ? middle_proximal : cmd[13];
+        cmd[14] = middle_distal.isConnected() ? middle_distal : cmd[14];
+        cmd[15] = pinky.isConnected() ? pinky : cmd[15];
+    }
+
+    robot.leftarm->movePos(cmd);
+
+}
+
+std::string LeftArmPositionControl::parameters() const {
+    return "Left arm position control of " + robot.name();
+}
+
+LeftArmVelocityControl::LeftArmVelocityControl(HasLeftArm& robot, double freq)
+    :sec::Node(freq), robot(robot) {
+
+    full = false;
+    sub = false;
+    joints = false;
+
+}
+
+void LeftArmVelocityControl::refreshInputs() {
+
+    fullarm.refreshData();
+
+    arm.refreshData();
+    hand.refreshData();
+
+    shoulder_pitch.refreshData();
+    shoulder_roll.refreshData();
+    shoudler_yaw.refreshData();
+    elbow.refreshData();
+    wrist_prosup.refreshData();
+    wrist_pitch.refreshData();
+    wrist_yaw.refreshData();
+    hand_finger.refreshData();
+    thumb_oppose.refreshData();
+    thumb_proximal.refreshData();
+    thumb_distal.refreshData();
+    index_proximal.refreshData();
+    index_distal.refreshData();
+    middle_proximal.refreshData();
+    middle_distal.refreshData();
+    pinky.refreshData();
+
+}
+
+bool LeftArmVelocityControl::connected() const {
+
+    if (fullarm.isConnected()) {
+        full = true;
+    }
+
+    if (arm.isConnected() || hand.isConnected()) {
+        sub = true;
+    }
+
+    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
+        elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
+        wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
+        thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
+        index_distal.isConnected() || middle_proximal.isConnected() || middle_distal.isConnected() ||
+        pinky.isConnected()) {
+        joints = true;
+    }
+
+    if ((full && sub) || ((full || sub) && joints)) {
+        throw iCubException("[LeftArmPositionControl] Too many connections.");
+    }
+
+    return full || sub || joints;
+
+}
+
+void LeftArmVelocityControl::execute() {
+
+    Utils::Vector cmd = robot.leftarm->encodersVel();
+
+    if (full) {
+        cmd = fullarm;
+    } else if (sub) {
+        cmd = Utils::joinVectors(arm, hand);
+    } else {
+        cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
+        cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
+        cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
+        cmd[3] = elbow.isConnected() ? elbow : cmd[3];
+        cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
+        cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
+        cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
+        cmd[7] = hand_finger.isConnected() ? hand_finger : cmd[7];
+        cmd[8] = thumb_oppose.isConnected() ? thumb_oppose : cmd[8];
+        cmd[9] = thumb_proximal.isConnected() ? thumb_proximal : cmd[9];
+        cmd[10] = thumb_distal.isConnected() ? thumb_distal : cmd[10];
+        cmd[11] = index_proximal.isConnected() ? index_proximal : cmd[11];
+        cmd[12] = index_distal.isConnected() ? index_distal : cmd[12];
+        cmd[13] = middle_proximal.isConnected() ? middle_proximal : cmd[13];
+        cmd[14] = middle_distal.isConnected() ? middle_distal : cmd[14];
+        cmd[15] = pinky.isConnected() ? pinky : cmd[15];
+    }
+
+    robot.leftarm->moveVel(cmd);
+
+}
+
+std::string LeftArmVelocityControl::parameters() const {
+    return "Left arm velocity control of " + robot.name();
 }
 
 

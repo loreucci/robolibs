@@ -38,7 +38,7 @@ extern const Utils::Vector leftarmInitial;
 }
 
 
-class _iCubSimHead : public _iCubHead {
+class _iCubSimHead : public _Head {
 
 public:
     _iCubSimHead();
@@ -55,7 +55,7 @@ public:
 };
 
 
-class _iCubSimTorso : public _iCubTorso {
+class _iCubSimTorso : public _Torso {
 
 public:
     _iCubSimTorso();
@@ -72,10 +72,25 @@ public:
 };
 
 
-class _iCubSimRightArm : public _iCubRightArm {
+class _iCubSimRightArm : public _RightArm {
 
 public:
     _iCubSimRightArm();
+    virtual void activate(const std::string& robotname, const std::string& localname) override;
+
+    virtual std::string name() override;
+
+    virtual Utils::Vector getMinPos() const override;
+    virtual Utils::Vector getMaxPos() const override;
+    virtual Utils::Vector getMinVel() const override;
+    virtual Utils::Vector getMaxVel() const override;
+
+};
+
+class _iCubSimLeftArm : public _LeftArm {
+
+public:
+    _iCubSimLeftArm();
     virtual void activate(const std::string& robotname, const std::string& localname) override;
 
     virtual std::string name() override;
@@ -115,6 +130,13 @@ class iCubSimRightArm : public HasRightArm {
 
 public:
     iCubSimRightArm();
+
+};
+
+class iCubSimLeftArm : public HasLeftArm {
+
+public:
+    iCubSimLeftArm();
 
 };
 

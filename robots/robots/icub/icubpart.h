@@ -9,6 +9,8 @@
 
 #include <utilities/vector.h>
 
+#include <yarp/dev/IVelocityControl2.h>
+
 
 class iCubPart {
 
@@ -100,31 +102,38 @@ protected:
 //////////////////////
 // common driver parts
 
-class _iCubHead : public DriverPart {
+class _Head : public DriverPart {
 
 public:
     virtual unsigned int dof() const override;
 
 };
 
-class _iCubTorso : public DriverPart {
+class _Torso : public DriverPart {
 
 public:
     virtual unsigned int dof() const override;
 
 };
 
-class _iCubRightArm : public DriverPart {
+class _RightArm : public DriverPart {
 public:
     virtual unsigned int dof() const override;
 
-    virtual void refresh() override;
+//    virtual void refresh() override;
 
-    virtual void movePos(const Utils::Vector& refs, bool wait = false);
-    virtual void moveVel(const Utils::Vector& refs, bool wait = false);
+//    virtual void movePos(const Utils::Vector& refs, bool wait = false);
+//    virtual void moveVel(const Utils::Vector& refs, bool wait = false);
 
-private:
-    static Utils::Vector handposition;
+//private:
+//    static Utils::Vector handposition;
+
+};
+
+class _LeftArm : public DriverPart {
+
+public:
+    virtual unsigned int dof() const override;
 
 };
 
@@ -135,7 +144,7 @@ private:
 class HasHead {
 
 public:
-    _iCubHead* head = nullptr;
+    _Head* head = nullptr;
 
     void activate(const std::string& robotname, const std::string& localname);
     void deactivate();
@@ -147,7 +156,7 @@ public:
 class HasTorso {
 
 public:
-    _iCubTorso* torso = nullptr;
+    _Torso* torso = nullptr;
 
     void activate(const std::string& robotname, const std::string& localname);
     void deactivate();
@@ -159,7 +168,19 @@ public:
 class HasRightArm {
 
 public:
-    _iCubRightArm* rightarm = nullptr;
+    _RightArm* rightarm = nullptr;
+
+    void activate(const std::string& robotname, const std::string& localname);
+    void deactivate();
+    void refresh();
+    std::string name() const;
+
+};
+
+class HasLeftArm {
+
+public:
+    _LeftArm* leftarm = nullptr;
 
     void activate(const std::string& robotname, const std::string& localname);
     void deactivate();
