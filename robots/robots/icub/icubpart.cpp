@@ -6,16 +6,48 @@
 #include <yarp/dev/IControlMode2.h>
 #include <cmath>
 
+#include <sec/sec.h>
+
 #include "commons.h"
 
 
-void DriverPart::activate(const std::string&, const std::string&) {
+void DriverPart::activate(const std::string& robotname, const std::string& localname) {
+
     pos.resize(dof());
     vel.resize(dof());
+
+    // motor driver
+    yarp::os::Property options;
+    options.put("device", "remote_controlboard");
+    options.put("local", "/" + localname + "/" + yarpname());
+    options.put("remote", "/" + robotname + "/" + yarpname());
+    if (!driver.open(options)) {
+        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
+    }
+
+    setRefSpeeds(0.5);
+
 }
 
 void DriverPart::deactivate() {
     driver.close();
+}
+
+void DriverPart::setRefSpeeds(double velperc) {
+
+    yarp::dev::IPositionControl* p;
+    driver.view(p);
+    p->setRefSpeeds((velperc*getMaxVel()).data());
+    p->setRefAccelerations(getMaxVel().data());
+
+}
+
+void DriverPart::setMovementPrecision(double newprec) {
+    if (newprec <= 0.0) {
+        std::cerr << "[iCubRobot(" + name() + ")] Trying to set non-positive movement precision, ignoring." << std::endl;
+        return;
+    }
+    precision = newprec;
 }
 
 void DriverPart::refresh() {
@@ -73,12 +105,19 @@ void DriverPart::movePos(const Utils::Vector& refs, bool wait) {
     if (!wait) {
         posctrl->positionMove(_refs.data());
     } else {
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] Waiting for " << name() << "movement to end..." << std::endl;
+        }
         Utils::Vector encs;
+        posctrl->positionMove(_refs.data());
         do {
-            posctrl->positionMove(_refs.data());
             refresh();
             encs = encodersPos();
-        } while (Utils::distance(encs, _refs) > 0.05);
+            sec::sleep(10.0);
+        } while (Utils::distance(encs, _refs) > precision);
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] " << name() << "movement completed" << std::endl;
+        }
 
     }
 
@@ -100,13 +139,19 @@ void DriverPart::moveVel(const Utils::Vector& refs, bool wait) {
     if (!wait) {
         velctrl->velocityMove(_refs.data());
     } else {
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] Waiting for " << name() << "movement to end..." << std::endl;
+        }
         Utils::Vector encs;
+        velctrl->velocityMove(_refs.data());
         do {
-            velctrl->velocityMove(_refs.data());
             refresh();
             encs = encodersVel();
-        } while (Utils::distance(encs, _refs) > 0.05);
-
+            sec::sleep(10.0);
+        } while (Utils::distance(encs, _refs) > precision);
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] " << name() << "movement completed" << std::endl;
+        }
     }
 
 }
@@ -127,13 +172,19 @@ void DriverPart::movePosJoint(unsigned int joint, double ref, bool wait) {
     if (!wait) {
         posctrl->positionMove(joint, _ref);
     } else {
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] Waiting for " << name() << "movement to end..." << std::endl;
+        }
         double enc;
+        posctrl->positionMove(joint, _ref);
         do {
-            posctrl->positionMove(joint, _ref);
             refresh();
             enc = encodersPos()[joint];
-        } while (std::abs(_ref-enc) > 0.05);
-
+            sec::sleep(10.0);
+        } while (std::abs(_ref-enc) > precision);
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] " << name() << "movement completed" << std::endl;
+        }
     }
 
 }
@@ -154,13 +205,19 @@ void DriverPart::moveVelJoint(unsigned int joint, double ref, bool wait) {
     if (!wait) {
         velctrl->velocityMove(joint, _ref);
     } else {
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] Waiting for " << name() << "movement to end..." << std::endl;
+        }
         double enc;
+        velctrl->velocityMove(joint, _ref);
         do {
-            velctrl->velocityMove(joint, _ref);
             refresh();
             enc = encodersVel()[joint];
-        } while (std::abs(_ref-enc) > 0.05);
-
+            sec::sleep(10.0);
+        } while (std::abs(_ref-enc) > precision);
+        if (sec::isVerbose()) {
+            std::cerr << "[iCubRobot(" + name() + ")] " << name() << "movement completed" << std::endl;
+        }
     }
 
 }
@@ -175,7 +232,13 @@ void DriverPart::setControlMode(const int mode) {
 }
 
 void DriverPart::home() {
+    if (sec::isVerbose()) {
+        std::cerr << "[iCubRobot(" + name() + ")] Homing " << name() << "..." << std::endl;
+    }
     movePos(getInitialPosition(), true);
+    if (sec::isVerbose()) {
+        std::cerr << "[iCubRobot(" + name() + ")] Homing ended" << std::endl;
+    }
 }
 
 Utils::Vector DriverPart::getInitialPosition() const {
@@ -275,21 +338,41 @@ Utils::Vector _Inertial::rotationsVel() const {
     return ret;
 }
 
+std::string _Inertial::yarpname() const {
+    return "inertial";
+}
+
 
 unsigned int _Head::dof() const {
     return 6;
+}
+
+std::string _Head::yarpname() const {
+    return "head";
 }
 
 unsigned int _Torso::dof() const {
     return 3;
 }
 
+std::string _Torso::yarpname() const {
+    return "torso";
+}
+
 unsigned int _RightArm::dof() const {
     return 16;
 }
 
+std::string _RightArm::yarpname() const {
+    return "right_arm";
+}
+
 unsigned int _LeftArm::dof() const {
     return 16;
+}
+
+std::string _LeftArm::yarpname() const {
+    return "left_arm";
 }
 
 

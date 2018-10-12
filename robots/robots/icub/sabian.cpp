@@ -7,8 +7,8 @@ const CameraParameters cameraParameters640 = CameraParameters{640, 480, 443.60, 
 
 const Utils::Vector headPosMin =  { -40,  -70,  -55,  -35,  -50,    0};
 const Utils::Vector headPosMax =  {  30,   60,   55,   15,   52,   90};
-const Utils::Vector headVelMin =  {-400, -400, -400, -400, -400, -400};
-const Utils::Vector headVelMax =  {+400, +400, +400, +400, +400, +400};
+const Utils::Vector headVelMin =  {-100, -100, -100, -100, -100, -100};
+const Utils::Vector headVelMax =  {+100, +100, +100, +100, +100, +100};
 const Utils::Vector headInitial = {   0,    0,    0,    0,    0,    0};
 
 const Utils::Vector headMask = {-1, -1, -1, -1, -1,  1};
@@ -23,7 +23,7 @@ _SabianHead::_SabianHead() {
 
 void _SabianHead::activate(const std::string& robotname, const std::string& localname) {
 
-    _iCubHead::activate(robotname, localname);
+    _Head::activate(robotname, localname);
 
     yarp::os::Network yarp;
 
@@ -50,7 +50,7 @@ void _SabianHead::deactivate() {
 
     delete obs;
 
-    _iCubHead::deactivate();
+    _Head::deactivate();
 
 }
 
@@ -78,22 +78,22 @@ void _SabianHead::refresh() {
 }
 
 void _SabianHead::movePos(const Utils::Vector& refs, bool wait) {
-    _iCubHead::movePos(applyMask(refs), wait);
+    _Head::movePos(applyMask(refs), wait);
 }
 
 void _SabianHead::moveVel(const Utils::Vector& refs, bool wait) {
-    _iCubHead::moveVel(applyMask(refs), wait);
+    _Head::moveVel(applyMask(refs), wait);
 }
 
 void _SabianHead::movePosJoint(unsigned int joint, double ref, bool wait) {
-    _iCubHead::movePosJoint(joint, ref*Sabian::headMask[joint], wait);
+    _Head::movePosJoint(joint, ref*Sabian::headMask[joint], wait);
 }
 
 void _SabianHead::moveVelJoint(unsigned int joint, double ref, bool wait) {
-    _iCubHead::moveVelJoint(joint, ref*Sabian::headMask[joint], wait);
+    _Head::moveVelJoint(joint, ref*Sabian::headMask[joint], wait);
 }
 
-std::string _SabianHead::name() {
+std::string _SabianHead::name() const {
     return "SabianHead";
 }
 
@@ -124,7 +124,86 @@ Utils::Vector _SabianHead::applyMask(const Utils::Vector& v) {
 }
 
 
-std::string _SabianInertial::name() {
+//Utils::Vector _RightArm::handposition = {59, 20, 20, 20, 10, 10, 10, 10, 10};
+
+//void _RightArm::refresh() {
+
+//    yarp::dev::IEncoders* encs = nullptr;
+//    driver.view(encs);
+//    if (encs == nullptr)
+//        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+//    double p[dof()+9];
+//    double v[dof()+9];
+//    encs->getEncoders(p);
+//    encs->getEncoderSpeeds(v);
+//    mtx.lock();
+//    for (unsigned int i = 0; i < dof(); i++) {
+//        pos[i] = p[i];
+//        vel[i] = v[i];
+//    }
+//    mtx.unlock();
+
+//}
+
+//void _RightArm::movePos(const Utils::Vector& refs, bool wait) {
+
+//    if (refs.size() != dof()) {
+//        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
+//    }
+
+//    yarp::dev::IPositionControl* pos = nullptr;
+//    driver.view(pos);
+//    if (pos == nullptr)
+//        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+
+//    auto _refs = trimToLimitsPos(refs);
+//    _refs.insert(_refs.end(), handposition.begin(), handposition.end());
+
+//    if (!wait) {
+//        pos->positionMove(_refs.data());
+//    } else {
+//        Utils::Vector encs;
+//        do {
+//            pos->positionMove(_refs.data());
+//            refresh();
+//            encs = encodersPos();
+//        } while (Utils::distance(encs, _refs) > 0.05);
+
+//    }
+
+//}
+
+//void _RightArm::moveVel(const Utils::Vector& refs, bool wait) {
+
+//    if (refs.size() != dof()) {
+//        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
+//    }
+
+//    yarp::dev::IVelocityControl* vel = nullptr;
+//    driver.view(vel);
+//    if (vel == nullptr)
+//        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+
+//    auto _refs = trimToLimitsVel(refs);
+//    for (unsigned int i = 0; i < 9; i++)
+//        _refs.push_back(0.0);
+
+//    if (!wait) {
+//        vel->velocityMove(_refs.data());
+//    } else {
+//        Utils::Vector encs;
+//        do {
+//            vel->velocityMove(_refs.data());
+//            refresh();
+//            encs = encodersVel();
+//        } while (Utils::distance(encs, _refs) > 0.05);
+
+//    }
+
+//}
+
+
+std::string _SabianInertial::name() const {
     return "SabianInertial";
 }
 

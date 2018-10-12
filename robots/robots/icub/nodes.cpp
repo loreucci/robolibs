@@ -698,7 +698,7 @@ void LeftArmPositionControl::refreshInputs() {
 
     shoulder_pitch.refreshData();
     shoulder_roll.refreshData();
-    shoudler_yaw.refreshData();
+    shoulder_yaw.refreshData();
     elbow.refreshData();
     wrist_prosup.refreshData();
     wrist_pitch.refreshData();
@@ -725,7 +725,7 @@ bool LeftArmPositionControl::connected() const {
         sub = true;
     }
 
-    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
+    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoulder_yaw.isConnected() ||
         elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
         wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
         thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
@@ -753,7 +753,7 @@ void LeftArmPositionControl::execute() {
     } else {
         cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
         cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
-        cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
+        cmd[2] = shoulder_yaw.isConnected() ? shoulder_yaw : cmd[2];
         cmd[3] = elbow.isConnected() ? elbow : cmd[3];
         cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
         cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];

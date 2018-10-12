@@ -39,30 +39,7 @@ _iCubSimHead::_iCubSimHead() {
     initpos = iCubSim::headInitial;
 }
 
-void _iCubSimHead::activate(const std::string& robotname, const std::string& localname) {
-
-    _Head::activate(robotname, localname);
-
-//    yarp::os::Network yarp;
-
-    // motor drivers
-    yarp::os::Property options;
-    options.put("device", "remote_controlboard");
-    options.put("local", "/"+localname+"/" + name());
-    options.put("remote", "/"+robotname+"/head");
-    if (!driver.open(options)) {
-        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
-    }
-
-    yarp::dev::IPositionControl* p;
-    driver.view(p);
-    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
-    p->setRefSpeeds(d);
-    p->setRefAccelerations(d);
-
-}
-
-std::string _iCubSimHead::name() {
+std::string _iCubSimHead::name() const {
     return "iCubSimHead";
 }
 
@@ -87,30 +64,7 @@ _iCubSimTorso::_iCubSimTorso() {
     initpos = iCubSim::torsoInitial;
 }
 
-void _iCubSimTorso::activate(const std::string& robotname, const std::string& localname) {
-
-    _Torso::activate(robotname, localname);
-
-    yarp::os::Network yarp;
-
-    // motor drivers
-    yarp::os::Property options;
-    options.put("device", "remote_controlboard");
-    options.put("local", "/"+localname+"/" + name());
-    options.put("remote", "/"+robotname+"/torso");
-    if (!driver.open(options)) {
-        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
-    }
-
-    yarp::dev::IPositionControl* p;
-    driver.view(p);
-    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
-    p->setRefSpeeds(d);
-    p->setRefAccelerations(d);
-
-}
-
-std::string _iCubSimTorso::name() {
+std::string _iCubSimTorso::name() const {
     return "iCubSimTorso";
 }
 
@@ -135,30 +89,7 @@ _iCubSimRightArm::_iCubSimRightArm() {
     initpos = iCubSim::rightarmInitial;
 }
 
-void _iCubSimRightArm::activate(const std::string& robotname, const std::string& localname) {
-
-    _RightArm::activate(robotname, localname);
-
-    yarp::os::Network yarp;
-
-    // motor drivers
-    yarp::os::Property options;
-    options.put("device", "remote_controlboard");
-    options.put("local", "/"+localname+"/" + name());
-    options.put("remote", "/"+robotname+"/right_arm");
-    if (!driver.open(options)) {
-        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
-    }
-
-    yarp::dev::IPositionControl* p;
-    driver.view(p);
-    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
-    p->setRefSpeeds(d);
-    p->setRefAccelerations(d);
-
-}
-
-std::string _iCubSimRightArm::name() {
+std::string _iCubSimRightArm::name() const {
     return "iCubSimRightArm";
 }
 
@@ -178,34 +109,12 @@ Utils::Vector _iCubSimRightArm::getMaxVel() const {
     return iCubSim::rightarmVelMax;
 }
 
+
 _iCubSimLeftArm::_iCubSimLeftArm() {
     initpos = iCubSim::leftarmInitial;
 }
 
-void _iCubSimLeftArm::activate(const std::string& robotname, const std::string& localname) {
-
-    _LeftArm::activate(robotname, localname);
-
-    yarp::os::Network yarp;
-
-    // motor drivers
-    yarp::os::Property options;
-    options.put("device", "remote_controlboard");
-    options.put("local", "/"+localname+"/" + name());
-    options.put("remote", "/"+robotname+"/left_arm");
-    if (!driver.open(options)) {
-        throw iCubException("[iCubRobot] Unable to create " + name() + " device.");
-    }
-
-    yarp::dev::IPositionControl* p;
-    driver.view(p);
-    double d[] = {400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0};
-    p->setRefSpeeds(d);
-    p->setRefAccelerations(d);
-
-}
-
-std::string _iCubSimLeftArm::name() {
+std::string _iCubSimLeftArm::name() const {
     return "iCubSimLeftArm";
 }
 
@@ -225,7 +134,7 @@ Utils::Vector _iCubSimLeftArm::getMaxVel() const {
     return iCubSim::leftarmVelMax;
 }
 
-std::string _iCubSimInertial::name() {
+std::string _iCubSimInertial::name() const {
     return "iCubSimInertial";
 }
 

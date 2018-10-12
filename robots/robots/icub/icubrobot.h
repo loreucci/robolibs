@@ -32,7 +32,7 @@ public:
         // some black magic from
         // https://stackoverflow.com/questions/30563254/how-can-i-expand-call-to-variadic-template-base-classes
         // in C++17, it should be:
-        // (Types::activate(), ...);
+        // (Parts::activate(), ...);
         // http://en.cppreference.com/w/cpp/language/fold
 
         using expander = int[];
@@ -51,6 +51,10 @@ public:
     virtual std::string parameters() const override {
         std::vector<std::string> list{Parts::name()...};
         return "iCubRobot with: " + Utils::make_string(list, ", ");
+    }
+
+    std::string getLocalName() const {
+        return localname;
     }
 
 protected:

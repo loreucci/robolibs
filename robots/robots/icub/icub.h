@@ -1,26 +1,16 @@
-#ifndef ICUBSIM_H
-#define ICUBSIM_H
+#ifndef ICUB_H
+#define ICUB_H
 
 #include <utilities/vector.h>
 
-#include "../camera.h"
 #include "icubpart.h"
 
-
-namespace iCubSim {
-
-extern const CameraParameters cameraParameters;
+namespace iCub {
 
 extern const Utils::Vector headPosMin;
 extern const Utils::Vector headPosMax;
 extern const Utils::Vector headVelMin;
 extern const Utils::Vector headVelMax;
-extern const Utils::Vector headInitial;
-
-extern const Utils::Vector torsoPosMin;
-extern const Utils::Vector torsoPosMax;
-extern const Utils::Vector torsoVelMin;
-extern const Utils::Vector torsoVelMax;
 extern const Utils::Vector headInitial;
 
 extern const Utils::Vector rightarmPosMin;
@@ -37,11 +27,12 @@ extern const Utils::Vector leftarmInitial;
 
 }
 
-
-class _iCubSimHead : public _Head {
+class _iCubHead : public _Head {
 
 public:
-    _iCubSimHead();
+
+    _iCubHead();
+    virtual void activate(const std::string& robotname, const std::string& localname) override;
 
     virtual std::string name() const override;
 
@@ -52,11 +43,46 @@ public:
 
 };
 
-
-class _iCubSimTorso : public _Torso {
+class _iCubRightArm : public _RightArm {
 
 public:
-    _iCubSimTorso();
+    _iCubRightArm();
+    virtual void activate(const std::string& robotname, const std::string& localname) override;
+
+    virtual std::string name() const override;
+
+    virtual Utils::Vector getMinPos() const override;
+    virtual Utils::Vector getMaxPos() const override;
+    virtual Utils::Vector getMinVel() const override;
+    virtual Utils::Vector getMaxVel() const override;
+
+    // methods overrided to accept commands with only 4 references
+    virtual void movePos(const Utils::Vector& refs, bool wait = false) override;
+    virtual void moveVel(const Utils::Vector& refs, bool wait = false) override;
+
+};
+
+//class _iCubRightArm : public _LeftArm {
+
+//public:
+//    virtual unsigned int dof() const override;
+
+//    virtual void refresh() override;
+
+//    virtual void movePos(const Utils::Vector& refs, bool wait = false);
+//    virtual void moveVel(const Utils::Vector& refs, bool wait = false);
+
+//private:
+//    static Utils::Vector handposition;
+
+//};
+
+
+class _iCubLeftArm : public _LeftArm {
+
+public:
+    _iCubLeftArm();
+    virtual void activate(const std::string& robotname, const std::string& localname) override;
 
     virtual std::string name() const override;
 
@@ -67,77 +93,21 @@ public:
 
 };
 
-
-class _iCubSimRightArm : public _RightArm {
-
-public:
-    _iCubSimRightArm();
-
-    virtual std::string name() const override;
-
-    virtual Utils::Vector getMinPos() const override;
-    virtual Utils::Vector getMaxPos() const override;
-    virtual Utils::Vector getMinVel() const override;
-    virtual Utils::Vector getMaxVel() const override;
-
-};
-
-class _iCubSimLeftArm : public _LeftArm {
-
-public:
-    _iCubSimLeftArm();
-
-    virtual std::string name() const override;
-
-    virtual Utils::Vector getMinPos() const override;
-    virtual Utils::Vector getMaxPos() const override;
-    virtual Utils::Vector getMinVel() const override;
-    virtual Utils::Vector getMaxVel() const override;
-
-};
-
-class _iCubSimInertial : public _Inertial {
-
-public:
-    virtual std::string name() const override;
-
-};
 
 ///////////////
 // part traits
-
-class iCubSimHead : public HasHead {
+class iCubHead : public HasHead {
 
 public:
-    iCubSimHead();
+    iCubHead();
 
 };
 
-class iCubSimTorso : public HasTorso {
+class iCubLeftArm : public HasLeftArm {
 
 public:
-    iCubSimTorso();
+    iCubLeftArm();
 
 };
 
-class iCubSimRightArm : public HasRightArm {
-
-public:
-    iCubSimRightArm();
-
-};
-
-class iCubSimLeftArm : public HasLeftArm {
-
-public:
-    iCubSimLeftArm();
-
-};
-
-class iCubSimInertial : public HasInertial {
-
-public:
-    iCubSimInertial();
-};
-
-#endif // ICUBSIM_H
+#endif // ICUB_H

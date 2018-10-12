@@ -21,7 +21,8 @@ public:
 
     virtual void refresh() = 0;
 
-    virtual std::string name() = 0;
+    virtual std::string name() const = 0;
+    virtual std::string yarpname() const = 0;
 
 };
 
@@ -31,9 +32,12 @@ class DriverPart : public iCubPart {
 public:
 
     // just sets the encoders size, should be called by subclasses
-    virtual void activate(const std::string&, const std::string&) override;
+    virtual void activate(const std::string& robotname, const std::string& localname) override;
 
     virtual void deactivate() override;
+
+    void setRefSpeeds(double velperc = 1.0);
+    void setMovementPrecision(double newprec = 0.05);
 
     // encoders
     virtual void refresh() override;
@@ -65,6 +69,8 @@ protected:
     Utils::Vector initpos;
     mutable std::mutex mtx;
 
+    double precision = 0.05;
+
     yarp::dev::PolyDriver driver;
 
     Utils::Vector trimToLimitsPos(const Utils::Vector& refs) const;
@@ -89,6 +95,8 @@ public:
     virtual Utils::Vector rotationsPos() const;
     virtual Utils::Vector rotationsVel() const;
 
+    virtual std::string yarpname() const override;
+
 protected:
     // stored data
     Utils::Vector rotpos;
@@ -107,6 +115,9 @@ class _Head : public DriverPart {
 public:
     virtual unsigned int dof() const override;
 
+    virtual std::string yarpname() const override;
+
+
 };
 
 class _Torso : public DriverPart {
@@ -114,19 +125,18 @@ class _Torso : public DriverPart {
 public:
     virtual unsigned int dof() const override;
 
+    virtual std::string yarpname() const override;
+
+
 };
 
 class _RightArm : public DriverPart {
+
 public:
     virtual unsigned int dof() const override;
 
-//    virtual void refresh() override;
+    virtual std::string yarpname() const override;
 
-//    virtual void movePos(const Utils::Vector& refs, bool wait = false);
-//    virtual void moveVel(const Utils::Vector& refs, bool wait = false);
-
-//private:
-//    static Utils::Vector handposition;
 
 };
 
@@ -134,6 +144,9 @@ class _LeftArm : public DriverPart {
 
 public:
     virtual unsigned int dof() const override;
+
+    virtual std::string yarpname() const override;
+
 
 };
 

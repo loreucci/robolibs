@@ -24,7 +24,7 @@ extern const Utils::Vector headMask;
 }
 
 
-class _SabianHead : public _iCubHead {
+class _SabianHead : public _Head {
 
 public:
     _SabianHead();
@@ -39,7 +39,7 @@ public:
     virtual void movePosJoint(unsigned int joint, double ref, bool wait = false) override;
     virtual void moveVelJoint(unsigned int joint, double ref, bool wait = false) override;
 
-    virtual std::string name() override;
+    virtual std::string name() const override;
 
     virtual Utils::Vector getMinPos() const override;
     virtual Utils::Vector getMaxPos() const override;
@@ -53,11 +53,24 @@ protected:
 
 };
 
+//class _RightArm : public DriverPart {
+//public:
+//    virtual unsigned int dof() const override;
+
+////    virtual void refresh() override;
+
+////    virtual void movePos(const Utils::Vector& refs, bool wait = false);
+////    virtual void moveVel(const Utils::Vector& refs, bool wait = false);
+
+////private:
+////    static Utils::Vector handposition;
+
+//};
 
 class _SabianInertial : public _Inertial {
 
 public:
-    virtual std::string name() override;
+    virtual std::string name() const override;
 
 };
 
