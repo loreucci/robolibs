@@ -32,7 +32,7 @@ void ResultsCollector::registerLogger(Logger* logger, const std::string &filenam
     loggers.push_back(std::make_pair(logger, filename));
 }
 
-void ResultsCollector::registerExtraFile(const std::__cxx11::string &filename) {
+void ResultsCollector::registerExtraFile(const std::string &filename) {
     extrafiles.push_back(filename);
 }
 
