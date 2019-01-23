@@ -20,6 +20,7 @@ if(WITH_ICUB)
     add_new_test_yarp(test_observer test_observer.cpp)
     add_new_test_yarp(test_icubsim test_icubsim.cpp)
     add_new_test_yarp(test_objects test_objects.cpp)
+    add_new_test_yarp(test_cartesiancontroller test_cartesiancontroller.cpp)
 endif(WITH_ICUB)
 
 if(WITH_GAZEBO)

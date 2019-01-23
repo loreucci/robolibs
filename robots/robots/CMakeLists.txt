@@ -16,7 +16,9 @@ if(WITH_ICUB)
         icub/icubrobot.cpp
         icub/nodes.cpp
         icub/icubsim_utilities.cpp
-        icub/sabian.cpp)
+        icub/sabian.cpp
+        icub/cartesian.cpp
+        icub/icub.cpp)
 
     set(ICUB_HEADERS
         icub/commons.h
@@ -25,7 +27,9 @@ if(WITH_ICUB)
         icub/icubrobot.h
         icub/nodes.h
         icub/icubsim_utilities.h
-        icub/sabian.h)
+        icub/sabian.h
+        icub/cartesian.h
+        icub/icub.h)
 
     list(APPEND SOURCES ${ICUB_SOURCES})
     list(APPEND HEADERS ${ICUB_HEADERS})
