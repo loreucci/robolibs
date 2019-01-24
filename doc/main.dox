@@ -1,0 +1,7 @@
+/*! \mainpage robolibs library
+ *
+ * robolibs is a collection of libraries and tools that might ease the development and usage of robotic controllers.
+ *
+ * The utilities library contains data types and functions that are used
+ * across all the robolibs libraries.
+ */

@@ -84,5 +84,10 @@ add_custom_target(install-libonly
       -P "${CMAKE_BINARY_DIR}/cmake_install.cmake"
 )
 
+# doc
+if(ENABLE_DOC)
+    add_subdirectory(doc)
+endif()
+
 set(CONFIGURED_ONCE TRUE CACHE INTERNAL
     "A flag showing that CMake has configured at least once.")

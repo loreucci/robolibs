@@ -25,11 +25,6 @@ if(BUILD_GUI)
     add_subdirectory(rasterserver)
 endif(BUILD_GUI)
 
-# doc
-if(ENABLE_DOC)
-    add_subdirectory(doc)
-endif()
-
 # testing
 if(ENABLE_TEST)
     add_subdirectory(test)
