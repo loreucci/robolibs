@@ -51,17 +51,13 @@ void Semaphore::wakeup() {
 }
 
 bool Semaphore::shouldquit() {
-
     return *end;
-
 }
 
 void Semaphore::sendquit() {
-
     *end = true;
     wakeup();
     completion_notify(true);
-
 }
 
 bool Semaphore::completion_wait() {
@@ -79,7 +75,6 @@ void Semaphore::completion_notify(bool finalize) {
     lk.unlock();
     completion_cv->notify_one();
 }
-
 
 
 SemaphoreQueueItem::SemaphoreQueueItem()
@@ -107,6 +102,7 @@ void SemaphoreQueueItem::decreaseTime(double t) {
 }
 
 
+// Function used by SemaphoreQueue to implement the priority in the queue.
 bool operator<(const SemaphoreQueueItem& sqi1, const SemaphoreQueueItem& sqi2) {
     return sqi1.getRemaining() < sqi2.getRemaining();
 }
@@ -165,11 +161,7 @@ void SemaphoreQueue::quitAll() {
 }
 
 double SemaphoreQueue::getTotalTime() {
-    double time = 0.0;
-    for (const auto& sqi : queue) {
-        time += sqi.getRemaining() - time;
-    }
-    return time;
+    return queue.back().getRemaining();
 }
 
 bool SemaphoreQueue::waitForAllCompletion() {
@@ -227,10 +219,10 @@ bool Synchronizer::isSynchronous() {
 
 Semaphore Synchronizer::registerSignal(double frequency) {
 
-    double time = 1.0/frequency*1000.0; // time is in milliseconds
+    double signaltime = 1.0/frequency*1000.0; // time is in milliseconds
 
     mtx.lock();
-    auto s = sq.addItem(time);
+    auto s = sq.addItem(signaltime);
     mtx.unlock();
 
     return s;
@@ -267,11 +259,22 @@ void Synchronizer::stop() {
         return;
     stop_flag = true;
     t->join();
+    delete t;
     t = nullptr;
     started = false;
 }
 
+void Synchronizer::sleep(double ms) {
+    sleeper->sleep(ms);
+}
+
+double Synchronizer::getTime() {
+    return time/1000.0;
+}
+
 void Synchronizer::run() {
+
+    time = 0.0;
 
     if (sleeper->isSynchronous()) {
         // SYNCHRONOUS MODE
@@ -295,14 +298,6 @@ void Synchronizer::run() {
         }
     }
 
-}
-
-void Synchronizer::sleep(double ms) {
-    sleeper->sleep(ms);
-}
-
-double Synchronizer::getTime() {
-    return time/1000.0;
 }
 
 Synchronizer synchronizer;
