@@ -23,9 +23,10 @@
 
 namespace sec {
 
-void BasicSleeper::sleep(double d) {
 
-    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(d));
+void BasicSleeper::sleep(double ms) {
+
+    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(ms));
 
 }
 
@@ -41,6 +42,7 @@ void NoSleeper::sleep(double) {
 bool NoSleeper::isSynchronous() const {
     return false;
 }
+
 
 void Barrier::sleep(double) {
 

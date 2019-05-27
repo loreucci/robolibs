@@ -32,7 +32,7 @@
 
 int main(void) {
 
-    Utils::Chrono chrono;
+    Utils::Stopwatch chrono;
 
     // not started
     assert(chrono.getTime() < 0.0);

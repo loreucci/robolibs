@@ -20,23 +20,23 @@
 
 namespace Utils {
 
-Chrono::Chrono() {
+Stopwatch::Stopwatch() {
     started = false;
 }
 
-void Chrono::start() {
+void Stopwatch::start() {
     starttime = std::chrono::system_clock::now();
     started = true;
 }
 
-double Chrono::getTime() {
+double Stopwatch::getTime() {
     if (!started)
         return -1.0;
     std::chrono::duration<double> diff = std::chrono::system_clock::now()-starttime;
     return diff.count();
 }
 
-bool Chrono::isStarted() {
+bool Stopwatch::isStarted() {
     return started;
 }
 

@@ -26,6 +26,10 @@ using namespace Utils;
 Derivative::Derivative(double freq)
     :freq(freq) {}
 
+double Derivative::derive(double x) {
+    return derive(Utils::Vector{x})[0];
+}
+
 
 Utils::Vector SimpleDerivative::derive(const Utils::Vector& x) {
 
@@ -41,7 +45,7 @@ Utils::Vector SimpleDerivative::derive(const Utils::Vector& x) {
 
 }
 
-
+// used by SmoothDerivative
 int binomialcoeff(int n, int k) {
 
     if (k < 0)

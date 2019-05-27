@@ -30,12 +30,12 @@
 namespace Utils {
 
 // standard generation function
-std::function<std::vector<double>(void)> uniformGenerator(unsigned int size, double a, double b) {
+std::function<Vector(void)> uniformGenerator(unsigned int size, double a, double b) {
     std::mt19937 engine = std::mt19937(static_cast<unsigned long>(time(nullptr)));;
     std::uniform_real_distribution<double> dist(a, b);
 
     return [engine, dist, size] () mutable {
-        std::vector<double> ret(size);
+        Vector ret(size);
         for (unsigned int i = 0; i < size; i++) {
             ret[i] = dist(engine);
         }
@@ -45,7 +45,7 @@ std::function<std::vector<double>(void)> uniformGenerator(unsigned int size, dou
 }
 
 
-void printVector(const std::vector<double> v, const std::string& pre, bool endline) {
+void printVector(const Vector v, const std::string& pre, bool endline) {
 
     std::cout << pre;
     std::copy(v.begin(), v.end(), std::ostream_iterator<double>(std::cout, " "));
@@ -55,7 +55,7 @@ void printVector(const std::vector<double> v, const std::string& pre, bool endli
 }
 
 
-std::vector<std::vector<double> > readDatasetFromFile(const std::string& filename) {
+std::vector<Vector> readDatasetFromFile(const std::string& filename) {
 
     std::ifstream file(filename, std::ios_base::in);
 
@@ -89,7 +89,7 @@ std::vector<std::vector<double> > readDatasetFromFile(const std::string& filenam
 
 }
 
-void saveToFile(const std::string& filename, const std::vector<std::vector<double>>& data) {
+void saveToFile(const std::string& filename, const std::vector<Vector>& data) {
 
     std::ofstream out(filename);
 

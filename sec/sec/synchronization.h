@@ -16,10 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-//!  \file synchronization.h
 /*!
-  This file contains the synchronization mechanism that is at the core of the library.
-*/
+ * \file synchronization.h
+ * \brief Classes at the core of the synchronization mechanism.
+ */
 
 #ifndef SYNCHRONIZATION_H
 #define SYNCHRONIZATION_H

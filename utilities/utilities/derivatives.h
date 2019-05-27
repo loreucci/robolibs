@@ -16,88 +16,113 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-//!  \file derivatives.h
 /*!
-  This file contains methods for discrete differentiation.
-*/
+ * \file derivatives.h
+ * \brief Classes and functions related to discrete derivation.
+ */
 
 #ifndef DERIVATIVES_H
 #define DERIVATIVES_H
-
 
 #include <deque>
 
 #include "vector.h"
 
 
-//!  Derivative class.
 /*!
-  This class is an interface for numeric, discrete derivation methods.
-*/
+ * \brief An interface for numeric, discrete derivation methods.
+ *
+ * A Derivative is an object that can compute the derivative of a discrete signal.
+ * The signal can be a vector of different signals and the derivation will be performed element-wise.
+ */
 class Derivative {
 
 public:
-    //! Derivative constructor.
+
     /*!
-      \param freq the sampling frequency.
-    */
+     * \brief Creates an Derivative object with a fixed sampling frequency.
+     *
+     * \param freq sampling frequency of the derivation
+     */
     Derivative(double freq);
 
-    //! Performs the derivation.
     /*!
-      \param x input value sample.
-      \return the discrete derivative of the input at this step.
-    */
+     * \brief Performs the discrete derivation step.
+     *
+     * Computes the derivation, given a new sample of the signal.
+     *
+     * \param x input value sample
+     * \return the discrete derivative of the input at this step
+     */
     virtual Utils::Vector derive(const Utils::Vector& x) = 0;
 
+    /*!
+     * \brief Performs the discrete derivation step.
+     *
+     * Computes the derivation, given a new sample of the signal.
+     *
+     * \param x input value sample
+     * \return the discrete derivative of the input at this step
+     */
+    virtual double derive(double x) final;
+
 protected:
+
+    /*!
+     * \brief Sampling frequency.
+     */
     double freq;
 
 };
 
 
-//!  SimpleDerivative class.
 /*!
-  This class implements a simple one-step discrete derivative: (f(b)-f(a))/(b-a).
-*/
+ * \brief Simple one-step discrete derivative.
+ *
+ * This class implements a simple one-step discrete derivative: \f$ \frac{f(x_n)-f(x_{n-1})}{\Delta t} \f$.
+ */
 class SimpleDerivative : public Derivative {
 
 public:
-    //! Inherited constructor.
+
+    /*!
+     * \brief Inherited constructor.
+     */
     using Derivative::Derivative;
 
     virtual Utils::Vector derive(const Utils::Vector& x) override;
 
-protected:
+private:
     Utils::Vector prev;
 
 };
 
 
-//!  SmoothDerivative class.
 /*!
-  This class implements a smooth noise-robust differentiator, as described in
-  http://www.holoborodko.com/pavel/numerical-methods/numerical-derivative/smooth-low-noise-differentiators/
-*/
+ * \brief Smooth derivation.
+ *
+ * This class implements a smooth noise-robust differentiator, as described in
+ * http://www.holoborodko.com/pavel/numerical-methods/numerical-derivative/smooth-low-noise-differentiators/
+ *
+ * In this case, the derivative obtained is delayed by \f$ \frac{N-1}{2} \f$ steps, due to casuality.
+ */
 class SmoothDerivative : Derivative {
 
 public:
-    //! SmoothDerivative constructor.
+
     /*!
-      Creates a new filter with a fixed temporal window and sampling frequency.
-      \param N the size of the temporal window (must be and odd number).
-      \param freq the sampling frequency.
-    */
+     * \brief Creates a new smooth derivative.
+     *
+     * Creates a new filter with a fixed temporal window and sampling frequency.
+     *
+     * \param N the size of the temporal window (must be and odd number)
+     * \param freq the sampling frequency
+     */
     SmoothDerivative(unsigned int N, double freq);
 
-    //! Performs the derivation.
-    /*!
-      \param x input value sample.
-      \return the derivative of the input (delayed by (N-1)/2 steps, due to causality).
-    */
     virtual Utils::Vector derive(const Utils::Vector& x) override;
 
-protected:
+private:
     unsigned int N, M, m, datasize;
     double coeff;
     std::vector<double> c;

@@ -16,43 +16,56 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/*!
+ * \file chrono.h
+ * \brief Classes and functions useful for time measurement.
+ */
+
 #ifndef CHRONO_H
 #define CHRONO_H
 
 #include <chrono>
 
+
 namespace Utils {
 
-//!  Chrono class.
 /*!
-  This class implements a simple chronometer as a wrapper around std::chrono.
-*/
-class Chrono {
+ * \brief A simple stopwatch.
+ *
+ * This class implements a simple stopwatch as a wrapper around std::chrono.
+ * It measures wall clock time.
+ */
+class Stopwatch {
 
 public:
 
-    //! Chrono constructor.
-    Chrono();
-
-    //! Start chronometer.
     /*!
-    A call to this function will set the start time of the time measure with the current time.
-    Subsequent calls will update the start time.
-    */
+     * \brief Creates a stopwatch, without starting it.
+     */
+    Stopwatch();
+
+    /*!
+     * \brief Starts the stopwatch.
+     *
+     * A call to this function will set the start time of the time measure with the current time.
+     * Subsequent calls will update the start time.
+     */
     void start();
 
-    //! Get elapsed time.
     /*!
-      This call is only valid after a call to start().
-      Elapsed time is in seconds.
-      \return the elapsed time.
-    */
+     * \brief Gets the time elapsed from the last call to start.
+     *
+     * This call is only valid after a call to start().
+     * Elapsed time is in seconds.
+     *
+     * \return the elapsed time (s)
+     */
     double getTime();
 
-    //! Check whether the chronometer has started measuring.
     /*!
-      \return true if a call to start() has been executed, false otherwise.
-    */
+     * \brief Checks whether the chronometer has started measuring.
+     * \return true if a call to start has been executed, false otherwise.
+     */
     bool isStarted();
 
 

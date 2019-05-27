@@ -74,6 +74,7 @@ Signal constant(double c, double samplingfreq) {
     samplingfreq);
 }
 
+
 Signal sin(double ampl, double freq, double phase, double samplingfreq) {
 
     std::string str = "[sin: ";
@@ -88,6 +89,7 @@ Signal sin(double ampl, double freq, double phase, double samplingfreq) {
     return Signal(fun, str, samplingfreq);
 
 }
+
 
 Signal triangle(double ampl, double freq, double phase, double samplingfreq) {
 
@@ -104,6 +106,7 @@ Signal triangle(double ampl, double freq, double phase, double samplingfreq) {
     return Signals::Signal(fun, str, samplingfreq);
 
 }
+
 
 Signal trapezoid(double ampl, double freq, double phase, double samplingfreq) {
 
@@ -129,6 +132,7 @@ Signal trapezoid(double ampl, double freq, double phase, double samplingfreq) {
 
 }
 
+
 Signal ramp(double slope, double initialvalue, double starttime, double samplingfreq) {
 
     std::string str = "[ramp: ";
@@ -146,6 +150,7 @@ Signal ramp(double slope, double initialvalue, double starttime, double sampling
     return Signal(fun, str, samplingfreq);
 
 }
+
 
 Signal rampandhold(double slope, double initialvalue, double stoptime, double starttime, double samplingfreq) {
 
@@ -168,6 +173,7 @@ Signal rampandhold(double slope, double initialvalue, double stoptime, double st
 
 }
 
+
 Signal chirp(double ampl, double f0, double k, double phase, double samplingfreq) {
 
     std::string str = "[chirp: ";
@@ -184,6 +190,7 @@ Signal chirp(double ampl, double f0, double k, double phase, double samplingfreq
     return Signal(fun, str, samplingfreq);
 
 }
+
 
 Signal noise(double mean, double stddev, double samplingfreq) {
 
@@ -205,6 +212,7 @@ Signal noise(double mean, double stddev, double samplingfreq) {
     return Signal(fun, str, samplingfreq);
 
 }
+
 
 Signal Switch(Signal s1, Signal s2, double switchtime, bool shift, double samplingfreq) {
 
@@ -238,6 +246,7 @@ Signal Switch(Signal s1, Signal s2, double switchtime, bool shift, double sampli
 
 }
 
+
 Signal BinaryOperation(Signal s1, Signal s2, std::function<double (double, double)> op, double samplingfreq) {
 
     if (samplingfreq == 0.0) {
@@ -259,17 +268,21 @@ Signal BinaryOperation(Signal s1, Signal s2, std::function<double (double, doubl
 
 }
 
+
 Signal operator+(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::plus<double>());
 }
+
 
 Signal operator-(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::minus<double>());
 }
 
+
 Signal operator*(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::multiplies<double>());
 }
+
 
 Signal operator/(Signal s1, Signal s2) {
     return BinaryOperation(s1, s2, std::divides<double>());
@@ -284,6 +297,7 @@ Signal operator+(Signal s, double c) {
     return BinaryOperation(s, constant(c), std::plus<double>(), s.getSamplingFreq());
 }
 
+
 Signal operator-(double c, Signal s) {
     return BinaryOperation(constant(c), s, std::minus<double>(), s.getSamplingFreq());
 }
@@ -292,6 +306,7 @@ Signal operator-(Signal s, double c) {
     return BinaryOperation(s, constant(c), std::minus<double>(), s.getSamplingFreq());
 }
 
+
 Signal operator*(double c, Signal s) {
     return BinaryOperation(constant(c), s, std::multiplies<double>(), s.getSamplingFreq());
 }
@@ -299,6 +314,7 @@ Signal operator*(double c, Signal s) {
 Signal operator*(Signal s, double c) {
     return BinaryOperation(s, constant(c), std::multiplies<double>(), s.getSamplingFreq());
 }
+
 
 Signal operator/(double c, Signal s) {
     return BinaryOperation(constant(c), s, std::divides<double>(), s.getSamplingFreq());

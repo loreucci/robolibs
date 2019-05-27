@@ -25,6 +25,10 @@ using namespace Utils;
 Integral::Integral(double freq)
     :freq(freq) {}
 
+double Integral::integrate(double x) {
+    return integrate(Utils::Vector{x})[0];
+}
+
 
 Vector IntegralRectangle::integrate(const Vector& x) {
 
