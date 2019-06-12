@@ -77,18 +77,14 @@ public:
 };
 
 
-class HeadPositionControl : public sec::Node {
+class HeadControlCommon : public sec::Node {
 
 public:
-    HeadPositionControl(HasHead& robot, double freq = 0.0);
+    HeadControlCommon(HasHead& robot, double freq = 0.0);
 
     virtual void refreshInputs() override;
 
     virtual bool connected() const override;
-
-    virtual void execute() override;
-
-    virtual std::string parameters() const override;
 
     sec::NodeIn<Utils::Vector> head;
 
@@ -105,38 +101,31 @@ public:
 protected:
     HasHead& robot;
     mutable bool full, sub, joints;
+
+    Utils::Vector getCmd();
+
+};
+
+class HeadPositionControl : public HeadControlCommon {
+
+public:
+    using HeadControlCommon::HeadControlCommon;
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
 
 };
 
 
-class HeadVelocityControl : public sec::Node {
+class HeadVelocityControl : public HeadControlCommon {
 
 public:
-    HeadVelocityControl(HasHead& robot, double freq = 0.0);
-
-    virtual void refreshInputs() override;
-
-    virtual bool connected() const override;
+    using HeadControlCommon::HeadControlCommon;
 
     virtual void execute() override;
 
     virtual std::string parameters() const override;
-
-    sec::NodeIn<Utils::Vector> head;
-
-    sec::NodeIn<Utils::Vector> neck;
-    sec::NodeIn<Utils::Vector> eyes;
-
-    sec::NodeIn<double> roll;
-    sec::NodeIn<double> pitch;
-    sec::NodeIn<double> yaw;
-    sec::NodeIn<double> tilt;
-    sec::NodeIn<double> version;
-    sec::NodeIn<double> vergence;
-
-protected:
-    HasHead& robot;
-    mutable bool full, sub, joints;
 
 };
 
@@ -179,18 +168,15 @@ public:
 
 };
 
-class TorsoPositionControl : public sec::Node {
+
+class TorsoControlCommon : public sec::Node {
 
 public:
-    TorsoPositionControl(HasTorso& robot, double freq = 0.0);
+    TorsoControlCommon(HasTorso& robot, double freq = 0.0);
 
     virtual void refreshInputs() override;
 
     virtual bool connected() const override;
-
-    virtual void execute() override;
-
-    virtual std::string parameters() const override;
 
     sec::NodeIn<Utils::Vector> torso;
 
@@ -201,31 +187,30 @@ public:
 protected:
     HasTorso& robot;
     mutable bool full, joints;
+
+    Utils::Vector getCmd();
 
 };
 
-class TorsoVelocityControl : public sec::Node {
+class TorsoPositionControl : public TorsoControlCommon {
 
 public:
-    TorsoVelocityControl(HasTorso& robot, double freq = 0.0);
-
-    virtual void refreshInputs() override;
-
-    virtual bool connected() const override;
+    using TorsoControlCommon::TorsoControlCommon;
 
     virtual void execute() override;
 
     virtual std::string parameters() const override;
 
-    sec::NodeIn<Utils::Vector> torso;
+};
 
-    sec::NodeIn<double> roll;
-    sec::NodeIn<double> pitch;
-    sec::NodeIn<double> yaw;
+class TorsoVelocityControl : public TorsoControlCommon {
 
-protected:
-    HasTorso& robot;
-    mutable bool full, joints;
+public:
+    using TorsoControlCommon::TorsoControlCommon;
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
 
 };
 
@@ -295,18 +280,15 @@ public:
 
 };
 
-class RightArmPositionControl : public sec::Node {
+
+class RightArmControlCommon : public sec::Node {
 
 public:
-    RightArmPositionControl(HasRightArm& robot, double freq = 0.0);
+    RightArmControlCommon(HasRightArm& robot, double freq = 0.0);
 
     virtual void refreshInputs() override;
 
     virtual bool connected() const override;
-
-    virtual void execute() override;
-
-    virtual std::string parameters() const override;
 
     sec::NodeIn<Utils::Vector> fullarm;
 
@@ -333,50 +315,31 @@ public:
 
 protected:
     HasRightArm& robot;
-    Utils::Vector cmd;
     mutable bool full, sub, joints;
+
+    Utils::Vector getCmd();
 
 };
 
-class RightArmVelocityControl : public sec::Node {
+class RightArmPositionControl : public RightArmControlCommon {
 
 public:
-    RightArmVelocityControl(HasRightArm& robot, double freq = 0.0);
-
-    virtual void refreshInputs() override;
-
-    virtual bool connected() const override;
+    using RightArmControlCommon::RightArmControlCommon;
 
     virtual void execute() override;
 
     virtual std::string parameters() const override;
 
-    sec::NodeIn<Utils::Vector> fullarm;
+};
 
-    sec::NodeIn<Utils::Vector> arm;
-    sec::NodeIn<Utils::Vector> hand;
+class RightArmVelocityControl : public RightArmControlCommon {
 
-    sec::NodeIn<double> shoulder_pitch;
-    sec::NodeIn<double> shoulder_roll;
-    sec::NodeIn<double> shoudler_yaw;
-    sec::NodeIn<double> elbow;
-    sec::NodeIn<double> wrist_prosup;
-    sec::NodeIn<double> wrist_pitch;
-    sec::NodeIn<double> wrist_yaw;
+public:
+    using RightArmControlCommon::RightArmControlCommon;
 
-    sec::NodeIn<double> hand_finger;
-    sec::NodeIn<double> thumb_oppose;
-    sec::NodeIn<double> thumb_proximal;
-    sec::NodeIn<double> thumb_distal;
-    sec::NodeIn<double> index_proximal;
-    sec::NodeIn<double> index_distal;
-    sec::NodeIn<double> middle_proximal;
-    sec::NodeIn<double> middle_distal;
-    sec::NodeIn<double> pinky;
+    virtual void execute() override;
 
-protected:
-    HasRightArm& robot;
-    mutable bool full, sub, joints;
+    virtual std::string parameters() const override;
 
 };
 
@@ -455,18 +418,15 @@ public:
 
 };
 
-class LeftArmPositionControl : public sec::Node {
+
+class LeftArmControlCommon : public sec::Node {
 
 public:
-    LeftArmPositionControl(HasLeftArm& robot, double freq = 0.0);
+    LeftArmControlCommon(HasLeftArm& robot, double freq = 0.0);
 
     virtual void refreshInputs() override;
 
     virtual bool connected() const override;
-
-    virtual void execute() override;
-
-    virtual std::string parameters() const override;
 
     sec::NodeIn<Utils::Vector> fullarm;
 
@@ -495,47 +455,29 @@ protected:
     HasLeftArm& robot;
     mutable bool full, sub, joints;
 
+    Utils::Vector getCmd();
+
 };
 
-class LeftArmVelocityControl : public sec::Node {
+class LeftArmPositionControl : public LeftArmControlCommon {
 
 public:
-    LeftArmVelocityControl(HasLeftArm& robot, double freq = 0.0);
-
-    virtual void refreshInputs() override;
-
-    virtual bool connected() const override;
+    using LeftArmControlCommon::LeftArmControlCommon;
 
     virtual void execute() override;
 
     virtual std::string parameters() const override;
 
-    sec::NodeIn<Utils::Vector> fullarm;
+};
 
-    sec::NodeIn<Utils::Vector> arm;
-    sec::NodeIn<Utils::Vector> hand;
+class LeftArmVelocityControl : public LeftArmControlCommon {
 
-    sec::NodeIn<double> shoulder_pitch;
-    sec::NodeIn<double> shoulder_roll;
-    sec::NodeIn<double> shoudler_yaw;
-    sec::NodeIn<double> elbow;
-    sec::NodeIn<double> wrist_prosup;
-    sec::NodeIn<double> wrist_pitch;
-    sec::NodeIn<double> wrist_yaw;
+public:
+    using LeftArmControlCommon::LeftArmControlCommon;
 
-    sec::NodeIn<double> hand_finger;
-    sec::NodeIn<double> thumb_oppose;
-    sec::NodeIn<double> thumb_proximal;
-    sec::NodeIn<double> thumb_distal;
-    sec::NodeIn<double> index_proximal;
-    sec::NodeIn<double> index_distal;
-    sec::NodeIn<double> middle_proximal;
-    sec::NodeIn<double> middle_distal;
-    sec::NodeIn<double> pinky;
+    virtual void execute() override;
 
-protected:
-    HasLeftArm& robot;
-    mutable bool full, sub, joints;
+    virtual std::string parameters() const override;
 
 };
 
