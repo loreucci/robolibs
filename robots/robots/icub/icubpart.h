@@ -68,6 +68,8 @@ public:
     virtual void moveVel(const Utils::Vector& refs, bool wait = false);
     virtual void movePosJoint(unsigned int joint, double ref, bool wait = false);
     virtual void moveVelJoint(unsigned int joint, double ref, bool wait = false);
+    virtual void movePosJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait = false);
+    virtual void moveVelJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait = false);
     void setControlMode(const int mode);
     void home();
 

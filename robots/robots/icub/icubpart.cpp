@@ -240,6 +240,48 @@ void DriverPart::moveVelJoint(unsigned int joint, double ref, bool wait) {
 
 }
 
+void DriverPart::movePosJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait) {
+
+    if (refs.size() != joints.size()) {
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
+    }
+
+    yarp::dev::IPositionControl2* posctrl = nullptr;
+    driver.view(posctrl);
+    if (posctrl == nullptr)
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+
+    // TODO: trimming
+
+    if (!wait) {
+        posctrl->positionMove(joints.size(), joints.data(), refs.data());
+    } else {
+        // TODO
+    }
+
+}
+
+void DriverPart::moveVelJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait) {
+
+    if (refs.size() != joints.size()) {
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
+    }
+
+    yarp::dev::IVelocityControl2* velctrl = nullptr;
+    driver.view(velctrl);
+    if (velctrl == nullptr)
+        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+
+    // TODO: trimming
+
+    if (!wait) {
+        velctrl->velocityMove(joints.size(), joints.data(), refs.data());
+    } else {
+        // TODO
+    }
+
+}
+
 void DriverPart::setControlMode(const int mode) {
 
     yarp::dev::IControlMode2* cm;

@@ -101,6 +101,7 @@ public:
 protected:
     HasHead& robot;
     mutable bool full, sub, joints;
+    mutable std::vector<int> actuated_joints;
 
     Utils::Vector getCmd();
 
@@ -187,6 +188,7 @@ public:
 protected:
     HasTorso& robot;
     mutable bool full, joints;
+    mutable std::vector<int> actuated_joints;
 
     Utils::Vector getCmd();
 
@@ -297,7 +299,7 @@ public:
 
     sec::NodeIn<double> shoulder_pitch;
     sec::NodeIn<double> shoulder_roll;
-    sec::NodeIn<double> shoudler_yaw;
+    sec::NodeIn<double> shoulder_yaw;
     sec::NodeIn<double> elbow;
     sec::NodeIn<double> wrist_prosup;
     sec::NodeIn<double> wrist_pitch;
@@ -316,6 +318,7 @@ public:
 protected:
     HasRightArm& robot;
     mutable bool full, sub, joints;
+    mutable std::vector<int> actuated_joints;
 
     Utils::Vector getCmd();
 
@@ -454,6 +457,7 @@ public:
 protected:
     HasLeftArm& robot;
     mutable bool full, sub, joints;
+    mutable std::vector<int> actuated_joints;
 
     Utils::Vector getCmd();
 

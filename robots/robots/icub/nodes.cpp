@@ -21,6 +21,18 @@
 #include "commons.h"
 
 #include <yarp/dev/IControlMode2.h>
+#include <numeric>
+
+std::vector<int> jointsFromBitmask(const std::vector<bool>& bitmask) {
+
+    std::vector<int> ret;
+    for (unsigned int i = 0; i < bitmask.size(); i++) {
+        if (bitmask[i])
+            ret.push_back(i);
+    }
+    return ret;
+
+}
 
 
 EncodersHead::EncodersHead(const HasHead& robot, double freq)
@@ -106,15 +118,25 @@ bool HeadControlCommon::connected() const {
 
     if (head.isConnected()) {
         full = true;
+        actuated_joints = {0, 1, 2, 3, 4, 5};
     }
 
-    if (neck.isConnected() || eyes.isConnected()) {
+    if (neck.isConnected()) {
         sub = true;
+        actuated_joints = {0, 1, 2};
     }
 
-    if (roll.isConnected() || pitch.isConnected() || yaw.isConnected() ||
-        tilt.isConnected() || version.isConnected() || vergence.isConnected()) {
+    if (eyes.isConnected()) {
+        sub = true;
+        std::vector<int> tmp{4, 5, 6};
+        actuated_joints.insert(actuated_joints.end(), tmp.begin(), tmp.end());
+    }
+
+    auto tmp = jointsFromBitmask({pitch.isConnected(), roll.isConnected(), yaw.isConnected(), tilt.isConnected(), version.isConnected(), vergence.isConnected()});
+
+    if (tmp.size() > 0) {
         joints = true;
+        actuated_joints = tmp;
     }
 
     if ((full && sub) || ((full || sub) && joints)) {
@@ -127,19 +149,20 @@ bool HeadControlCommon::connected() const {
 
 Utils::Vector HeadControlCommon::getCmd() {
 
-    Utils::Vector cmd = robot.head->encodersPos();
+    Utils::Vector cmd;
 
     if (full) {
         cmd = head;
     } else if (sub) {
-        cmd = Utils::joinVectors(neck, eyes);
+        if (neck.isConnected()) cmd.insert(cmd.end(), neck.getData().begin(), neck.getData().end());
+        if (eyes.isConnected()) cmd.insert(cmd.end(), eyes.getData().begin(), eyes.getData().end());
     } else {
-        cmd[0] = pitch.isConnected() ? pitch : cmd[0];
-        cmd[1] = roll.isConnected() ? roll : cmd[1];
-        cmd[2] = yaw.isConnected() ? yaw : cmd[2];
-        cmd[3] = tilt.isConnected() ? tilt : cmd[3];
-        cmd[4] = version.isConnected() ? version : cmd[4];
-        cmd[5] = vergence.isConnected() ? vergence : cmd[5];
+        if (pitch.isConnected()) cmd.push_back(pitch);
+        if (roll.isConnected()) cmd.push_back(roll);
+        if (yaw.isConnected()) cmd.push_back(yaw);
+        if (tilt.isConnected()) cmd.push_back(tilt);
+        if (version.isConnected()) cmd.push_back(version);
+        if (vergence.isConnected()) cmd.push_back(vergence);
     }
 
     return cmd;
@@ -147,7 +170,7 @@ Utils::Vector HeadControlCommon::getCmd() {
 }
 
 void HeadPositionControl::execute() {
-    robot.head->movePos(getCmd());
+    robot.head->movePosJoints(actuated_joints, getCmd());
 }
 
 std::string HeadPositionControl::parameters() const {
@@ -157,7 +180,7 @@ std::string HeadPositionControl::parameters() const {
 
 void HeadVelocityControl::execute() {
 
-    robot.head->moveVel(getCmd());
+    robot.head->moveVelJoints(actuated_joints, getCmd());
 
 }
 
@@ -231,10 +254,14 @@ bool TorsoControlCommon::connected() const {
 
     if (torso.isConnected()) {
         full = true;
+        actuated_joints = {0, 1, 2};
     }
 
-    if (roll.isConnected() || pitch.isConnected() || yaw.isConnected()) {
+    auto tmp = jointsFromBitmask({yaw.isConnected(), roll.isConnected(), pitch.isConnected()});
+
+    if (tmp.size() > 0) {
         joints = true;
+        actuated_joints = tmp;
     }
 
     if (full && joints) {
@@ -247,14 +274,14 @@ bool TorsoControlCommon::connected() const {
 
 Utils::Vector TorsoControlCommon::getCmd() {
 
-    Utils::Vector cmd = robot.torso->encodersPos();
+    Utils::Vector cmd;
 
     if (full) {
         cmd = torso;
     } else {
-        cmd[2] = pitch.isConnected() ? pitch : cmd[2];
-        cmd[1] = roll.isConnected() ? roll : cmd[1];
-        cmd[0] = yaw.isConnected() ? yaw : cmd[0];
+        if (yaw.isConnected()) cmd.push_back(yaw);
+        if (roll.isConnected()) cmd.push_back(roll);
+        if (pitch.isConnected()) cmd.push_back(pitch);
     }
 
     return cmd;
@@ -263,7 +290,7 @@ Utils::Vector TorsoControlCommon::getCmd() {
 
 void TorsoPositionControl::execute() {
 
-    robot.torso->movePos(getCmd());
+    robot.torso->movePosJoints(actuated_joints, getCmd());
 
 }
 
@@ -274,7 +301,7 @@ std::string TorsoPositionControl::parameters() const {
 
 void TorsoVelocityControl::execute() {
 
-    robot.torso->moveVel(getCmd());
+    robot.torso->moveVelJoints(actuated_joints, getCmd());
 
 }
 
@@ -349,7 +376,7 @@ void RightArmControlCommon::refreshInputs() {
 
     shoulder_pitch.refreshData();
     shoulder_roll.refreshData();
-    shoudler_yaw.refreshData();
+    shoulder_yaw.refreshData();
     elbow.refreshData();
     wrist_prosup.refreshData();
     wrist_pitch.refreshData();
@@ -370,19 +397,33 @@ bool RightArmControlCommon::connected() const {
 
     if (fullarm.isConnected()) {
         full = true;
+        actuated_joints.resize(16);
+        std::iota(actuated_joints.begin(), actuated_joints.end(), 0);
     }
 
-    if (arm.isConnected() || hand.isConnected()) {
+    if (arm.isConnected()) {
         sub = true;
+        actuated_joints.resize(7);
+        std::iota(actuated_joints.begin(), actuated_joints.end(), 0);
     }
 
-    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoudler_yaw.isConnected() ||
-        elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
-        wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
-        thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
-        index_distal.isConnected() || middle_proximal.isConnected() || middle_distal.isConnected() ||
-        pinky.isConnected()) {
+    if (hand.isConnected()) {
+        sub = true;
+        std::vector<int> tmp;
+        tmp.resize(9);
+        std::iota(tmp.begin(), tmp.end(), 7);
+        actuated_joints.insert(actuated_joints.end(), tmp.begin(), tmp.end());
+    }
+
+    auto tmp = jointsFromBitmask({shoulder_pitch.isConnected(), shoulder_roll.isConnected(), shoulder_yaw.isConnected(),
+                                  elbow.isConnected(), wrist_prosup.isConnected(), wrist_pitch.isConnected(),
+                                  wrist_yaw.isConnected(), hand_finger.isConnected(), thumb_oppose.isConnected(),
+                                  thumb_proximal.isConnected(), thumb_distal.isConnected(), index_proximal.isConnected(),
+                                  index_distal.isConnected(), middle_proximal.isConnected(), middle_distal.isConnected(),
+                                  pinky.isConnected()});
+    if (tmp.size() > 0) {
         joints = true;
+        actuated_joints = tmp;
     }
 
     if ((full && sub) || ((full || sub) && joints)) {
@@ -395,29 +436,30 @@ bool RightArmControlCommon::connected() const {
 
 Utils::Vector RightArmControlCommon::getCmd() {
 
-    Utils::Vector cmd = robot.rightarm->encodersPos();
+    Utils::Vector cmd;
 
     if (full) {
         cmd = fullarm;
     } else if (sub) {
-        cmd = Utils::joinVectors(arm, hand);
+        if (arm.isConnected()) cmd.insert(cmd.end(), arm.getData().begin(), arm.getData().end());
+        if (hand.isConnected()) cmd.insert(cmd.end(), hand.getData().begin(), hand.getData().end());
     } else {
-        cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
-        cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
-        cmd[2] = shoudler_yaw.isConnected() ? shoudler_yaw : cmd[2];
-        cmd[3] = elbow.isConnected() ? elbow : cmd[3];
-        cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
-        cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
-        cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
-        cmd[7] = hand_finger.isConnected() ? hand_finger : cmd[7];
-        cmd[8] = thumb_oppose.isConnected() ? thumb_oppose : cmd[8];
-        cmd[9] = thumb_proximal.isConnected() ? thumb_proximal : cmd[9];
-        cmd[10] = thumb_distal.isConnected() ? thumb_distal : cmd[10];
-        cmd[11] = index_proximal.isConnected() ? index_proximal : cmd[11];
-        cmd[12] = index_distal.isConnected() ? index_distal : cmd[12];
-        cmd[13] = middle_proximal.isConnected() ? middle_proximal : cmd[13];
-        cmd[14] = middle_distal.isConnected() ? middle_distal : cmd[14];
-        cmd[15] = pinky.isConnected() ? pinky : cmd[15];
+        if (shoulder_pitch.isConnected()) cmd.push_back(shoulder_pitch);
+        if (shoulder_roll.isConnected()) cmd.push_back(shoulder_roll);
+        if (shoulder_yaw.isConnected()) cmd.push_back(shoulder_yaw);
+        if (elbow.isConnected()) cmd.push_back(elbow);
+        if (wrist_prosup.isConnected()) cmd.push_back(wrist_prosup);
+        if (wrist_pitch.isConnected()) cmd.push_back(wrist_pitch);
+        if (wrist_yaw.isConnected()) cmd.push_back(wrist_yaw);
+        if (hand_finger.isConnected()) cmd.push_back(hand_finger);
+        if (thumb_oppose.isConnected()) cmd.push_back(thumb_oppose);
+        if (thumb_proximal.isConnected()) cmd.push_back(thumb_proximal);
+        if (thumb_distal.isConnected()) cmd.push_back(thumb_distal);
+        if (index_proximal.isConnected()) cmd.push_back(index_proximal);
+        if (index_distal.isConnected()) cmd.push_back(index_distal);
+        if (middle_proximal.isConnected()) cmd.push_back(middle_proximal);
+        if (middle_distal.isConnected()) cmd.push_back(middle_distal);
+        if (pinky.isConnected()) cmd.push_back(pinky);
     }
 
     return cmd;
@@ -426,7 +468,7 @@ Utils::Vector RightArmControlCommon::getCmd() {
 
 void RightArmPositionControl::execute() {
 
-    robot.rightarm->movePos(getCmd());
+    robot.rightarm->movePosJoints(actuated_joints, getCmd());
 
 }
 
@@ -436,7 +478,7 @@ std::string RightArmPositionControl::parameters() const {
 
 void RightArmVelocityControl::execute() {
 
-    robot.rightarm->moveVel(getCmd());
+    robot.rightarm->moveVelJoints(actuated_joints, getCmd());
 
 }
 
@@ -556,23 +598,37 @@ bool LeftArmControlCommon::connected() const {
 
     if (fullarm.isConnected()) {
         full = true;
+        actuated_joints.resize(16);
+        std::iota(actuated_joints.begin(), actuated_joints.end(), 0);
     }
 
-    if (arm.isConnected() || hand.isConnected()) {
+    if (arm.isConnected()) {
         sub = true;
+        actuated_joints.resize(7);
+        std::iota(actuated_joints.begin(), actuated_joints.end(), 0);
     }
 
-    if (shoulder_pitch.isConnected() || shoulder_roll.isConnected() || shoulder_yaw.isConnected() ||
-        elbow.isConnected() || wrist_prosup.isConnected() || wrist_pitch.isConnected() ||
-        wrist_yaw.isConnected() || hand_finger.isConnected() || thumb_oppose.isConnected() ||
-        thumb_proximal.isConnected() || thumb_distal.isConnected() || index_proximal.isConnected() ||
-        index_distal.isConnected() || middle_proximal.isConnected() || middle_distal.isConnected() ||
-        pinky.isConnected()) {
+    if (hand.isConnected()) {
+        sub = true;
+        std::vector<int> tmp;
+        tmp.resize(9);
+        std::iota(tmp.begin(), tmp.end(), 7);
+        actuated_joints.insert(actuated_joints.end(), tmp.begin(), tmp.end());
+    }
+
+    auto tmp = jointsFromBitmask({shoulder_pitch.isConnected(), shoulder_roll.isConnected(), shoulder_yaw.isConnected(),
+                                  elbow.isConnected(), wrist_prosup.isConnected(), wrist_pitch.isConnected(),
+                                  wrist_yaw.isConnected(), hand_finger.isConnected(), thumb_oppose.isConnected(),
+                                  thumb_proximal.isConnected(), thumb_distal.isConnected(), index_proximal.isConnected(),
+                                  index_distal.isConnected(), middle_proximal.isConnected(), middle_distal.isConnected(),
+                                  pinky.isConnected()});
+    if (tmp.size() > 0) {
         joints = true;
+        actuated_joints = tmp;
     }
 
     if ((full && sub) || ((full || sub) && joints)) {
-        throw iCubException("[LeftArmPositionControl] Too many connections.");
+        throw iCubException("[RightArmPositionControl] Too many connections.");
     }
 
     return full || sub || joints;
@@ -581,29 +637,30 @@ bool LeftArmControlCommon::connected() const {
 
 Utils::Vector LeftArmControlCommon::getCmd() {
 
-    Utils::Vector cmd = robot.leftarm->encodersPos();
+    Utils::Vector cmd;
 
     if (full) {
         cmd = fullarm;
     } else if (sub) {
-        cmd = Utils::joinVectors(arm, hand);
+        if (arm.isConnected()) cmd.insert(cmd.end(), arm.getData().begin(), arm.getData().end());
+        if (hand.isConnected()) cmd.insert(cmd.end(), hand.getData().begin(), hand.getData().end());
     } else {
-        cmd[0] = shoulder_pitch.isConnected() ? shoulder_pitch : cmd[0];
-        cmd[1] = shoulder_roll.isConnected() ? shoulder_roll : cmd[1];
-        cmd[2] = shoulder_yaw.isConnected() ? shoulder_yaw : cmd[2];
-        cmd[3] = elbow.isConnected() ? elbow : cmd[3];
-        cmd[4] = wrist_prosup.isConnected() ? wrist_prosup : cmd[4];
-        cmd[5] = wrist_pitch.isConnected() ? wrist_pitch : cmd[5];
-        cmd[6] = wrist_yaw.isConnected() ? wrist_yaw : cmd[6];
-        cmd[7] = hand_finger.isConnected() ? hand_finger : cmd[7];
-        cmd[8] = thumb_oppose.isConnected() ? thumb_oppose : cmd[8];
-        cmd[9] = thumb_proximal.isConnected() ? thumb_proximal : cmd[9];
-        cmd[10] = thumb_distal.isConnected() ? thumb_distal : cmd[10];
-        cmd[11] = index_proximal.isConnected() ? index_proximal : cmd[11];
-        cmd[12] = index_distal.isConnected() ? index_distal : cmd[12];
-        cmd[13] = middle_proximal.isConnected() ? middle_proximal : cmd[13];
-        cmd[14] = middle_distal.isConnected() ? middle_distal : cmd[14];
-        cmd[15] = pinky.isConnected() ? pinky : cmd[15];
+        if (shoulder_pitch.isConnected()) cmd.push_back(shoulder_pitch);
+        if (shoulder_roll.isConnected()) cmd.push_back(shoulder_roll);
+        if (shoulder_yaw.isConnected()) cmd.push_back(shoulder_yaw);
+        if (elbow.isConnected()) cmd.push_back(elbow);
+        if (wrist_prosup.isConnected()) cmd.push_back(wrist_prosup);
+        if (wrist_pitch.isConnected()) cmd.push_back(wrist_pitch);
+        if (wrist_yaw.isConnected()) cmd.push_back(wrist_yaw);
+        if (hand_finger.isConnected()) cmd.push_back(hand_finger);
+        if (thumb_oppose.isConnected()) cmd.push_back(thumb_oppose);
+        if (thumb_proximal.isConnected()) cmd.push_back(thumb_proximal);
+        if (thumb_distal.isConnected()) cmd.push_back(thumb_distal);
+        if (index_proximal.isConnected()) cmd.push_back(index_proximal);
+        if (index_distal.isConnected()) cmd.push_back(index_distal);
+        if (middle_proximal.isConnected()) cmd.push_back(middle_proximal);
+        if (middle_distal.isConnected()) cmd.push_back(middle_distal);
+        if (pinky.isConnected()) cmd.push_back(pinky);
     }
 
     return cmd;
@@ -612,7 +669,7 @@ Utils::Vector LeftArmControlCommon::getCmd() {
 
 void LeftArmPositionControl::execute() {
 
-    robot.leftarm->movePos(getCmd());
+    robot.leftarm->movePosJoints(actuated_joints, getCmd());
 
 }
 
@@ -622,7 +679,7 @@ std::string LeftArmPositionControl::parameters() const {
 
 void LeftArmVelocityControl::execute() {
 
-    robot.leftarm->moveVel(getCmd());
+    robot.leftarm->moveVelJoints(actuated_joints, getCmd());
 
 }
 
