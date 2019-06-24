@@ -27,6 +27,8 @@ const Utils::Vector headPosMin =  { -40,  -70,  -55,  -35,  -50,    0};
 const Utils::Vector headPosMax =  {  30,   60,   55,   15,   52,   90};
 const Utils::Vector headVelMin =  {-100, -100, -100, -100, -100, -100};
 const Utils::Vector headVelMax =  {+100, +100, +100, +100, +100, +100};
+const Utils::Vector headTorMin =  {   0,    0,    0,    0,    0,    0};
+const Utils::Vector headTorMax =  {   0,    0,    0,    0,    0,    0};
 const Utils::Vector headInitial = {   0,    0,    0,    0,    0,    0};
 
 const Utils::Vector headMask = {-1, -1, -1, -1, -1,  1};
@@ -129,6 +131,14 @@ Utils::Vector _SabianHead::getMinVel() const {
 
 Utils::Vector _SabianHead::getMaxVel() const {
     return Sabian::headVelMax;
+}
+
+Utils::Vector _SabianHead::getMinTorque() const {
+    return Sabian::headTorMin;
+}
+
+Utils::Vector _SabianHead::getMaxTorque() const {
+    return Sabian::headTorMax;
 }
 
 Utils::Vector _SabianHead::applyMask(const Utils::Vector& v) {

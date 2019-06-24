@@ -56,6 +56,18 @@ using InertialSpeed = Utils::Vector;
 }
 
 
+namespace iCubControlMode {
+
+extern int Position;
+extern int PositionDirect;
+extern int Velocity;
+extern int Mixed;
+extern int Torque;
+extern int OpenLoop;
+extern int Idle;
+
+}
+
 ///////////////////////
 /// \brief The iCubException class
 ///

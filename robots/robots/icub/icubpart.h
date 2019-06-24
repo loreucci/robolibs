@@ -27,7 +27,11 @@
 
 #include <utilities/vector.h>
 
+#include <yarp/dev/IEncoders.h>
+#include <yarp/dev/IPositionControl2.h>
 #include <yarp/dev/IVelocityControl2.h>
+#include <yarp/dev/ITorqueControl.h>
+#include <yarp/dev/IControlMode2.h>
 
 
 class iCubPart {
@@ -66,11 +70,16 @@ public:
     // move
     virtual void movePos(const Utils::Vector& refs, bool wait = false);
     virtual void moveVel(const Utils::Vector& refs, bool wait = false);
+    virtual void moveTorque(const Utils::Vector& refs);
     virtual void movePosJoint(unsigned int joint, double ref, bool wait = false);
     virtual void moveVelJoint(unsigned int joint, double ref, bool wait = false);
+    virtual void moveTorqueJoint(unsigned int joint, double ref);
     virtual void movePosJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait = false);
     virtual void moveVelJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait = false);
+    virtual void moveTorqueJoints(const std::vector<int>& joints, const Utils::Vector& refs);
     void setControlMode(const int mode);
+    void setControlMode(unsigned int joint, const int mode);
+    void setControlMode(const std::vector<int>& joints, std::vector<int> modes);
     void home();
 
     // limits
@@ -78,6 +87,8 @@ public:
     virtual Utils::Vector getMaxPos() const = 0;
     virtual Utils::Vector getMinVel() const = 0;
     virtual Utils::Vector getMaxVel() const = 0;
+    virtual Utils::Vector getMinTorque() const = 0;
+    virtual Utils::Vector getMaxTorque() const = 0;
     Utils::Vector getInitialPosition() const;
     void setInitialPosition(const Utils::Vector& initpos);
 
@@ -92,11 +103,23 @@ protected:
     double precision = 0.05;
 
     yarp::dev::PolyDriver driver;
+    yarp::dev::IEncoders* _encs = nullptr;
+    yarp::dev::IEncoders* getEncs();
+    yarp::dev::IPositionControl2* _posctrl = nullptr;
+    yarp::dev::IPositionControl2* getPosCtrl();
+    yarp::dev::IVelocityControl2* _velctrl = nullptr;
+    yarp::dev::IVelocityControl2* getVelCtrl();
+    yarp::dev::ITorqueControl* _torctrl = nullptr;
+    yarp::dev::ITorqueControl* getTorCtrl();
+    yarp::dev::IControlMode2* _ctrlmd = nullptr;
+    yarp::dev::IControlMode2* getCtrlMd();
 
     Utils::Vector trimToLimitsPos(const Utils::Vector& refs) const;
     Utils::Vector trimToLimitsVel(const Utils::Vector& refs) const;
+    Utils::Vector trimTolimitsTorque(const Utils::Vector& refs) const;
     double trimToLimitsPosJoint(unsigned int j, double ref) const;
     double trimToLimitsVelJoint(unsigned int j, double ref) const;
+    double trimToLimitsTorqueJoint(unsigned int j, double ref) const;
     static Utils::Vector trim(const Utils::Vector& refs, const Utils::Vector& min, const Utils::Vector& max);
     static double trimjoint(double ref, double min, double max);
 

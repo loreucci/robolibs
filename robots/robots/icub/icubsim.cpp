@@ -29,27 +29,35 @@ const CameraParameters cameraParameters = CameraParameters{320, 240, 257.34, 257
 
 const Utils::Vector headPosMin =  { -40,  -70,  -55,  -35,  -50,    0};
 const Utils::Vector headPosMax =  {  30,   60,   55,   15,   52,   90};
-const Utils::Vector headVelMin =  {-400, -400, -400, -400, -400, -400};
-const Utils::Vector headVelMax =  {+400, +400, +400, +400, +400, +400};
+const Utils::Vector headVelMin =  {-100, -100, -100, -100, -100, -100};
+const Utils::Vector headVelMax =  {+100, +100, +100, +100, +100, +100};
+const Utils::Vector headTorMin =  {   0,    0,    0,    0,    0,    0};
+const Utils::Vector headTorMax =  {   0,    0,    0,    0,    0,    0};
 const Utils::Vector headInitial = {   0,    0,    0,    0,    0,    0};
 
 const Utils::Vector torsoPosMin =  { -50,  -30,  -10};
 const Utils::Vector torsoPosMax =  {  50,   30,   70};
 const Utils::Vector torsoVelMin =  {-400, -400, -400};
 const Utils::Vector torsoVelMax =  {+400, +400, +400};
+const Utils::Vector torsoTorMin =  { -12,  -12,  -12};
+const Utils::Vector torsoTorMax =  { +12,  +12,  +12};
 const Utils::Vector torsoInitial = {   0,    0,    0};
 
 const Utils::Vector rightarmPosMin =  { -95,     0,  -37, 15.5,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
 const Utils::Vector rightarmPosMax =  {  10, 160.8,   80,  106,   90,    0,   40,   60,   90,   90,  180,   90,  180,   90,  180,  270};
 const Utils::Vector rightarmVelMin =  {-100,  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
 const Utils::Vector rightarmVelMax =  {+100,  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
+const Utils::Vector rightarmTorMin =  {  -8,    -8,   -8,   -8,   -2,   -2,   -2,   -2,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector rightarmTorMax =  {  +8,    +8,   +8,   +8,   +2,   +2,   +2,   +2,    0,    0,    0,    0,    0,    0,    0,    0};
 const Utils::Vector rightarmInitial = { -25,    20,    0,   50,    0,    0,    0,   60,   20,   20,   20,   10,   10,   10,   10,   10};
 
-const Utils::Vector leftarmPosMin =  { -94.5,    0,  -36,   19,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
-const Utils::Vector leftarmPosMax =  {   9.5,  161,   80,  106,   90,    0,   40,   60,   90,   90,  180,   90,  180,   90,  180,  270};
-const Utils::Vector leftarmVelMin =  {  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
-const Utils::Vector leftarmVelMax =  {  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
-const Utils::Vector leftarmInitial = {   -25,   20,    0,   50,    0,    0,    0,   60,   20,   20,   20,   10,   10,   10,   10,   10};
+const Utils::Vector leftarmPosMin =  {-94.5,     0,  -36,   19,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector leftarmPosMax =  {  9.5,   161,   80,  106,   90,    0,   40,   60,   90,   90,  180,   90,  180,   90,  180,  270};
+const Utils::Vector leftarmVelMin =  { -100,  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
+const Utils::Vector leftarmVelMax =  { +100,  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
+const Utils::Vector leftarmTorMin =  {   -8,    -8,   -8,   -8,   -2,   -2,   -2,   -2,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector leftarmTorMax =  {   +8,    +8,   +8,   +8,   +2,   +2,   +2,   +2,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector leftarmInitial = {  -25,    20,    0,   50,    0,    0,    0,   60,   20,   20,   20,   10,   10,   10,   10,   10};
 
 }
 
@@ -77,6 +85,14 @@ Utils::Vector _iCubSimHead::getMaxVel() const {
     return iCubSim::headVelMax;
 }
 
+Utils::Vector _iCubSimHead::getMinTorque() const {
+    return iCubSim::headTorMin;
+}
+
+Utils::Vector _iCubSimHead::getMaxTorque() const {
+    return iCubSim::headTorMax;
+}
+
 
 _iCubSimTorso::_iCubSimTorso() {
     initpos = iCubSim::torsoInitial;
@@ -100,6 +116,14 @@ Utils::Vector _iCubSimTorso::getMinVel() const {
 
 Utils::Vector _iCubSimTorso::getMaxVel() const {
     return iCubSim::torsoVelMax;
+}
+
+Utils::Vector _iCubSimTorso::getMinTorque() const{
+    return iCubSim::torsoTorMin;
+}
+
+Utils::Vector _iCubSimTorso::getMaxTorque() const {
+    return iCubSim::torsoTorMax;
 }
 
 
@@ -127,6 +151,14 @@ Utils::Vector _iCubSimRightArm::getMaxVel() const {
     return iCubSim::rightarmVelMax;
 }
 
+Utils::Vector _iCubSimRightArm::getMinTorque() const {
+    return iCubSim::rightarmTorMin;
+}
+
+Utils::Vector _iCubSimRightArm::getMaxTorque() const {
+    return iCubSim::rightarmTorMax;
+}
+
 
 _iCubSimLeftArm::_iCubSimLeftArm() {
     initpos = iCubSim::leftarmInitial;
@@ -150,6 +182,14 @@ Utils::Vector _iCubSimLeftArm::getMinVel() const {
 
 Utils::Vector _iCubSimLeftArm::getMaxVel() const {
     return iCubSim::leftarmVelMax;
+}
+
+Utils::Vector _iCubSimLeftArm::getMinTorque() const {
+    return iCubSim::leftarmTorMin;
+}
+
+Utils::Vector _iCubSimLeftArm::getMaxTorque() const {
+    return iCubSim::leftarmTorMax;
 }
 
 std::string _iCubSimInertial::name() const {

@@ -486,6 +486,14 @@ std::string RightArmVelocityControl::parameters() const {
     return "Right arm velocity control of " + robot.name();
 }
 
+void RightArmTorqueControl::execute() {
+    robot.rightarm->moveTorqueJoints(actuated_joints, getCmd());
+}
+
+std::string RightArmTorqueControl::parameters() const {
+    return "Right arm torque control of " + robot.name();
+}
+
 
 EncodersLeftArm::EncodersLeftArm(const HasLeftArm& robot, double freq)
     :sec::Source(freq), robot(robot) {

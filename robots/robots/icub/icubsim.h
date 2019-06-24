@@ -33,24 +33,32 @@ extern const Utils::Vector headPosMin;
 extern const Utils::Vector headPosMax;
 extern const Utils::Vector headVelMin;
 extern const Utils::Vector headVelMax;
+extern const Utils::Vector headTorMin;
+extern const Utils::Vector headTorMax;
 extern const Utils::Vector headInitial;
 
 extern const Utils::Vector torsoPosMin;
 extern const Utils::Vector torsoPosMax;
 extern const Utils::Vector torsoVelMin;
 extern const Utils::Vector torsoVelMax;
+extern const Utils::Vector torsoTorMin;
+extern const Utils::Vector torsoTorMax;
 extern const Utils::Vector headInitial;
 
 extern const Utils::Vector rightarmPosMin;
 extern const Utils::Vector rightarmPosMax;
 extern const Utils::Vector rightarmVelMin;
 extern const Utils::Vector rightarmVelMax;
+extern const Utils::Vector rightarmTorMin;
+extern const Utils::Vector rightarmTorMax;
 extern const Utils::Vector rightarmInitial;
 
 extern const Utils::Vector leftarmPosMin;
 extern const Utils::Vector leftarmPosMax;
 extern const Utils::Vector leftarmVelMin;
 extern const Utils::Vector leftarmVelMax;
+extern const Utils::Vector leftarmTorMin;
+extern const Utils::Vector leftarmTorMax;
 extern const Utils::Vector leftarmInitial;
 
 }
@@ -67,6 +75,8 @@ public:
     virtual Utils::Vector getMaxPos() const override;
     virtual Utils::Vector getMinVel() const override;
     virtual Utils::Vector getMaxVel() const override;
+    virtual Utils::Vector getMinTorque() const override;
+    virtual Utils::Vector getMaxTorque() const override;
 
 };
 
@@ -82,6 +92,8 @@ public:
     virtual Utils::Vector getMaxPos() const override;
     virtual Utils::Vector getMinVel() const override;
     virtual Utils::Vector getMaxVel() const override;
+    virtual Utils::Vector getMinTorque() const override;
+    virtual Utils::Vector getMaxTorque() const override;
 
 };
 
@@ -97,6 +109,8 @@ public:
     virtual Utils::Vector getMaxPos() const override;
     virtual Utils::Vector getMinVel() const override;
     virtual Utils::Vector getMaxVel() const override;
+    virtual Utils::Vector getMinTorque() const override;
+    virtual Utils::Vector getMaxTorque() const override;
 
 };
 
@@ -111,6 +125,8 @@ public:
     virtual Utils::Vector getMaxPos() const override;
     virtual Utils::Vector getMinVel() const override;
     virtual Utils::Vector getMaxVel() const override;
+    virtual Utils::Vector getMinTorque() const override;
+    virtual Utils::Vector getMaxTorque() const override;
 
 };
 

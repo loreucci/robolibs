@@ -29,6 +29,18 @@ using namespace yarp::math;
 
 yarp::os::Network yarpnetwork;
 
+namespace iCubControlMode {
+
+int Position = VOCAB_CM_POSITION;
+int PositionDirect = VOCAB_CM_POSITION_DIRECT;
+int Velocity = VOCAB_CM_VELOCITY;
+int Mixed = VOCAB_CM_MIXED;
+int Torque = VOCAB_CM_TORQUE;
+int Idle = VOCAB_CM_IDLE;
+
+}
+
+
 ////////////////////
 ///
 ///

@@ -26,18 +26,24 @@ const Utils::Vector headPosMin =  { -40,  -70,  -55,  -35,  -50,    0};
 const Utils::Vector headPosMax =  {  30,   60,   55,   15,   52,   90};
 const Utils::Vector headVelMin =  {-100, -100, -100, -100, -100, -100};
 const Utils::Vector headVelMax =  {+100, +100, +100, +100, +100, +100};
+const Utils::Vector headTorMin =  {   0,    0,    0,    0,    0,    0};
+const Utils::Vector headTorMax =  {   0,    0,    0,    0,    0,    0};
 const Utils::Vector headInitial = {   0,    0,    0,    0,    0,    0};
 
 const Utils::Vector rightarmPosMin =  { -95,     0,  -37, 15.5,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
 const Utils::Vector rightarmPosMax =  {  10, 160.8,   80,  106,   90,    0,   40,   60,   90,   90,  180,   90,  180,   90,  180,  270};
 const Utils::Vector rightarmVelMin =  {-100,  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
 const Utils::Vector rightarmVelMax =  {+100,  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
+const Utils::Vector rightarmTorMin =  {  -8,    -8,   -8,   -8,   -2,   -2,   -2,   -2,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector rightarmTorMax =  {  +8,    +8,   +8,   +8,   +2,   +2,   +2,   +2,    0,    0,    0,    0,    0,    0,    0,    0};
 const Utils::Vector rightarmInitial = { -25,    20,    0,   50,    0,    0,    0,   60,   20,   20,   20,   10,   10,   10,   10,   10};
 
 const Utils::Vector leftarmPosMin =  { -94.5,    0,  -36,   19,  -90,  -90,  -20,    0,    0,    0,    0,    0,    0,    0,    0,    0};
 const Utils::Vector leftarmPosMax =  {   9.5,  161,   80,  106,   90,    0,   40,   60,  180,   90,  180,   90,  180,   90,  180,  270};
 const Utils::Vector leftarmVelMin =  {  -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
 const Utils::Vector leftarmVelMax =  {  +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100, +100};
+const Utils::Vector leftarmTorMin =  {   -8,    -8,   -8,   -8,   -2,   -2,   -2,   -2,    0,    0,    0,    0,    0,    0,    0,    0};
+const Utils::Vector leftarmTorMax =  {   +8,    +8,   +8,   +8,   +2,   +2,   +2,   +2,    0,    0,    0,    0,    0,    0,    0,    0};
 const Utils::Vector leftarmInitial = {   -25,   20,    0,   50,    0,    0,    0,   30,   20,   20,   20,   10,   10,   10,   10,    5};
 
 }
@@ -73,6 +79,14 @@ Utils::Vector _iCubHead::getMaxVel() const {
     return iCub::headVelMax;
 }
 
+Utils::Vector _iCubHead::getMinTorque() const {
+    return iCub::headTorMin;
+}
+
+Utils::Vector _iCubHead::getMaxTorque() const {
+    return iCub::headTorMax;
+}
+
 
 _iCubRightArm::_iCubRightArm() {
     initpos = iCub::rightarmInitial;
@@ -102,6 +116,14 @@ Utils::Vector _iCubRightArm::getMinVel() const {
 
 Utils::Vector _iCubRightArm::getMaxVel() const {
     return iCub::rightarmVelMax;
+}
+
+Utils::Vector _iCubRightArm::getMinTorque() const {
+    return iCub::rightarmTorMin;
+}
+
+Utils::Vector _iCubRightArm::getMaxTorque() const {
+    return iCub::rightarmTorMax;
 }
 
 void _iCubRightArm::movePos(const Utils::Vector& refs, bool wait) {
@@ -158,6 +180,14 @@ Utils::Vector _iCubLeftArm::getMinVel() const {
 
 Utils::Vector _iCubLeftArm::getMaxVel() const {
     return iCub::leftarmVelMax;
+}
+
+Utils::Vector _iCubLeftArm::getMinTorque() const {
+    return iCub::leftarmTorMin;
+}
+
+Utils::Vector _iCubLeftArm::getMaxTorque() const {
+    return iCub::leftarmTorMax;
 }
 
 

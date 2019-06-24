@@ -18,10 +18,6 @@
 
 #include "icubpart.h"
 
-#include <yarp/dev/IEncoders.h>
-#include <yarp/dev/IPositionControl.h>
-#include <yarp/dev/IVelocityControl.h>
-#include <yarp/dev/IControlMode2.h>
 #include <cmath>
 
 #include <sec/sec.h>
@@ -70,10 +66,7 @@ void DriverPart::setMovementPrecision(double newprec) {
 
 void DriverPart::refresh() {
 
-    yarp::dev::IEncoders* encs = nullptr;
-    driver.view(encs);
-    if (encs == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IEncoders* encs = getEncs();
     double p[dof()];
     double v[dof()];
     encs->getEncoders(p);
@@ -113,10 +106,7 @@ void DriverPart::movePos(const Utils::Vector& refs, bool wait) {
         throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
-    yarp::dev::IPositionControl* posctrl = nullptr;
-    driver.view(posctrl);
-    if (posctrl == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IPositionControl* posctrl = getPosCtrl();
 
     auto _refs = trimToLimitsPos(refs);
 
@@ -147,10 +137,7 @@ void DriverPart::moveVel(const Utils::Vector& refs, bool wait) {
         throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
-    yarp::dev::IVelocityControl* velctrl = nullptr;
-    driver.view(velctrl);
-    if (velctrl == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IVelocityControl* velctrl = getVelCtrl();
 
     auto _refs = trimToLimitsVel(refs);
 
@@ -174,16 +161,27 @@ void DriverPart::moveVel(const Utils::Vector& refs, bool wait) {
 
 }
 
+void DriverPart::moveTorque(const Utils::Vector& refs) {
+
+    if (refs.size() != dof()) {
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
+    }
+
+    yarp::dev::ITorqueControl* torctrl = getTorCtrl();
+
+    auto _refs = trimTolimitsTorque(refs);
+
+    torctrl->setRefTorques(_refs.data());
+
+}
+
 void DriverPart::movePosJoint(unsigned int joint, double ref, bool wait) {
 
     if (joint >= dof()) {
         throw iCubException("[iCubRobot(" + name() + ")] Wrong joint index.");
     }
 
-    yarp::dev::IPositionControl* posctrl = nullptr;
-    driver.view(posctrl);
-    if (posctrl == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IPositionControl* posctrl = getPosCtrl();
 
     double _ref = trimToLimitsPosJoint(joint, ref);
 
@@ -213,10 +211,7 @@ void DriverPart::moveVelJoint(unsigned int joint, double ref, bool wait) {
         throw iCubException("[iCubRobot(" + name() + ")] Wrong joint index.");
     }
 
-    yarp::dev::IVelocityControl* velctrl = nullptr;
-    driver.view(velctrl);
-    if (velctrl == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IVelocityControl* velctrl = getVelCtrl();
 
     double _ref = trimToLimitsVelJoint(joint, ref);
 
@@ -240,21 +235,36 @@ void DriverPart::moveVelJoint(unsigned int joint, double ref, bool wait) {
 
 }
 
+void DriverPart::moveTorqueJoint(unsigned int joint, double ref) {
+
+    if (joint >= dof()) {
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong joint index.");
+    }
+
+    yarp::dev::ITorqueControl* torctrl = getTorCtrl();
+
+    double _ref = trimToLimitsTorqueJoint(joint, ref);
+
+    torctrl->setRefTorque(joint, _ref);
+
+}
+
 void DriverPart::movePosJoints(const std::vector<int>& joints, const Utils::Vector& refs, bool wait) {
 
     if (refs.size() != joints.size()) {
         throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
-    yarp::dev::IPositionControl2* posctrl = nullptr;
-    driver.view(posctrl);
-    if (posctrl == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IPositionControl2* posctrl = getPosCtrl();
 
-    // TODO: trimming
+    // trimming
+    Utils::Vector _refs = refs;
+    for (unsigned int i = 0; i < joints.size(); i++) {
+        _refs[i] = trimToLimitsPosJoint(joints[i], refs[i]);
+    }
 
     if (!wait) {
-        posctrl->positionMove(joints.size(), joints.data(), refs.data());
+        posctrl->positionMove(joints.size(), joints.data(), _refs.data());
     } else {
         // TODO
     }
@@ -267,27 +277,59 @@ void DriverPart::moveVelJoints(const std::vector<int>& joints, const Utils::Vect
         throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
     }
 
-    yarp::dev::IVelocityControl2* velctrl = nullptr;
-    driver.view(velctrl);
-    if (velctrl == nullptr)
-        throw iCubException("[iCubRobot(" + name() + ")] Unable to use driver.");
+    yarp::dev::IVelocityControl2* velctrl = getVelCtrl();
 
-    // TODO: trimming
+    // trimming
+    Utils::Vector _refs = refs;
+    for (unsigned int i = 0; i < joints.size(); i++) {
+        _refs[i] = trimToLimitsVelJoint(joints[i], refs[i]);
+    }
 
     if (!wait) {
-        velctrl->velocityMove(joints.size(), joints.data(), refs.data());
+        velctrl->velocityMove(joints.size(), joints.data(), _refs.data());
     } else {
         // TODO
     }
 
 }
 
+void DriverPart::moveTorqueJoints(const std::vector<int>& joints, const Utils::Vector& refs) {
+
+    if (refs.size() != joints.size()) {
+        throw iCubException("[iCubRobot(" + name() + ")] Wrong size of reference vector.");
+    }
+
+    yarp::dev::ITorqueControl* torctrl = getTorCtrl();
+
+    // trimming
+    Utils::Vector _refs = refs;
+    for (unsigned int i = 0; i < joints.size(); i++) {
+        _refs[i] = trimToLimitsTorqueJoint(joints[i], refs[i]);
+    }
+
+    torctrl->setRefTorques(joints.size(), joints.data(), _refs.data());
+
+}
+
 void DriverPart::setControlMode(const int mode) {
 
-    yarp::dev::IControlMode2* cm;
-    driver.view(cm);
+    yarp::dev::IControlMode2* cm = getCtrlMd();
     for (unsigned int i = 0; i < dof(); i++)
         cm->setControlMode(i, mode);
+
+}
+
+void DriverPart::setControlMode(unsigned int joint, const int mode) {
+
+    yarp::dev::IControlMode2* cm = getCtrlMd();
+    cm->setControlMode(joint, mode);
+
+}
+
+void DriverPart::setControlMode(const std::vector<int>& joints, std::vector<int> modes) {
+
+    yarp::dev::IControlMode2* cm = getCtrlMd();
+    cm->setControlModes(joints.size(), joints.data(), modes.data());
 
 }
 
@@ -312,6 +354,61 @@ void DriverPart::setInitialPosition(const Utils::Vector& initpos) {
     this->initpos = initpos;
 }
 
+yarp::dev::IEncoders*DriverPart::getEncs() {
+
+    if (_encs == nullptr) {
+        driver.view(_encs);
+        if (_encs == nullptr)
+            throw iCubException("[iCubRobot(" + name() + ")] Unable to initialize encoders on driver.");
+    }
+    return _encs;
+
+}
+
+yarp::dev::IPositionControl2* DriverPart::getPosCtrl() {
+
+    if (_posctrl == nullptr) {
+        driver.view(_posctrl);
+        if (_posctrl == nullptr)
+            throw iCubException("[iCubRobot(" + name() + ")] Unable to initialize position control on driver.");
+    }
+    return _posctrl;
+
+}
+
+yarp::dev::IVelocityControl2*DriverPart::getVelCtrl() {
+
+    if (_velctrl == nullptr) {
+        driver.view(_velctrl);
+        if (_velctrl == nullptr)
+            throw iCubException("[iCubRobot(" + name() + ")] Unable to initialize velocity control on driver.");
+    }
+    return _velctrl;
+
+}
+
+yarp::dev::ITorqueControl* DriverPart::getTorCtrl() {
+
+    if (_torctrl == nullptr) {
+        driver.view(_torctrl);
+        if (_torctrl == nullptr)
+            throw iCubException("[iCubRobot(" + name() + ")] Unable to initialize torque control on driver.");
+    }
+    return _torctrl;
+
+}
+
+yarp::dev::IControlMode2* DriverPart::getCtrlMd() {
+
+    if (_ctrlmd == nullptr) {
+        driver.view(_ctrlmd);
+        if (_ctrlmd == nullptr)
+            throw iCubException("[iCubRobot(" + name() + ")] Unable to change control mode on driver.");
+    }
+    return _ctrlmd;
+
+}
+
 Utils::Vector DriverPart::trimToLimitsPos(const Utils::Vector& refs) const {
     return trim(refs, getMinPos(), getMaxPos());
 }
@@ -320,12 +417,20 @@ Utils::Vector DriverPart::trimToLimitsVel(const Utils::Vector& refs) const {
     return trim(refs, getMinVel(), getMaxVel());
 }
 
+Utils::Vector DriverPart::trimTolimitsTorque(const Utils::Vector& refs) const {
+    return trim(refs, getMinTorque(), getMaxTorque());
+}
+
 double DriverPart::trimToLimitsPosJoint(unsigned int j, double ref) const {
     return trimjoint(ref, getMinPos()[j], getMaxPos()[j]);
 }
 
 double DriverPart::trimToLimitsVelJoint(unsigned int j, double ref) const {
     return trimjoint(ref, getMinVel()[j], getMaxVel()[j]);
+}
+
+double DriverPart::trimToLimitsTorqueJoint(unsigned int j, double ref) const {
+    return trimjoint(ref, getMinTorque()[j], getMaxTorque()[j]);
 }
 
 Utils::Vector DriverPart::trim(const Utils::Vector& refs, const Utils::Vector& min, const Utils::Vector& max) {
