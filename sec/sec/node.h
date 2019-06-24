@@ -46,7 +46,7 @@ public:
 
     virtual ~Node();
 
-    virtual void setFrequency(double freq) final;
+    virtual void setFrequency(double freq);
 
     virtual double getFrequency() const final;
 

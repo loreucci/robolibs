@@ -30,7 +30,7 @@ PlottingClient::PlottingClient(double freq, QObject *parent)
 
     clear();
 
-    changeFreq(freq);
+    changeFreq(this->freq);
 
 }
 
@@ -93,6 +93,11 @@ void PlottingClient::execute() {
 
 std::string PlottingClient::parameters() const {
     return "Plotting client.";
+}
+
+void PlottingClient::setFrequency(double freq) {
+    changeFreq(freq);
+    Node::setFrequency(freq);
 }
 
 unsigned int PlottingClient::addGraph(const QString& name) {

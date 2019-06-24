@@ -55,6 +55,8 @@ public:
 
     virtual std::string parameters() const;
 
+    virtual void setFrequency(double freq) override;
+
 protected:
     std::vector<std::tuple<unsigned int, NodeIn<double>, std::function<double(double)>>> inputs;
     std::vector<std::tuple<unsigned int, NodeIn<Utils::Vector>, unsigned int, std::function<double(double)>>> inputsvec;
