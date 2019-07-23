@@ -35,6 +35,9 @@ DataLogger::DataLogger(const std::string& separator, const std::string& filename
 
     results_collector.registerLogger(this, filename);
 
+    headers = true;
+    time = true;
+
 }
 
 DataLogger::~DataLogger() {
@@ -86,6 +89,14 @@ void DataLogger::setPrefix(const std::string& prefix) {
     this->prefix = prefix;
 }
 
+void DataLogger::toggleHeaders(bool shouldsave) {
+    headers = shouldsave;
+}
+
+void DataLogger::toggleTime(bool shouldsave) {
+    time = shouldsave;
+}
+
 bool DataLogger::logToFile() const {
 
     std::ofstream file(prefix + filename);
@@ -101,14 +112,18 @@ bool DataLogger::logToFile() const {
 
 void DataLogger::toFile(std::ostream& o) const {
 
-    o << "T " << separator;
-    for (auto l : listeners) {
-        o << l->getName() << separator;
+    if (headers) {
+        o << "T" << separator;
+        for (auto l : listeners) {
+            o << l->getName() << separator;
+        }
+        o << std::endl;
     }
-    o << std::endl;
 
     for (unsigned int i = 0; i < counter; i++) {
-        o << i / getFrequency() << separator;
+        if (time) {
+            o << i / getFrequency() << separator;
+        }
         for (auto l : listeners) {
             o << l->getLine(i, separator) << separator;
         }

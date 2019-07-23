@@ -59,10 +59,14 @@ public:
 
     virtual void setPrefix(const std::string& prefix) override;
 
+    void toggleHeaders(bool shouldsave = true);
+    void toggleTime(bool shouldsave = true);
+
 protected:
     std::string filename, separator, prefix;
     unsigned int counter;
     std::vector<DataListener*> listeners;
+    bool headers, time;
 
     void toFile(std::ostream& o) const;
 
