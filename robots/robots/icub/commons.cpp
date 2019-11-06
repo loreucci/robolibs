@@ -393,7 +393,7 @@ Utils::Vector iCubKin::getLeftHandPosition(const Utils::Vector& arm_encoders) co
 
     leftArm.setAng(ang);
 
-    yarp::sig::Vector p = rightArm.EndEffPose();
+    yarp::sig::Vector p = leftArm.EndEffPose();
     p.pop_back();
     p.pop_back();
     p.pop_back();
