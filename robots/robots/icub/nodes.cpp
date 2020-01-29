@@ -695,6 +695,15 @@ std::string LeftArmVelocityControl::parameters() const {
     return "Left arm velocity control of " + robot.name();
 }
 
+void LeftArmTorqueControl::execute() {
+
+    robot.leftarm->moveTorqueJoints(actuated_joints, getCmd());
+
+}
+
+std::string LeftArmTorqueControl::parameters() const {
+    return "Left arm torque control of " + robot.name();
+}
 
 InertialSensor::InertialSensor(const HasInertial& robot, double freq)
     :sec::Source(freq), robot(robot) {

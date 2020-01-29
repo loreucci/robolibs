@@ -496,6 +496,17 @@ public:
 
 };
 
+class LeftArmTorqueControl : public LeftArmControlCommon {
+
+public:
+    using LeftArmControlCommon::LeftArmControlCommon;
+
+    virtual void execute() override;
+
+    virtual std::string parameters() const override;
+
+};
+
 
 
 /////////////
