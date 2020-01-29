@@ -22,10 +22,18 @@
 
 struct CameraParameters {
 
+    // sx and sy denote the image size (px)
+    // note: not to be confused with the number of pixels per millimeter on the camera sensor.
     int    sx;
     int    sy;
+
+    // fx and fy denote the focal length (px)
+    // (physical focal length (mm) * pixel per mm on the sensor in axis x/y (px/mm))
+    // if the pixels are square (which we assume being the case) the two values are equivalent.
     double fx;
     double fy;
+
+    // cx and cy denote the pixel coordinates of the center pixel on the camera (px)
     double cx;
     double cy;
 
