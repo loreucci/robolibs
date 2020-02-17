@@ -106,12 +106,14 @@ void printVector(const Vector v, const std::string& pre = "", bool endline = tru
 
 
 /*!
- * \brief Reads a dataset from a space separated file and store it in a vector of Vectors.
+ * \brief Reads a dataset from a delimiter-separated file and store it in a vector of Vectors.
  *
  * \param filename path to file
+ * \param del delimiter character
+ * \param skiplines number of lines to skip from the beginning of file
  * \return the dataset
  */
-std::vector<Vector> readDatasetFromFile(const std::string& filename);
+std::vector<Vector> readDatasetFromFile(const std::string& filename, char del = ' ', unsigned int skiplines = 0);
 
 /*!
  * \brief Writes a dataset stored as a vector of Vectors in a space separated file.

@@ -55,31 +55,38 @@ void printVector(const Vector v, const std::string& pre, bool endline) {
 }
 
 
-std::vector<Vector> readDatasetFromFile(const std::string& filename) {
+std::vector<Vector> readDatasetFromFile(const std::string& filename, char del, unsigned int skiplines) {
 
     std::ifstream file(filename, std::ios_base::in);
 
     std::vector<std::vector<double>> set;
 
+    unsigned int count = 0;
     while (file.good() && !file.eof()) {
         std::string line;
         std::vector<double> p;
         std::getline(file, line);
-        if ( file.eof() ) {
+        if ( file.eof() && line.empty()) {
             break;
         }
+        count++;
+        if (count <= skiplines)
+            continue;
 
-        std::stringstream ss(line);
-
-        double d;
-        while (!ss.eof()) {
+        std::stringstream lstream(line);
+        std::string token;
+        while (std::getline(lstream, token, del)) {
+            std::stringstream ss(token);
+            double d;
             ss >> d;
-            if (ss.eof())
-                break;
             p.push_back(d);
         }
 
         set.push_back(p);
+
+        if (file.eof()) {
+            break;
+        }
 
     }
 
