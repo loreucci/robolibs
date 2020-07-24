@@ -25,6 +25,7 @@
 #define SIGNALS_H
 
 #include <functional>
+#include <string>
 
 
 /*!
